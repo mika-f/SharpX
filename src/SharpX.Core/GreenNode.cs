@@ -22,6 +22,10 @@ public abstract class GreenNode
 
     public bool ContainsDiagnostics { get; }
 
+    public bool ContainsStructuredTrivia { get; protected set; }
+
+    public bool ContainsDirectives { get; protected set; }
+
     public abstract string Language { get; }
 
     protected GreenNode(int kind)

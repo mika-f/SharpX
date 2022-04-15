@@ -12,8 +12,6 @@ namespace SharpX.Core;
 [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
 public abstract class SyntaxNode
 {
-    private readonly SyntaxNode? _parent;
-
     public GreenNode Green { get; }
 
     public int Position { get; }
@@ -43,7 +41,7 @@ public abstract class SyntaxNode
 
         Green = node;
         Position = position;
-        _parent = parent;
+        Parent = parent;
     }
 
     private string GetDebuggerDisplay()
@@ -111,4 +109,10 @@ public abstract class SyntaxNode
     public abstract SyntaxNode? GetNodeSlot(int index);
 
     public abstract SyntaxNode? GetCachedSlot(int index);
+
+    #region Node Lookup
+
+    public SyntaxNode? Parent { get; }
+
+    #endregion
 }
