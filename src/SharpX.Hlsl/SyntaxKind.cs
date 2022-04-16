@@ -93,6 +93,9 @@ public enum SyntaxKind
     /// <summary>Represents <c>?</c> token.</summary>
     QuestionToken,
 
+    /// <summary>Represents <c>#</c> token.</summary>
+    HashToken,
+
     /// <summary>Represents <c>/</c> token.</summary>
     SlashToken,
 
@@ -191,6 +194,10 @@ public enum SyntaxKind
 
     ColumnKeyword,
 
+    ColumnMajorKeyword,
+
+    ColumnMinorKeyword,
+
     MajorKeyword,
 
     CompileKeyword,
@@ -206,6 +213,8 @@ public enum SyntaxKind
     ComputeShaderKeyword,
 
     ConsumeStructuredBufferKeyword,
+
+    DefKeyword,
 
     DefaultKeyword,
 
@@ -247,6 +256,8 @@ public enum SyntaxKind
 
     IfKeyword,
 
+    IncludeKeyword,
+
     InKeyword,
 
     InlineKeyword,
@@ -268,6 +279,8 @@ public enum SyntaxKind
     LineStreamKeyword,
 
     MatrixKeyword,
+
+    MessageKeyword,
 
     Min16FloatKeyword,
 
@@ -293,6 +306,8 @@ public enum SyntaxKind
 
     PackOffsetKeyword,
 
+    PackMatrixKeyword,
+
     PassKeyword,
 
     PixelFragmentKeyword,
@@ -309,7 +324,7 @@ public enum SyntaxKind
 
     RenderTargetViewKeyword,
 
-    RrturnKeyword,
+    ReturnKeyword,
 
     RegisterKeyword,
 
@@ -432,6 +447,8 @@ public enum SyntaxKind
 
     EndIfKeyword,
 
+    WarningKeyword,
+
     ErrorKeyword,
 
     IfdefKeyword,
@@ -446,6 +463,10 @@ public enum SyntaxKind
 
     #region tokens
 
+    EndOfDirectiveToken,
+
+    EndOfFileToken,
+
     IdentifierToken,
 
     NumericLiteralToken,
@@ -453,6 +474,8 @@ public enum SyntaxKind
     CharacterLiteralToken,
 
     StringLiteralToken,
+
+    IncludeReferenceLiteralToken,
 
     #endregion
 
@@ -468,7 +491,7 @@ public enum SyntaxKind
 
     IfDirectiveTrivia,
 
-    IdDefDirectiveTrivia,
+    IfDefDirectiveTrivia,
 
     IfnDefDirectiveTrivia,
 
@@ -482,11 +505,21 @@ public enum SyntaxKind
 
     UndefDirectiveTrivia,
 
+    WarningDirectiveTrivia,
+
     ErrorDirectiveTrivia,
 
     LineDirectiveTrivia,
 
-    PragmaDirectiveTrivia,
+    IncludeDirectiveTrivia,
+
+    PragmaDefDirectiveTrivia,
+
+    PragmaMessageDirectiveTrivia,
+
+    PragmaPackMatrixDirectiveTrivia,
+
+    PragmaWarningDirectiveTrivia,
 
     #endregion
 
@@ -520,6 +553,8 @@ public enum SyntaxKind
 
     BracketedArgumentList,
 
+    Argument,
+
     CastExpression,
 
     ArrayInitializerExpression,
@@ -551,6 +586,8 @@ public enum SyntaxKind
     ExclusiveOrExpression,
 
     EqualsExpression,
+
+    NotEqualsExpression,
 
     LessThanExpression,
 
@@ -694,6 +731,9 @@ public enum SyntaxKind
 
     AttributeArgument,
 
+    // attribute
+    NameEquals,
+
     #endregion
 
     #region type declarations
@@ -708,5 +748,13 @@ public enum SyntaxKind
 
     MethodDeclaration,
 
+    ParameterList,
+
+    Parameter,
+
     #endregion
+
+    SingleVariableDesignation,
+
+    DeclarationExpression
 }
