@@ -46,7 +46,7 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CompilationUnitSyntaxInternal(Kind, _members, diagnostics);
+        return new CompilationUnitSyntaxInternal(Kind, _members, EndOfFileToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

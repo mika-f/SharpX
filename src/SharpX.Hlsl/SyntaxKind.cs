@@ -192,13 +192,7 @@ public enum SyntaxKind
 
     ClassKeyword,
 
-    ColumnKeyword,
-
     ColumnMajorKeyword,
-
-    ColumnMinorKeyword,
-
-    MajorKeyword,
 
     CompileKeyword,
 

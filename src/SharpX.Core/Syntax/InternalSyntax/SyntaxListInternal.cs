@@ -3,58 +3,42 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.Core.Utilities;
-
 namespace SharpX.Core.Syntax.InternalSyntax;
 
-public readonly struct SyntaxListInternal<TNode> where TNode : GreenNode
+public abstract partial class SyntaxListInternal : GreenNode
 {
-    public SyntaxListInternal(GreenNode? node)
+    public override string Language => throw new InvalidOperationException();
+
+    public override string KindText => throw new InvalidOperationException();
+
+    protected SyntaxListInternal() : base(ListKind) { }
+
+    protected SyntaxListInternal(DiagnosticInfo[]? diagnostics) : base(ListKind, diagnostics) { }
+
+    public static GreenNode List(GreenNode node)
     {
-        Node = node;
-    }
-
-    public GreenNode? Node { get; }
-
-    public int Count => Node == null ? 0 : Node.IsList ? Node.SlotCount : 1;
-
-    public TNode? this[int index]
-    {
-        get
-        {
-            if (Node == null)
-                return null;
-
-            if (Node.IsList)
-                return (TNode?)Node.GetSlot(index);
-
-            if (index == 0)
-                return (TNode?)Node;
-
-            throw new NotImplementedException();
-        }
-    }
-
-    public TNode GetRequiredItem(int index)
-    {
-        var node = this[index];
-        SharpXAssert.AssertNotNull(node);
-
         return node;
     }
 
-    public static implicit operator SyntaxListInternal<TNode>(TNode node)
+    public static WithTwoChildren List(GreenNode node1, GreenNode node2)
     {
-        return new SyntaxListInternal<TNode>(node);
+        return new WithTwoChildren(node1, node2);
     }
 
-    public static implicit operator SyntaxListInternal<TNode>(SyntaxListInternal<GreenNode> nodes)
+    public static WithThreeChildren List(GreenNode node1, GreenNode node2, GreenNode node3)
     {
-        return new SyntaxListInternal<TNode>(nodes.Node);
+        return new WithThreeChildren(node1, node2, node3);
     }
 
-    public static implicit operator SyntaxListInternal<GreenNode>(SyntaxListInternal<TNode> nodes)
+    public static GreenNode List(params GreenNode[] nodes)
     {
-        return new SyntaxListInternal<GreenNode>(nodes.Node);
+        return List(nodes, nodes.Length);
+    }
+
+    public static GreenNode List(GreenNode[] nodes, int count)
+    {
+        if (count < 10)
+            return new WithManyChildren(nodes);
+        return new WithLotsOfChildren(nodes);
     }
 }
