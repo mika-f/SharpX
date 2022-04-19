@@ -6,9 +6,9 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SharpX.Core.Utilities;
+namespace SharpX.Core;
 
-public static class SharpXAssert
+public static class Contract
 {
     [Conditional("DEBUG")]
     public static void Assert([DoesNotReturnIf(false)] bool cond, string? message)

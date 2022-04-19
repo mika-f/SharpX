@@ -5,8 +5,6 @@
 
 using System.Diagnostics;
 
-using SharpX.Core.Utilities;
-
 namespace SharpX.Core;
 
 [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
@@ -36,8 +34,8 @@ public abstract class SyntaxNode
 
     protected SyntaxNode(GreenNode node, SyntaxNode? parent, int position)
     {
-        SharpXAssert.Assert(position >= 0, "position cannot be negative");
-        SharpXAssert.Assert(parent?.Green.IsList != true, "list cannot be parent");
+        Contract.Assert(position >= 0, "position cannot be negative");
+        Contract.Assert(parent?.Green.IsList != true, "list cannot be parent");
 
         Green = node;
         Position = position;
@@ -107,6 +105,14 @@ public abstract class SyntaxNode
     }
 
     public abstract SyntaxNode? GetNodeSlot(int index);
+
+    public SyntaxNode GetRequiredNodeSlot(int index)
+    {
+        var node = GetNodeSlot(index);
+        Contract.AssertNotNull(node);
+
+        return node;
+    }
 
     public abstract SyntaxNode? GetCachedSlot(int index);
 

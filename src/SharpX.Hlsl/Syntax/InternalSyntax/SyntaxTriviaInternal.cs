@@ -42,4 +42,9 @@ internal class SyntaxTriviaInternal : HlslSyntaxNodeInternal
     {
         return _text;
     }
+
+    public static implicit operator SyntaxTrivia(SyntaxTriviaInternal trivia)
+    {
+        return new(default, trivia, 0, 0);
+    }
 }

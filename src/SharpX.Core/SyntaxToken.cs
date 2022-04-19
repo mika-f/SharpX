@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.Core.Utilities;
-
 namespace SharpX.Core;
 
 public readonly struct SyntaxToken
@@ -35,7 +33,7 @@ public readonly struct SyntaxToken
         get
         {
             var node = Node;
-            SharpXAssert.AssertNotNull(node);
+            Contract.AssertNotNull(node);
 
             return node;
         }
@@ -44,4 +42,8 @@ public readonly struct SyntaxToken
     public int Index { get; }
 
     public int Position { get; }
+
+    public int Width => Node?.Width ?? 0;
+
+    public int FullWidth => Node?.FullWidth ?? 0;
 }

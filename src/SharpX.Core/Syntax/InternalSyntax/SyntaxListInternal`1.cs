@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.Core.Utilities;
-
 namespace SharpX.Core.Syntax.InternalSyntax;
 
 public readonly struct SyntaxListInternal<TNode> where TNode : GreenNode
@@ -38,7 +36,7 @@ public readonly struct SyntaxListInternal<TNode> where TNode : GreenNode
     public TNode GetRequiredItem(int index)
     {
         var node = this[index];
-        SharpXAssert.AssertNotNull(node);
+        Contract.AssertNotNull(node);
 
         return node;
     }

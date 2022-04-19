@@ -41,6 +41,13 @@ internal static partial class SyntaxFactory
         return new SyntaxTriviaInternal(SyntaxKind.WhitespaceTrivia, text);
     }
 
+    public static SyntaxTriviaInternal Comment(string text)
+    {
+        if (text.StartsWith("/*"))
+            return new SyntaxTriviaInternal(SyntaxKind.MultilineCommentTrivia, text);
+        return new SyntaxTriviaInternal(SyntaxKind.SingleLineCommentTrivia, text);
+    }
+
     public static SyntaxTokenInternal Token(SyntaxKind kind)
     {
         return new SyntaxTokenInternal(kind);

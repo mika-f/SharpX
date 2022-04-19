@@ -8,10 +8,11 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-using SharpX.Core.Utilities;
-
 namespace SharpX.Core;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.GreenNode" />
+/// </summary>
 [DebuggerDisplay("{GetDebuggerDisplay(), np}")]
 public abstract class GreenNode
 {
@@ -152,7 +153,7 @@ public abstract class GreenNode
     public GreenNode GetRequiredSlot(int index)
     {
         var node = GetSlot(index);
-        SharpXAssert.AssertNotNull(node);
+        Contract.AssertNotNull(node);
 
         return node;
     }
@@ -192,6 +193,12 @@ public abstract class GreenNode
         WriteTo(writer, false, false);
 
         return sb.ToString();
+    }
+
+
+    public void WriteTo(TextWriter writer)
+    {
+        WriteTo(writer, true, true);
     }
 
     public void WriteTo(TextWriter writer, bool leading, bool trailing) { }
