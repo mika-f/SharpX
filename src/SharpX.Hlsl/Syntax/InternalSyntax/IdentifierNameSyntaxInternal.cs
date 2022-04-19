@@ -43,6 +43,6 @@ internal class IdentifierNameSyntaxInternal : SimpleNameSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new IdentifierNameSyntax(this, parent, position);
     }
 }

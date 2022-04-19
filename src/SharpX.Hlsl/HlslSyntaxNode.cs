@@ -16,9 +16,4 @@ public abstract class HlslSyntaxNode : SyntaxNode
     internal new HlslSyntaxNode? Parent => (HlslSyntaxNode?)base.Parent;
 
     internal HlslSyntaxNode(GreenNode node, SyntaxNode? parent, int position) : base(node, parent, position) { }
-
-    public override SyntaxNode? GetNodeSlot(int index)
-    {
-        throw new NotImplementedException();
-    }
 }
