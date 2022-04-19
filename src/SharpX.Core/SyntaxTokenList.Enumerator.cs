@@ -13,7 +13,6 @@ public readonly partial struct SyntaxTokenList
     {
         private readonly SyntaxNode? _parent;
         private readonly GreenNode? _singleNodeOrList;
-        private readonly SyntaxTokenList _list;
         private readonly int _baseIndex;
         private readonly int _count;
 

@@ -10,7 +10,7 @@ namespace SharpX.Core.Syntax;
 /// <summary>
 ///     represents <see cref="Microsoft.CodeAnalysis.Syntax.SyntaxListBuilder" />
 /// </summary>
-internal class SyntaxListBuilder
+public class SyntaxListBuilder
 {
     private GreenNode?[] _nodes;
 

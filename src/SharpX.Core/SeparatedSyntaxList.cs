@@ -73,4 +73,9 @@ public readonly partial struct SeparatedSyntaxList<TNode> : IReadOnlyList<TNode>
     {
         return _list.ToFullString();
     }
+
+    public SyntaxNodeOrTokenList GetWithSeparators()
+    {
+        return _list;
+    }
 }

@@ -25,7 +25,10 @@ public readonly partial struct SyntaxNodeOrTokenList : IReadOnlyCollection<Synta
         }
     }
 
+    public SyntaxNodeOrTokenList(IEnumerable<SyntaxNodeOrToken> nodes) : this(CreateNode(nodes), 0) { }
+
     public SyntaxNodeOrTokenList(params SyntaxNodeOrToken[] nodes) : this(CreateNode(nodes), 0) { }
+
 
     private static SyntaxNode? CreateNode(IEnumerable<SyntaxNodeOrToken> items)
     {
