@@ -52,6 +52,6 @@ internal class GenericNameSyntaxInternal : SimpleNameSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new GenericNameSyntax(this, parent, position);
     }
 }

@@ -70,6 +70,6 @@ internal class TypeArgumentListSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new TypeArgumentListSyntax(this, parent, position);
     }
 }

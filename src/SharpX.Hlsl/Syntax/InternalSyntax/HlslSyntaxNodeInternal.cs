@@ -22,7 +22,18 @@ internal abstract class HlslSyntaxNodeInternal : GreenNode
 
     protected HlslSyntaxNodeInternal(SyntaxKind kind, int fullWidth) : base((int)kind, fullWidth) { }
 
-    protected HlslSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base((int)kind, fullWidth, diagnostics) { }
+    protected HlslSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base((int)kind,
+                                                                                                           fullWidth, diagnostics) { }
 
     protected HlslSyntaxNodeInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base((int)kind, diagnostics) { }
+
+    public override SyntaxToken CreateSeparator<TNode>(SyntaxNode element)
+    {
+        return Hlsl.SyntaxFactory.Token(SyntaxKind.CommaToken);
+    }
+
+    public override bool IsTriviaWithEndOfLine()
+    {
+        return Kind is SyntaxKind.EndOfLineTrivia or SyntaxKind.SingleLineCommentTrivia;
+    }
 }
