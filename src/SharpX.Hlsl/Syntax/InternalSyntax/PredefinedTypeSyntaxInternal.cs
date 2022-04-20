@@ -43,6 +43,6 @@ internal class PredefinedTypeSyntaxInternal : TypeSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new PredefinedTypeSyntax(this, parent, position);
     }
 }

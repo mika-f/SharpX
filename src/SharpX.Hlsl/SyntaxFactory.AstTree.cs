@@ -48,4 +48,9 @@ public static partial class SyntaxFactory
     {
         return TypeArgumentList(Token(SyntaxKind.LessThanToken), arguments, Token(SyntaxKind.GreaterThanToken));
     }
+
+    public static PredefinedTypeSyntax PredefinedType(SyntaxToken keyword)
+    {
+        return (PredefinedTypeSyntax)SyntaxFactoryInternal.PredefinedType((SyntaxTokenInternal)keyword.Node!).CreateRed();
+    }
 }
