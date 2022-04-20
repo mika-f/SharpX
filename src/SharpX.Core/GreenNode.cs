@@ -8,6 +8,8 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using SharpX.Core.Syntax.InternalSyntax;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -206,6 +208,31 @@ public abstract class GreenNode
     #endregion
 
     #region Factories
+
+    public abstract SyntaxToken CreateSeparator<TNode>(SyntaxNode element) where TNode : SyntaxNode;
+
+    public abstract bool IsTriviaWithEndOfLine();
+
+    public static GreenNode? CreateList<TFrom>(List<TFrom> list, Func<TFrom, GreenNode> select)
+    {
+        switch (list.Count)
+        {
+            case 0:
+                return null;
+
+            case 1:
+                return select(list[0]);
+
+            case 2:
+                return SyntaxListInternal.List(select(list[0]), select(list[1]));
+
+            case 3:
+                return SyntaxListInternal.List(select(list[0]), select(list[1]), select(list[2]));
+
+            default:
+                return SyntaxListInternal.List(list.Select(select).ToArray());
+        }
+    }
 
     public SyntaxNode CreateRed()
     {

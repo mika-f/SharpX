@@ -15,6 +15,16 @@ public abstract partial class SyntaxListInternal : GreenNode
 
     protected SyntaxListInternal(DiagnosticInfo[]? diagnostics) : base(ListKind, diagnostics) { }
 
+    public override bool IsTriviaWithEndOfLine()
+    {
+        return false;
+    }
+
+    public override SyntaxToken CreateSeparator<TNode>(SyntaxNode element)
+    {
+        throw Exceptions.Unreachable;
+    }
+
     public static GreenNode List(GreenNode node)
     {
         return node;

@@ -47,6 +47,29 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 
     public int FullWidth => Node?.FullWidth ?? 0;
 
+    public SyntaxTriviaList LeadingTrivia => Node != null ? new SyntaxTriviaList(this, Node.GetLeadingTrivia(), Position) : default;
+
+    public SyntaxTriviaList TrailingTrivia
+    {
+        get
+        {
+            if (Node == null)
+                return default;
+
+            var leading = Node.GetLeadingTrivia();
+            var index = 0;
+            if (leading != null)
+                index = leading.IsList ? leading.SlotCount : 1;
+
+            var trailing = Node.GetTrailingTrivia();
+            var trailingPosition = Position + this.FullWidth;
+            if (trailing != null)
+                trailingPosition -= trailing.FullWidth;
+
+            return new SyntaxTriviaList(this, trailing, trailingPosition, index);
+        }
+    }
+
     public static bool operator ==(SyntaxToken left, SyntaxToken right)
     {
         return left.Equals(right);

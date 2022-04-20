@@ -8,7 +8,7 @@ namespace SharpX.Core;
 /// <summary>
 ///     represents <see cref="Microsoft.CodeAnalysis.SyntaxNodeOrToken" />
 /// </summary>
-public readonly struct SyntaxNodeOrToken
+public readonly struct SyntaxNodeOrToken : IEquatable<SyntaxNodeOrToken>
 {
     private readonly SyntaxNode? _nodeOrParent;
 
@@ -38,6 +38,15 @@ public readonly struct SyntaxNodeOrToken
     public SyntaxNode? Parent => _token != null ? _nodeOrParent : _nodeOrParent?.Parent;
 
     public GreenNode? UnderlyingNode => _token ?? _nodeOrParent?.Green;
+
+    public GreenNode RequiredUnderlyingNode
+    {
+        get
+        {
+            Contract.AssertNotNull(UnderlyingNode);
+            return UnderlyingNode;
+        }
+    }
 
     public int Position { get; }
 
@@ -101,5 +110,30 @@ public readonly struct SyntaxNodeOrToken
     public static explicit operator SyntaxNode?(SyntaxNodeOrToken token)
     {
         return token.AsNode();
+    }
+
+    public static bool operator ==(SyntaxNodeOrToken left, SyntaxNodeOrToken right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(SyntaxNodeOrToken left, SyntaxNodeOrToken right)
+    {
+        return !left.Equals(right);
+    }
+
+    public bool Equals(SyntaxNodeOrToken other)
+    {
+        return Equals(_nodeOrParent, other._nodeOrParent) && Equals(_token, other._token) && _tokenIndex == other._tokenIndex && Position == other.Position;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is SyntaxNodeOrToken other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_nodeOrParent, _token, _tokenIndex, Position);
     }
 }

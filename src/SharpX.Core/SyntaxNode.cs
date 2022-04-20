@@ -32,6 +32,12 @@ public abstract class SyntaxNode
 
     public bool ContainsDiagnostics => Green.ContainsDiagnostics;
 
+    #region Node Lookup
+
+    public SyntaxNode? Parent { get; }
+
+    #endregion
+
     protected SyntaxNode(GreenNode node, SyntaxNode? parent, int position)
     {
         Contract.Assert(position >= 0, "position cannot be negative");
@@ -64,6 +70,27 @@ public abstract class SyntaxNode
     }
 
     public SyntaxNode? GetRedAtZero(ref SyntaxNode? field)
+    {
+        return GetRed(ref field, 0);
+    }
+
+    public T? GetRed<T>(ref T? field, int slot) where T : SyntaxNode
+    {
+        var r = field;
+        if (r == null)
+        {
+            var green = Green.GetSlot(slot);
+            if (green != null)
+            {
+                Interlocked.CompareExchange(ref field, (T)green.CreateRed(this, slot == 0 ? Position : GetChildPosition(slot)), null);
+                r = field;
+            }
+        }
+
+        return r;
+    }
+
+    public T? GetRedAtZero<T>(ref T? field) where T : SyntaxNode
     {
         return GetRed(ref field, 0);
     }
@@ -115,10 +142,4 @@ public abstract class SyntaxNode
     }
 
     public abstract SyntaxNode? GetCachedSlot(int index);
-
-    #region Node Lookup
-
-    public SyntaxNode? Parent { get; }
-
-    #endregion
 }

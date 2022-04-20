@@ -27,7 +27,7 @@ public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
         Index = 0;
     }
 
-    public SyntaxTriviaList(SyntaxToken token, GreenNode? node, int position, int index)
+    public SyntaxTriviaList(SyntaxToken token, GreenNode? node, int position, int index = 0)
     {
         Token = token;
         Node = node;
