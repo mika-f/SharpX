@@ -79,6 +79,6 @@ internal class ConditionalExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ConditionalExpressionSyntax(this, parent, position);
     }
 }

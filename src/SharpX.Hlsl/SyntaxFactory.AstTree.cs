@@ -220,4 +220,20 @@ public static partial class SyntaxFactory
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         };
     }
+
+    public static ConditionalExpressionSyntax ConditionalExpression(ExpressionSyntax condition, SyntaxToken questionToken, ExpressionSyntax whenTrue, SyntaxToken colonToken, ExpressionSyntax whenFalse)
+    {
+        return (ConditionalExpressionSyntax)SyntaxFactoryInternal.ConditionalExpression(
+            (ExpressionSyntaxInternal)condition.Green,
+            (SyntaxTokenInternal)questionToken.Node!,
+            (ExpressionSyntaxInternal)whenTrue.Green,
+            (SyntaxTokenInternal)colonToken.Node!,
+            (ExpressionSyntaxInternal)whenFalse.Green
+        ).CreateRed();
+    }
+
+    public static ConditionalExpressionSyntax ConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
+    {
+        return ConditionalExpression(condition, Token(SyntaxKind.QuestionToken), whenTrue, Token(SyntaxKind.ColonToken), whenFalse);
+    }
 }
