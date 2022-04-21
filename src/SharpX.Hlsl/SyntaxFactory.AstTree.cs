@@ -149,4 +149,41 @@ public static partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static BinaryExpressionSyntax BinaryExpression(SyntaxKind kind, ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
+    {
+        return (BinaryExpressionSyntax)SyntaxFactoryInternal.BinaryExpression(
+            kind,
+            (ExpressionSyntaxInternal)left.Green,
+            (SyntaxTokenInternal)operatorToken.Node!,
+            (ExpressionSyntaxInternal)right.Green
+        ).CreateRed();
+    }
+
+    public static BinaryExpressionSyntax BinaryExpression(SyntaxKind kind, ExpressionSyntax left, ExpressionSyntax right)
+    {
+        return BinaryExpression(kind, left, Token(GetBinaryExpressionOperatorTokenKind(kind)), right);
+    }
+
+    private static SyntaxKind GetBinaryExpressionOperatorTokenKind(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.AddExpression => SyntaxKind.PlusToken,
+            SyntaxKind.SubtractExpression => SyntaxKind.MinusToken,
+            SyntaxKind.MultiplyExpression => SyntaxKind.AsteriskToken,
+            SyntaxKind.DivideExpression => SyntaxKind.SlashToken,
+            SyntaxKind.ModuloExpression => SyntaxKind.PercentToken,
+            SyntaxKind.LogicalOrExpression => SyntaxKind.BarBarToken,
+            SyntaxKind.LogicalAndExpression => SyntaxKind.AmpersandAmpersandToken,
+            SyntaxKind.BitwiseOrExpression => SyntaxKind.BarToken,
+            SyntaxKind.ExclusiveOrExpression => SyntaxKind.CaretToken,
+            SyntaxKind.EqualsExpression => SyntaxKind.EqualsEqualsToken,
+            SyntaxKind.NotEqualsExpression => SyntaxKind.ExclamationEqualsToken,
+            SyntaxKind.LessThanExpression => SyntaxKind.LessThanToken,
+            SyntaxKind.LessThanOrEqualExpression => SyntaxKind.LessThanEqualsToken,
+            SyntaxKind.GreaterThanExpression => SyntaxKind.GreaterThanToken,
+            SyntaxKind.GreaterThanOrEqualExpression => SyntaxKind.GreaterThanEqualsToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(kind))
+        };
+    }
 }
