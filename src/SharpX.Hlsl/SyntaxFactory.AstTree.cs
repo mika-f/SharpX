@@ -86,4 +86,33 @@ public static partial class SyntaxFactory
     {
         return ParenthesizedExpression(Token(SyntaxKind.OpenParenToken), expression, Token(SyntaxKind.CloseParenToken));
     }
+
+    public static PrefixUnaryExpressionSyntax PrefixUnaryExpression(SyntaxKind kind, SyntaxToken operatorToken, ExpressionSyntax operand)
+    {
+        return (PrefixUnaryExpressionSyntax)SyntaxFactoryInternal.PrefixUnaryExpression(
+            kind,
+            (SyntaxTokenInternal)operatorToken.Node!,
+            (ExpressionSyntaxInternal)operand.Green
+        ).CreateRed();
+    }
+
+    public static PrefixUnaryExpressionSyntax PrefixUnaryExpression(SyntaxKind kind, ExpressionSyntax operand)
+    {
+        return PrefixUnaryExpression(kind, Token(GetPrefixUnaryExpressionOperatorTokenKind(kind)), operand);
+    }
+
+    private static SyntaxKind GetPrefixUnaryExpressionOperatorTokenKind(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.UnaryPlusExpression => SyntaxKind.PlusToken,
+            SyntaxKind.UnaryMinusExpression => SyntaxKind.MinusToken,
+            SyntaxKind.BitwiseNotExpression => SyntaxKind.TildeToken,
+            SyntaxKind.LogicalNotExpression => SyntaxKind.ExclamationToken,
+            SyntaxKind.PreIncrementExpression => SyntaxKind.PlusPlusToken,
+            SyntaxKind.PreDecrementExpression => SyntaxKind.MinusMinusToken,
+            SyntaxKind.IndexExpression => SyntaxKind.CaretToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(kind))
+        };
+    }
 }
