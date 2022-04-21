@@ -139,4 +139,14 @@ public static partial class SyntaxFactory
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         };
     }
+
+    public static MemberAccessExpressionSyntax MemberAccessExpression(ExpressionSyntax expression, SyntaxToken operatorToken, SimpleNameSyntax name)
+    {
+        return (MemberAccessExpressionSyntax)SyntaxFactoryInternal.MemberAccessExpression(
+            (ExpressionSyntaxInternal)expression.Green,
+            (SyntaxTokenInternal)operatorToken.Node!,
+            (SimpleNameSyntaxInternal)name.Green
+        ).CreateRed();
+    }
+
 }
