@@ -61,6 +61,11 @@ public static partial class SyntaxFactory
         return new SyntaxToken(SyntaxFactoryInternal.Token(leading.Node, kind, text, value, trailing.Node));
     }
 
+    public static SyntaxToken Identifier(string text)
+    {
+        return new SyntaxToken(SyntaxFactoryInternal.Identifier(text));
+    }
+
     public static SyntaxToken Identifier(SyntaxTriviaList leading, string text, SyntaxTriviaList trailing)
     {
         return new SyntaxToken(SyntaxFactoryInternal.Identifier(leading.Node, text, trailing.Node));
