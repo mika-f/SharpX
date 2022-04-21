@@ -15,6 +15,16 @@ namespace SharpX.Core;
 /// <typeparam name="TNode"></typeparam>
 public readonly partial struct SyntaxList<TNode> : IReadOnlyList<TNode>, IEquatable<SyntaxList<TNode>> where TNode : SyntaxNode
 {
+    public override bool Equals(object? obj)
+    {
+        return obj is SyntaxList<TNode> other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return Node != null ? Node.GetHashCode() : 0;
+    }
+
     public SyntaxList(SyntaxNode? node)
     {
         Node = node;
@@ -71,9 +81,56 @@ public readonly partial struct SyntaxList<TNode> : IReadOnlyList<TNode>, IEquata
         }
     }
 
+    public SyntaxList<TNode> Add(TNode node)
+    {
+        return Insert(Count, node);
+    }
+
+    public SyntaxList<TNode> AddRange(IEnumerable<TNode> nodes)
+    {
+        return InsertRange(Count, nodes);
+    }
+
+    public SyntaxList<TNode> Insert(int index, TNode node)
+    {
+        return InsertRange(index, new[] { node });
+    }
+
+    public SyntaxList<TNode> InsertRange(int index, IEnumerable<TNode> nodes)
+    {
+        if (index < 0 || index > Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        var list = this.ToList();
+        list.InsertRange(index, nodes);
+
+        if (list.Count == 0)
+            return this;
+        return CreateList(list);
+    }
+
+    private static SyntaxList<TNode> CreateList(List<TNode> items)
+    {
+        if (items.Count == 0)
+            return default;
+
+        var green = GreenNode.CreateList(items, static w => w.Green);
+        return new SyntaxList<TNode>(green!.CreateRed());
+    }
+
+    public static bool operator ==(SyntaxList<TNode> left, SyntaxList<TNode> right)
+    {
+        return left.Node == right.Node;
+    }
+
+    public static bool operator !=(SyntaxList<TNode> left, SyntaxList<TNode> right)
+    {
+        return left.Node != right.Node;
+    }
+
     public bool Equals(SyntaxList<TNode> other)
     {
-        throw new NotImplementedException();
+        return Node == other.Node;
     }
 
     public override string ToString()
