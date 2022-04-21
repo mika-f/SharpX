@@ -61,6 +61,6 @@ internal class ArrayTypeSyntaxInternal : TypeSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ArrayTypeSyntax(this, parent, position);
     }
 }

@@ -71,6 +71,6 @@ internal class ArrayRankSpecifierSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ArrayRankSpecifierSyntax(this, parent, position);
     }
 }

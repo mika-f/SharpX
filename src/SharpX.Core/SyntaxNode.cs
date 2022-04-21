@@ -142,4 +142,22 @@ public abstract class SyntaxNode
     }
 
     public abstract SyntaxNode? GetCachedSlot(int index);
+
+    public int GetChildIndex(int slot)
+    {
+        var index = 0;
+        for (var i = 0; i < slot; i++)
+        {
+            var item = Green.GetSlot(i);
+            if (item != null)
+            {
+                if (item.IsList)
+                    index += item.SlotCount;
+                else
+                    index++;
+            }
+        }
+
+        return index;
+    }
 }
