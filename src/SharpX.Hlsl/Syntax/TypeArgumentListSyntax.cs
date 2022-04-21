@@ -19,11 +19,11 @@ public class TypeArgumentListSyntax : HlslSyntaxNode
         get
         {
             var red = GetRed(ref _arguments, 1);
-            return red != null ? new SeparatedSyntaxList<TypeSyntax>(red, GetChildPosition(1)) : default;
+            return red != null ? new SeparatedSyntaxList<TypeSyntax>(red, GetChildIndex(1)) : default;
         }
     }
 
-    public SyntaxToken GreaterThanToken => new(this, ((TypeArgumentListSyntaxInternal)Green).GreaterThanToken, Position, 0);
+    public SyntaxToken GreaterThanToken => new(this, ((TypeArgumentListSyntaxInternal)Green).GreaterThanToken, GetChildPosition(2), GetChildIndex(2));
 
     internal TypeArgumentListSyntax(HlslSyntaxNodeInternal node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 
