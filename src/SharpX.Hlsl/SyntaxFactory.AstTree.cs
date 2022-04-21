@@ -186,4 +186,38 @@ public static partial class SyntaxFactory
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         };
     }
+
+    public static AssignmentExpressionSyntax AssignmentExpression(SyntaxKind kind, ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
+    {
+        return (AssignmentExpressionSyntax)SyntaxFactoryInternal.AssignmentExpression(
+            kind,
+            (ExpressionSyntaxInternal)left.Green,
+            (SyntaxTokenInternal)operatorToken.Node!,
+            (ExpressionSyntaxInternal)right.Green
+        ).CreateRed();
+    }
+
+    public static AssignmentExpressionSyntax AssignmentExpression(SyntaxKind kind, ExpressionSyntax left, ExpressionSyntax right)
+    {
+        return AssignmentExpression(kind, left, Token(GetAssignmentExpressionOperatorTokenKind(kind)), right);
+    }
+
+    private static SyntaxKind GetAssignmentExpressionOperatorTokenKind(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.SimpleAssignmentExpression => SyntaxKind.EqualsToken,
+            SyntaxKind.AddAssignmentExpression => SyntaxKind.PlusEqualsToken,
+            SyntaxKind.SubtractAssignmentExpression => SyntaxKind.MinusEqualsToken,
+            SyntaxKind.MultiplyAssignmentExpression => SyntaxKind.AsteriskEqualsToken,
+            SyntaxKind.DivideAssignmentExpression => SyntaxKind.SlashEqualsToken,
+            SyntaxKind.ModuloAssignmentExpression => SyntaxKind.PercentEqualsToken,
+            SyntaxKind.AndAssignmentExpression => SyntaxKind.AmpersandEqualsToken,
+            SyntaxKind.ExclusiveOrAssignmentExpression => SyntaxKind.CaretEqualsToken,
+            SyntaxKind.OrAssignmentExpression => SyntaxKind.BarEqualsToken,
+            SyntaxKind.LeftShiftAssignmentExpression => SyntaxKind.LessThanLessThanEqualsToken,
+            SyntaxKind.RightShiftAssignmentExpression => SyntaxKind.GreaterThanGreaterThanEqualsToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(kind))
+        };
+    }
 }

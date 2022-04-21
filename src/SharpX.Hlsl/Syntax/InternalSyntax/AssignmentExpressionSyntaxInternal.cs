@@ -61,6 +61,6 @@ internal class AssignmentExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new AssignmentExpressionSyntax(this, parent, position);
     }
 }
