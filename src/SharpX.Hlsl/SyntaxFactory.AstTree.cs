@@ -72,4 +72,18 @@ public static partial class SyntaxFactory
     {
         return ArrayRankSpecifier(Token(SyntaxKind.OpenBracketToken), sizes, Token(SyntaxKind.CloseBracketToken));
     }
+
+    public static ParenthesizedExpressionSyntax ParenthesizedExpression(SyntaxToken openParenToken, ExpressionSyntax expression, SyntaxToken closeParenToken)
+    {
+        return (ParenthesizedExpressionSyntax)SyntaxFactoryInternal.ParenthesizedExpression(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (ExpressionSyntaxInternal)expression.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+    public static ParenthesizedExpressionSyntax ParenthesizedExpression(ExpressionSyntax expression)
+    {
+        return ParenthesizedExpression(Token(SyntaxKind.OpenParenToken), expression, Token(SyntaxKind.CloseParenToken));
+    }
 }

@@ -61,6 +61,6 @@ internal class ParenthesizedExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ParenthesizedExpressionSyntax(this, parent, position);
     }
 }
