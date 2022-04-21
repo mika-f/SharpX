@@ -115,4 +115,28 @@ public static partial class SyntaxFactory
             _ => throw new ArgumentOutOfRangeException(nameof(kind))
         };
     }
+
+    public static PostfixUnaryExpressionSyntax PostfixUnaryExpression(SyntaxKind kind, ExpressionSyntax operand, SyntaxToken operatorToken)
+    {
+        return (PostfixUnaryExpressionSyntax)SyntaxFactoryInternal.PostfixUnaryExpression(
+            kind,
+            (ExpressionSyntaxInternal)operand.Green,
+            (SyntaxTokenInternal)operatorToken.Node!
+        ).CreateRed();
+    }
+
+    public static PostfixUnaryExpressionSyntax PostfixUnaryExpression(SyntaxKind kind, ExpressionSyntax operand)
+    {
+        return PostfixUnaryExpression(kind, operand, Token(GetPostfixUnaryExpressionOperatorTokenKind(kind)));
+    }
+
+    private static SyntaxKind GetPostfixUnaryExpressionOperatorTokenKind(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.PostIncrementExpression => SyntaxKind.PlusPlusToken,
+            SyntaxKind.PostDecrementExpression => SyntaxKind.MinusMinusToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(kind))
+        };
+    }
 }

@@ -52,6 +52,6 @@ internal class PostfixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new PostfixUnaryExpressionSyntax(this, parent, position);
     }
 }
