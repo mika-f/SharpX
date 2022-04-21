@@ -1,108 +1,112 @@
-﻿using SharpX.Core;
+﻿// ------------------------------------------------------------------------------------------
+//  Copyright (c) Natsuneko. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
+// ------------------------------------------------------------------------------------------
 
-namespace SharpX.Hlsl.Syntax.InternalSyntax
+using SharpX.Core;
+
+namespace SharpX.Hlsl.Syntax.InternalSyntax;
+
+internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 {
-    internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
+    public TypeSyntaxInternal Type { get; }
+
+    public SyntaxTokenInternal Identifier { get; }
+
+    public BracketedArgumentListSyntaxInternal? Arguments { get; }
+
+    public SemanticSyntaxInternal? Semantics { get; }
+
+    public EqualsValueClauseSyntaxInternal? Initializer { get; }
+
+    public SyntaxTokenInternal SemicolonToken { get; }
+
+    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken) : base(kind)
     {
-        public TypeSyntaxInternal Type { get; }
+        SlotCount = 6;
 
-        public SyntaxTokenInternal Identifier { get; }
+        AdjustWidth(type);
+        Type = type;
 
-        public BracketedArgumentListSyntaxInternal? Arguments { get; }
+        AdjustWidth(identifier);
+        Identifier = identifier;
 
-        public SemanticSyntaxInternal? Semantics { get; }
-
-        public EqualsValueClauseSyntaxInternal? Initializer { get; }
-
-        public SyntaxTokenInternal SemicolonToken { get; }
-
-        public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken) : base(kind)
+        if (arguments != null)
         {
-            SlotCount = 6;
-
-            AdjustWidth(type);
-            Type = type;
-
-            AdjustWidth(identifier);
-            Identifier = identifier;
-
-            if (arguments != null)
-            {
-                AdjustWidth(arguments);
-                Arguments = arguments;
-            }
-
-            if (semantics != null)
-            {
-                AdjustWidth(semantics);
-                Semantics = semantics;
-            }
-
-            if (initializer != null)
-            {
-                AdjustWidth(initializer);
-                Initializer = initializer;
-            }
-
-            AdjustWidth(semicolonToken);
-            SemicolonToken = semicolonToken;
+            AdjustWidth(arguments);
+            Arguments = arguments;
         }
 
-        public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken,
-                                              DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+        if (semantics != null)
         {
-            SlotCount = 6;
-
-            AdjustWidth(type);
-            Type = type;
-
-            AdjustWidth(identifier);
-            Identifier = identifier;
-
-            if (arguments != null)
-            {
-                AdjustWidth(arguments);
-                Arguments = arguments;
-            }
-
-            if (semantics != null)
-            {
-                AdjustWidth(semantics);
-                Semantics = semantics;
-            }
-
-            if (initializer != null)
-            {
-                AdjustWidth(initializer);
-                Initializer = initializer;
-            }
-
-            AdjustWidth(semicolonToken);
-            SemicolonToken = semicolonToken;
+            AdjustWidth(semantics);
+            Semantics = semantics;
         }
 
-        public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
+        if (initializer != null)
         {
-            return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, diagnostics);
+            AdjustWidth(initializer);
+            Initializer = initializer;
         }
 
-        public override GreenNode? GetSlot(int index)
+        AdjustWidth(semicolonToken);
+        SemicolonToken = semicolonToken;
+    }
+
+    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken,
+                                          DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    {
+        SlotCount = 6;
+
+        AdjustWidth(type);
+        Type = type;
+
+        AdjustWidth(identifier);
+        Identifier = identifier;
+
+        if (arguments != null)
         {
-            return index switch
-            {
-                0 => Type,
-                1 => Identifier,
-                2 => Arguments,
-                3 => Semantics,
-                4 => Initializer,
-                5 => SemicolonToken,
-                _ => null
-            };
+            AdjustWidth(arguments);
+            Arguments = arguments;
         }
 
-        public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
+        if (semantics != null)
         {
-            throw new NotImplementedException();
+            AdjustWidth(semantics);
+            Semantics = semantics;
         }
+
+        if (initializer != null)
+        {
+            AdjustWidth(initializer);
+            Initializer = initializer;
+        }
+
+        AdjustWidth(semicolonToken);
+        SemicolonToken = semicolonToken;
+    }
+
+    public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
+    {
+        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, diagnostics);
+    }
+
+    public override GreenNode? GetSlot(int index)
+    {
+        return index switch
+        {
+            0 => Type,
+            1 => Identifier,
+            2 => Arguments,
+            3 => Semantics,
+            4 => Initializer,
+            5 => SemicolonToken,
+            _ => null
+        };
+    }
+
+    public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
+    {
+        throw new NotImplementedException();
     }
 }
