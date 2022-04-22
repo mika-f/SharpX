@@ -310,6 +310,14 @@ public static partial class SyntaxFactory
     }
 
 
+    public static AttributeSyntax Attribute(NameSyntax name, AttributeArgumentListSyntax? argumentList = default)
+    {
+        return (AttributeSyntax)SyntaxFactoryInternal.Attribute(
+            (NameSyntaxInternal)name.Green,
+            (AttributeArgumentListSyntaxInternal?)argumentList?.Green
+        ).CreateRed();
+    }
+
     public static AttributeArgumentListSyntax AttributeArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<AttributeArgumentSyntax> arguments, SyntaxToken closeParenToken)
     {
         return (AttributeArgumentListSyntax)SyntaxFactoryInternal.AttributeArgumentList(
@@ -317,6 +325,11 @@ public static partial class SyntaxFactory
             arguments.Node.ToGreenSeparatedList<AttributeArgumentSyntaxInternal>(),
             (SyntaxTokenInternal)closeParenToken.Node!
         ).CreateRed();
+    }
+
+    public static AttributeArgumentListSyntax AttributeArgumentList(SeparatedSyntaxList<AttributeArgumentSyntax> arguments = default)
+    {
+        return AttributeArgumentList(Token(SyntaxKind.OpenParenToken), arguments, Token(SyntaxKind.CloseParenToken));
     }
 
     public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
