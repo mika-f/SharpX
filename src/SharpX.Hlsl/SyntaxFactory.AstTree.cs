@@ -255,6 +255,19 @@ public static partial class SyntaxFactory
         return InvocationExpression(expression, ArgumentList());
     }
 
+    public static ElementAccessExpressionSyntax ElementAccessExpression(ExpressionSyntax expression, BracketedArgumentListSyntax argumentList)
+    {
+        return (ElementAccessExpressionSyntax)SyntaxFactoryInternal.ElementAccessExpression(
+            (ExpressionSyntaxInternal)expression.Green,
+            (BracketedArgumentListSyntaxInternal)argumentList.Green
+        ).CreateRed();
+    }
+
+    public static ElementAccessExpressionSyntax ElementAccessExpression(ExpressionSyntax expression)
+    {
+        return ElementAccessExpression(expression, BracketedArgumentList());
+    }
+
     public static ArgumentListSyntax ArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeParenToken)
     {
         return (ArgumentListSyntax)SyntaxFactoryInternal.ArgumentList(
@@ -291,7 +304,7 @@ public static partial class SyntaxFactory
         ).CreateRed();
     }
 
-    public static BracketedArgumentListSyntax BracketedArgumentList(SeparatedSyntaxList<ArgumentSyntax> arguments)
+    public static BracketedArgumentListSyntax BracketedArgumentList(SeparatedSyntaxList<ArgumentSyntax> arguments = default)
     {
         return BracketedArgumentList(Token(SyntaxKind.OpenBracketToken), arguments, Token(SyntaxKind.CloseBracketToken));
     }

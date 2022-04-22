@@ -52,6 +52,6 @@ internal class ElementAccessExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ElementAccessExpressionSyntax(this, parent, position);
     }
 }

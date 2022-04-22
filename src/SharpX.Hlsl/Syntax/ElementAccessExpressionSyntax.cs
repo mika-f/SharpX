@@ -8,23 +8,23 @@ using SharpX.Hlsl.Syntax.InternalSyntax;
 
 namespace SharpX.Hlsl.Syntax;
 
-public class InvocationExpressionSyntax : ExpressionSyntax
+public class ElementAccessExpressionSyntax : ExpressionSyntax
 {
-    private ArgumentListSyntax? _argumentList;
     private ExpressionSyntax? _expression;
+    private BracketedArgumentListSyntax? _argumentList;
 
     public ExpressionSyntax Expression => GetRedAtZero(ref _expression)!;
 
-    public ArgumentListSyntax ArgumentList => GetRed(ref _argumentList, 1)!;
+    public BracketedArgumentListSyntax ArgumentList => GetRed(ref _argumentList, 1)!;
 
-    internal InvocationExpressionSyntax(HlslSyntaxNodeInternal node, SyntaxNode? parent, int position) : base(node, parent, position) { }
+    internal ElementAccessExpressionSyntax(HlslSyntaxNodeInternal node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 
     public override SyntaxNode? GetNodeSlot(int index)
     {
         return index switch
         {
-            0 => GetRedAtZero(ref _expression)!,
-            1 => GetRed(ref _argumentList, 1)!,
+            0 => GetRedAtZero(ref _expression),
+            1 => GetRed(ref _argumentList, 1),
             _ => null
         };
     }
@@ -39,24 +39,24 @@ public class InvocationExpressionSyntax : ExpressionSyntax
         };
     }
 
-    public InvocationExpressionSyntax Update(ExpressionSyntax expression, ArgumentListSyntax argumentList)
+    public ElementAccessExpressionSyntax Update(ExpressionSyntax expression, BracketedArgumentListSyntax argumentList)
     {
         if (expression != Expression || argumentList != ArgumentList)
-            return SyntaxFactory.InvocationExpression(expression, argumentList);
+            return SyntaxFactory.ElementAccessExpression(expression, argumentList);
         return this;
     }
 
-    public InvocationExpressionSyntax WithExpression(ExpressionSyntax expression)
+    public ElementAccessExpressionSyntax WithExpression(ExpressionSyntax expression)
     {
         return Update(expression, ArgumentList);
     }
 
-    public InvocationExpressionSyntax WithArgumentList(ArgumentListSyntax argumentList)
+    public ElementAccessExpressionSyntax WithArgumentList(BracketedArgumentListSyntax argumentList)
     {
         return Update(Expression, argumentList);
     }
 
-    public InvocationExpressionSyntax AddArguments(params ArgumentSyntax[] items)
+    public ElementAccessExpressionSyntax AddArguments(params ArgumentSyntax[] items)
     {
         return WithArgumentList(ArgumentList.AddArguments(items));
     }
