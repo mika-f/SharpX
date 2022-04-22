@@ -43,6 +43,6 @@ internal class LiteralExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new LiteralExpressionSyntax(this, parent, position);
     }
 }

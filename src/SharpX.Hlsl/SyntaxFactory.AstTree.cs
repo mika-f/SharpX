@@ -236,4 +236,9 @@ public static partial class SyntaxFactory
     {
         return ConditionalExpression(condition, Token(SyntaxKind.QuestionToken), whenTrue, Token(SyntaxKind.ColonToken), whenFalse);
     }
+
+    public static LiteralExpressionSyntax LiteralExpression(SyntaxKind kind, SyntaxToken token)
+    {
+        return (LiteralExpressionSyntax)SyntaxFactoryInternal.LiteralExpression(kind, (SyntaxTokenInternal)token.Node!).CreateRed();
+    }
 }
