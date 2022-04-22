@@ -308,4 +308,9 @@ public static partial class SyntaxFactory
     {
         return BracketedArgumentList(Token(SyntaxKind.OpenBracketToken), arguments, Token(SyntaxKind.CloseBracketToken));
     }
+
+    public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
+    {
+        return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
+    }
 }
