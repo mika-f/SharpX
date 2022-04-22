@@ -70,6 +70,6 @@ internal class AttributeArgumentListSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new AttributeArgumentListSyntax(this, parent, position);
     }
 }
