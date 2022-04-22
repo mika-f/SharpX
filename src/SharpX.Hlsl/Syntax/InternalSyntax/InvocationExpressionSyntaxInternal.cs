@@ -52,6 +52,6 @@ internal class InvocationExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new InvocationExpressionSyntax(this, parent, position);
     }
 }

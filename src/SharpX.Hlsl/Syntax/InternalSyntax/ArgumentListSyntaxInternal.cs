@@ -70,6 +70,6 @@ internal class ArgumentListSyntaxInternal : BaseArgumentListSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ArgumentListSyntax(this, parent, position);
     }
 }

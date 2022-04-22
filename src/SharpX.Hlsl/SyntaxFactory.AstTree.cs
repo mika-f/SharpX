@@ -241,4 +241,44 @@ public static partial class SyntaxFactory
     {
         return (LiteralExpressionSyntax)SyntaxFactoryInternal.LiteralExpression(kind, (SyntaxTokenInternal)token.Node!).CreateRed();
     }
+
+    public static InvocationExpressionSyntax InvocationExpression(ExpressionSyntax expression, ArgumentListSyntax argumentList)
+    {
+        return (InvocationExpressionSyntax)SyntaxFactoryInternal.InvocationExpression(
+            (ExpressionSyntaxInternal)expression.Green,
+            (ArgumentListSyntaxInternal)argumentList.Green
+        ).CreateRed();
+    }
+
+    public static InvocationExpressionSyntax InvocationExpression(ExpressionSyntax expression)
+    {
+        return InvocationExpression(expression, ArgumentList());
+    }
+
+    public static ArgumentListSyntax ArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeParenToken)
+    {
+        return (ArgumentListSyntax)SyntaxFactoryInternal.ArgumentList(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            arguments.Node.ToGreenSeparatedList<ArgumentSyntaxInternal>(),
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+    public static ArgumentListSyntax ArgumentList(SeparatedSyntaxList<ArgumentSyntax> arguments = default)
+    {
+        return ArgumentList(Token(SyntaxKind.OpenParenToken), arguments, Token(SyntaxKind.CloseParenToken));
+    }
+
+    public static ArgumentSyntax Argument(SyntaxToken refKindKeyword, ExpressionSyntax expression)
+    {
+        return (ArgumentSyntax)SyntaxFactoryInternal.Argument(
+            (SyntaxTokenInternal?)refKindKeyword.Node,
+            (ExpressionSyntaxInternal)expression.Green
+        ).CreateRed();
+    }
+
+    public static ArgumentSyntax Argument(ExpressionSyntax expression)
+    {
+        return Argument(default, expression);
+    }
 }
