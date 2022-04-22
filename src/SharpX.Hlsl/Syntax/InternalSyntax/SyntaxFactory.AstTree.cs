@@ -260,7 +260,7 @@ internal static partial class SyntaxFactory
         return new ConditionalExpressionSyntaxInternal(SyntaxKind.ConditionalExpression, condition, questionToken, whenTrue, colonToken, whenFalse);
     }
 
-    public static LiteralExpressionSyntaxInternal LiteralExpressions(SyntaxKind kind, SyntaxTokenInternal token)
+    public static LiteralExpressionSyntaxInternal LiteralExpression(SyntaxKind kind, SyntaxTokenInternal token)
     {
         switch (kind)
         {
