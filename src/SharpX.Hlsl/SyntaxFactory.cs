@@ -277,3 +277,7 @@ public static partial class SyntaxFactory
     }
 
     public static IdentifierNameSyntax IdentifierName(string name)
+    {
+        return IdentifierName(Identifier(name));
+    }
+}
