@@ -281,4 +281,18 @@ public static partial class SyntaxFactory
     {
         return Argument(default, expression);
     }
+
+    public static BracketedArgumentListSyntax BracketedArgumentList(SyntaxToken openBracketToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeBracketToken)
+    {
+        return (BracketedArgumentListSyntax)SyntaxFactoryInternal.BracketedArgumentList(
+            (SyntaxTokenInternal)openBracketToken.Node!,
+            arguments.Node.ToGreenSeparatedList<ArgumentSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBracketToken.Node!
+        ).CreateRed();
+    }
+
+    public static BracketedArgumentListSyntax BracketedArgumentList(SeparatedSyntaxList<ArgumentSyntax> arguments)
+    {
+        return BracketedArgumentList(Token(SyntaxKind.OpenBracketToken), arguments, Token(SyntaxKind.CloseBracketToken));
+    }
 }

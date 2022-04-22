@@ -71,6 +71,6 @@ internal class BracketedArgumentListSyntaxInternal : BaseArgumentListSyntaxInter
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new BracketedArgumentListSyntax(this, parent, position);
     }
 }
