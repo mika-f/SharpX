@@ -282,19 +282,6 @@ public static partial class SyntaxFactory
         return ArgumentList(Token(SyntaxKind.OpenParenToken), arguments, Token(SyntaxKind.CloseParenToken));
     }
 
-    public static ArgumentSyntax Argument(SyntaxToken refKindKeyword, ExpressionSyntax expression)
-    {
-        return (ArgumentSyntax)SyntaxFactoryInternal.Argument(
-            (SyntaxTokenInternal?)refKindKeyword.Node,
-            (ExpressionSyntaxInternal)expression.Green
-        ).CreateRed();
-    }
-
-    public static ArgumentSyntax Argument(ExpressionSyntax expression)
-    {
-        return Argument(default, expression);
-    }
-
     public static BracketedArgumentListSyntax BracketedArgumentList(SyntaxToken openBracketToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeBracketToken)
     {
         return (BracketedArgumentListSyntax)SyntaxFactoryInternal.BracketedArgumentList(
@@ -348,5 +335,17 @@ public static partial class SyntaxFactory
     public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
     {
         return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
+    }
+    public static EqualsValueClauseSyntax EqualsValueClause(SyntaxToken equalsToken, ExpressionSyntax expression)
+    {
+        return (EqualsValueClauseSyntax)SyntaxFactoryInternal.EqualsValueClause(
+            (SyntaxTokenInternal)equalsToken.Node!,
+            (ExpressionSyntaxInternal)expression.Green
+        ).CreateRed();
+    }
+
+    public static EqualsValueClauseSyntax EqualsValueClause(ExpressionSyntax expression)
+    {
+        return EqualsValueClause(Token(SyntaxKind.EqualsToken), expression);
     }
 }
