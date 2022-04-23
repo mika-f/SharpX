@@ -336,6 +336,15 @@ public static partial class SyntaxFactory
     {
         return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
     }
+
+    public static VariableDeclaratorSyntax VariableDeclarator(SyntaxToken identifier, EqualsValueClauseSyntax? initializer = default)
+    {
+        return (VariableDeclaratorSyntax)SyntaxFactoryInternal.VariableDeclarator(
+            (SyntaxTokenInternal)identifier.Node!,
+            (EqualsValueClauseSyntaxInternal?)initializer?.Green
+        ).CreateRed();
+    }
+
     public static EqualsValueClauseSyntax EqualsValueClause(SyntaxToken equalsToken, ExpressionSyntax expression)
     {
         return (EqualsValueClauseSyntax)SyntaxFactoryInternal.EqualsValueClause(
