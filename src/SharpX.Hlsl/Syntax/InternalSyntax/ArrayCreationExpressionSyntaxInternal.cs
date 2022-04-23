@@ -58,6 +58,6 @@ internal class ArrayCreationExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ArrayCreationExpressionSyntax(this, parent, position);
     }
 }
