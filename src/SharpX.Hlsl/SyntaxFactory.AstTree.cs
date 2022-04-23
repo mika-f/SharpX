@@ -325,6 +325,21 @@ public static partial class SyntaxFactory
         return CastExpression(Token(SyntaxKind.OpenParenToken), type, Token(SyntaxKind.CloseParenToken), expression);
     }
 
+    public static InitializerExpressionSyntax InitializerExpression(SyntaxKind kind, SyntaxToken openBraceToken, SeparatedSyntaxList<ExpressionSyntax> expressions, SyntaxToken closeBraceToken)
+    {
+        return (InitializerExpressionSyntax)SyntaxFactoryInternal.InitializerExpression(
+            kind,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            expressions.Node.ToGreenSeparatedList<ExpressionSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static InitializerExpressionSyntax InitializerExpression(SyntaxKind kind, SeparatedSyntaxList<ExpressionSyntax> expressions)
+    {
+        return InitializerExpression(kind, Token(SyntaxKind.OpenBraceToken), expressions, Token(SyntaxKind.CloseBraceToken));
+    }
+
     public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
     {
         return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(

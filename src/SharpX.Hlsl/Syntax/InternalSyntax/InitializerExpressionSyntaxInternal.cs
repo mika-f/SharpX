@@ -16,9 +16,9 @@ internal class InitializerExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public SeparatedSyntaxListInternal<ExpressionSyntaxInternal> Expressions => new(new SyntaxListInternal<HlslSyntaxNodeInternal>(_expressions));
 
-    public SyntaxTokenInternal CloseParenToken { get; }
+    public SyntaxTokenInternal CloseBraceToken { get; }
 
-    public InitializerExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBraceToken, GreenNode? expressions, SyntaxTokenInternal closeParenToken) : base(kind)
+    public InitializerExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBraceToken, GreenNode? expressions, SyntaxTokenInternal closeBraceToken) : base(kind)
     {
         SlotCount = 3;
 
@@ -31,11 +31,11 @@ internal class InitializerExpressionSyntaxInternal : ExpressionSyntaxInternal
             _expressions = expressions;
         }
 
-        AdjustWidth(closeParenToken);
-        CloseParenToken = closeParenToken;
+        AdjustWidth(closeBraceToken);
+        CloseBraceToken = closeBraceToken;
     }
 
-    public InitializerExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBraceToken, GreenNode? expressions, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public InitializerExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBraceToken, GreenNode? expressions, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -48,13 +48,13 @@ internal class InitializerExpressionSyntaxInternal : ExpressionSyntaxInternal
             _expressions = expressions;
         }
 
-        AdjustWidth(closeParenToken);
-        CloseParenToken = closeParenToken;
+        AdjustWidth(closeBraceToken);
+        CloseBraceToken = closeBraceToken;
     }
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new InitializerExpressionSyntaxInternal(Kind, OpenBraceToken, _expressions, CloseParenToken, diagnostics);
+        return new InitializerExpressionSyntaxInternal(Kind, OpenBraceToken, _expressions, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)
@@ -63,13 +63,13 @@ internal class InitializerExpressionSyntaxInternal : ExpressionSyntaxInternal
         {
             0 => OpenBraceToken,
             1 => _expressions,
-            2 => CloseParenToken,
+            2 => CloseBraceToken,
             _ => null
         };
     }
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new InitializerExpressionSyntax(this, parent, position);
     }
 }
