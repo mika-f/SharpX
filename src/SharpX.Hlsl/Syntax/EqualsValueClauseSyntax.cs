@@ -33,4 +33,14 @@ public class EqualsValueClauseSyntax : HlslSyntaxNode
             return SyntaxFactory.EqualsValueClause(equalsToken, expression);
         return this;
     }
+
+    public EqualsValueClauseSyntax WithEqualsToken(SyntaxToken equalsToken)
+    {
+        return Update(equalsToken, Expression);
+    }
+
+    public EqualsValueClauseSyntax WithExpression(ExpressionSyntax expression)
+    {
+        return Update(EqualsToken, expression);
+    }
 }
