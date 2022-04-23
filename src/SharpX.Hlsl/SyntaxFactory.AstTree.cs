@@ -297,6 +297,34 @@ public static partial class SyntaxFactory
     }
 
 
+    public static ArgumentSyntax Argument(SyntaxToken refKindKeyword, ExpressionSyntax expression)
+    {
+        return (ArgumentSyntax)SyntaxFactoryInternal.Argument(
+            (SyntaxTokenInternal?)refKindKeyword.Node,
+            (ExpressionSyntaxInternal)expression.Green
+        ).CreateRed();
+    }
+
+    public static ArgumentSyntax Argument(ExpressionSyntax expression)
+    {
+        return Argument(default, expression);
+    }
+
+    public static CastExpressionSyntax CastExpression(SyntaxToken openParenToken, TypeSyntax type, SyntaxToken closeParenToken, ExpressionSyntax expression)
+    {
+        return (CastExpressionSyntax)SyntaxFactoryInternal.CastExpression(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (TypeSyntaxInternal)type.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (ExpressionSyntaxInternal)expression.Green
+        ).CreateRed();
+    }
+
+    public static CastExpressionSyntax CastExpression(TypeSyntax type, ExpressionSyntax expression)
+    {
+        return CastExpression(Token(SyntaxKind.OpenParenToken), type, Token(SyntaxKind.CloseParenToken), expression);
+    }
+
     public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
     {
         return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(

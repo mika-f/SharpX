@@ -71,6 +71,6 @@ internal class CastExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new CastExpressionSyntax(this, parent, position);
     }
 }
