@@ -61,6 +61,6 @@ internal class VariableDeclarationSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new VariableDeclarationSyntax(this, parent, position);
     }
 }

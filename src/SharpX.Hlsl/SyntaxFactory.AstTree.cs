@@ -296,6 +296,7 @@ public static partial class SyntaxFactory
         return BracketedArgumentList(Token(SyntaxKind.OpenBracketToken), arguments, Token(SyntaxKind.CloseBracketToken));
     }
 
+
     public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
     {
         return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(
@@ -335,6 +336,14 @@ public static partial class SyntaxFactory
     public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
     {
         return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
+    }
+
+    public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SeparatedSyntaxList<VariableDeclaratorSyntax> variables)
+    {
+        return (VariableDeclarationSyntax)SyntaxFactoryInternal.VariableDeclaration(
+            (TypeSyntaxInternal)type.Green,
+            variables.Node.ToGreenSeparatedList<VariableDeclaratorSyntaxInternal>()
+        ).CreateRed();
     }
 
     public static VariableDeclaratorSyntax VariableDeclarator(SyntaxToken identifier, EqualsValueClauseSyntax? initializer = default)
