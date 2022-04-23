@@ -309,6 +309,19 @@ public static partial class SyntaxFactory
         return BracketedArgumentList(Token(SyntaxKind.OpenBracketToken), arguments, Token(SyntaxKind.CloseBracketToken));
     }
 
+    public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
+    {
+        return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(
+            (SyntaxTokenInternal)openBracketToken.Node!,
+            attributes.Node.ToGreenSeparatedList<AttributeSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBracketToken.Node!
+        ).CreateRed();
+    }
+
+    public static AttributeListSyntax AttributeList(SeparatedSyntaxList<AttributeSyntax> attributes)
+    {
+        return AttributeList(Token(SyntaxKind.OpenBracketToken), attributes, Token(SyntaxKind.CloseBracketToken));
+    }
 
     public static AttributeSyntax Attribute(NameSyntax name, AttributeArgumentListSyntax? argumentList = default)
     {
