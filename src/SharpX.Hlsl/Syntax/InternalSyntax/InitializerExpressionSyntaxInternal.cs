@@ -54,7 +54,7 @@ internal class InitializerExpressionSyntaxInternal : ExpressionSyntaxInternal
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new InitializerExpressionSyntaxInternal(Kind, OpenBraceToken, _expressions, CloseParenToken);
+        return new InitializerExpressionSyntaxInternal(Kind, OpenBraceToken, _expressions, CloseParenToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

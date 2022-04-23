@@ -340,11 +340,6 @@ internal static partial class SyntaxFactory
         return new ArgumentSyntaxInternal(SyntaxKind.Argument, refKindKeyword, expression);
     }
 
-    public static DeclarationExpressionSyntaxInternal DeclarationExpression(TypeSyntaxInternal type, VariableDesignationSyntaxInternal designation)
-    {
-        return new DeclarationExpressionSyntaxInternal(SyntaxKind.DeclarationExpression, type, designation);
-    }
-
     public static CastExpressionSyntaxInternal CastExpression(SyntaxTokenInternal openParenToken, TypeSyntaxInternal type, SyntaxTokenInternal closeParenToken, ExpressionSyntaxInternal expression)
     {
         if (openParenToken.Kind != SyntaxKind.OpenParenToken)
@@ -360,6 +355,25 @@ internal static partial class SyntaxFactory
         return new ArrayCreationExpressionSyntaxInternal(SyntaxKind.ArrayCreationExpression, type, initializer);
     }
 
+    public static InitializerExpressionSyntaxInternal InitializerExpression(SyntaxKind kind, SyntaxTokenInternal openBraceToken, SeparatedSyntaxListInternal<ExpressionSyntaxInternal> expressions, SyntaxTokenInternal closeBraceToken)
+    {
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        switch (kind)
+        {
+            case SyntaxKind.ArrayInitializerExpression:
+                break;
+
+            default:
+                throw new ArgumentException(nameof(kind));
+        }
+
+        return new InitializerExpressionSyntaxInternal(kind, openBraceToken, expressions.Node, closeBraceToken);
+    }
+
     public static BlockSyntaxInternal Block(SyntaxListInternal<AttributeListSyntaxInternal> attributeLists, SyntaxTokenInternal openBraceToken, SyntaxListInternal<StatementSyntaxInternal> statements, SyntaxTokenInternal closeBraceToken)
     {
         if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
@@ -368,6 +382,14 @@ internal static partial class SyntaxFactory
             throw new ArgumentException(nameof(closeBraceToken));
 
         return new BlockSyntaxInternal(SyntaxKind.Block, attributeLists.Node, openBraceToken, statements.Node, closeBraceToken);
+    }
+
+    public static LocalDeclarationStatementSyntaxInternal LocalDeclaration(SyntaxListInternal<AttributeListSyntaxInternal> attributeList, SyntaxListInternal<SyntaxTokenInternal> modifiers, VariableDeclarationSyntaxInternal declaration, SyntaxTokenInternal semicolonToken)
+    {
+        if (semicolonToken.Kind != SyntaxKind.SemicolonToken)
+            throw new ArgumentException(nameof(semicolonToken));
+
+        return new LocalDeclarationStatementSyntaxInternal(SyntaxKind.LocalDeclarationStatement, attributeList.Node, modifiers.Node, declaration, semicolonToken);
     }
 
     public static VariableDeclarationSyntaxInternal VariableDeclaration(TypeSyntaxInternal type, SeparatedSyntaxListInternal<VariableDeclaratorSyntaxInternal> variables)
