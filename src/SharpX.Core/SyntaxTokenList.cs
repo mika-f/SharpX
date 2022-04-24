@@ -5,9 +5,14 @@
 
 using System.Collections;
 
+using SharpX.Core.Syntax;
+
 namespace SharpX.Core;
 
-public readonly partial struct SyntaxTokenList : IReadOnlyList<SyntaxToken>
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.SyntaxTokenList" />
+/// </summary>
+public readonly partial struct SyntaxTokenList : IEquatable<SyntaxTokenList>, IReadOnlyList<SyntaxToken>
 {
     private readonly SyntaxNode? _parent;
     private readonly int _index;
@@ -35,7 +40,16 @@ public readonly partial struct SyntaxTokenList : IReadOnlyList<SyntaxToken>
         if (tokens == null)
             return null;
 
-        throw new NotImplementedException();
+        var builder = new SyntaxTokenListBuilder(tokens.Length);
+        foreach (var t in tokens)
+        {
+            var node = t.Node;
+            Contract.AssertNotNull(node);
+
+            builder.Add(node);
+        }
+
+        return builder.ToList().Node;
     }
 
     public GreenNode? Node { get; }
@@ -43,6 +57,45 @@ public readonly partial struct SyntaxTokenList : IReadOnlyList<SyntaxToken>
     public int Position { get; }
 
     public int Count => Node == null ? 0 : Node.IsList ? Node.SlotCount : 1;
+
+    internal void CopyTo(int offset, GreenNode?[] array, int arrayOffset, int count)
+    {
+        for (var i = 0; i < count; i++)
+            array[arrayOffset + i] = GetGreenNodeAt(offset + i);
+    }
+
+    public SyntaxTokenList Add(SyntaxToken token)
+    {
+        return Insert(Count, token);
+    }
+
+    public SyntaxTokenList AddRange(IEnumerable<SyntaxToken> tokens)
+    {
+        return InsertRange(Count, tokens);
+    }
+
+    public SyntaxTokenList Insert(int index, SyntaxToken token)
+    {
+        return InsertRange(index, new[] { token });
+    }
+
+    public SyntaxTokenList InsertRange(int index, IEnumerable<SyntaxToken> tokens)
+    {
+        if (index < 0 || index > Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        var items = tokens.ToList();
+        if (items.Count == 0)
+            return this;
+
+        var list = this.ToList();
+        list.InsertRange(index, items);
+
+        if (list.Count == 0)
+            return this;
+
+        return new SyntaxTokenList(null, GreenNode.CreateList(list, static w => w.RequiredNode), 0, 0);
+    }
 
     public IEnumerator<SyntaxToken> GetEnumerator()
     {
@@ -85,9 +138,40 @@ public readonly partial struct SyntaxTokenList : IReadOnlyList<SyntaxToken>
         return Node?.ToFullString() ?? string.Empty;
     }
 
+    private GreenNode? GetGreenNodeAt(int i)
+    {
+        Contract.AssertNotNull(Node);
+        return GetGreenNodeAt(Node, i);
+    }
+
     private static GreenNode? GetGreenNodeAt(GreenNode node, int index)
     {
-        Contract.Assert(node.IsList || index == 0 && !node.IsList, null);
+        Contract.Assert(node.IsList || (index == 0 && !node.IsList), null);
         return node.IsList ? node.GetSlot(index) : node;
+    }
+
+    public static bool operator ==(SyntaxTokenList left, SyntaxTokenList right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(SyntaxTokenList left, SyntaxTokenList right)
+    {
+        return !left.Equals(right);
+    }
+
+    public bool Equals(SyntaxTokenList other)
+    {
+        return Node == other.Node && _parent == other._parent && _index == other._index;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is SyntaxTokenList other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_parent, _index, Node, Position);
     }
 }
