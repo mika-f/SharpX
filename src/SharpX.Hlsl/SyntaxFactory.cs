@@ -136,6 +136,11 @@ public static partial class SyntaxFactory
         return new SyntaxList<TNode>(nodes.ToList());
     }
 
+    public static SyntaxList<TNode> List<TNode>(IEnumerable<TNode> nodes) where TNode : SyntaxNode
+    {
+        return new SyntaxList<TNode>(nodes);
+    }
+
     public static SyntaxTokenList TokenList()
     {
         return default;
@@ -279,5 +284,9 @@ public static partial class SyntaxFactory
     public static IdentifierNameSyntax IdentifierName(string name)
     {
         return IdentifierName(Identifier(name));
+    }
+    public static BlockSyntax Block(IEnumerable<StatementSyntax> statements)
+    {
+        return Block(List(statements));
     }
 }

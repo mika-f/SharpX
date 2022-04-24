@@ -340,6 +340,21 @@ public static partial class SyntaxFactory
         return InitializerExpression(kind, Token(SyntaxKind.OpenBraceToken), expressions, Token(SyntaxKind.CloseBraceToken));
     }
 
+    public static BlockSyntax Block(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken openBraceToken, SyntaxList<StatementSyntax> statements, SyntaxToken closeBraceToken)
+    {
+        return (BlockSyntax)SyntaxFactoryInternal.Block(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            statements.Node.ToGreenList<StatementSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static BlockSyntax Block(SyntaxList<StatementSyntax> statements)
+    {
+        return Block(List<AttributeListSyntax>(), Token(SyntaxKind.OpenBraceToken), statements, Token(SyntaxKind.CloseBraceToken));
+    }
+
     public static ArrayCreationExpressionSyntax ArrayCreationExpression(ArrayTypeSyntax type, InitializerExpressionSyntax? initializer)
     {
         return (ArrayCreationExpressionSyntax)SyntaxFactoryInternal.ArrayCreationExpression(

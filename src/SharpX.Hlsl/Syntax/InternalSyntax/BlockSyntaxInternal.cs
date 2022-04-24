@@ -87,6 +87,6 @@ internal class BlockSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new BlockSyntax(this, parent, position);
     }
 }
