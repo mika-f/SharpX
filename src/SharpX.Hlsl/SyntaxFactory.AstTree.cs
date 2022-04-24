@@ -340,21 +340,6 @@ public static partial class SyntaxFactory
         return InitializerExpression(kind, Token(SyntaxKind.OpenBraceToken), expressions, Token(SyntaxKind.CloseBraceToken));
     }
 
-    public static BlockSyntax Block(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken openBraceToken, SyntaxList<StatementSyntax> statements, SyntaxToken closeBraceToken)
-    {
-        return (BlockSyntax)SyntaxFactoryInternal.Block(
-            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
-            (SyntaxTokenInternal)openBraceToken.Node!,
-            statements.Node.ToGreenList<StatementSyntaxInternal>(),
-            (SyntaxTokenInternal)closeBraceToken.Node!
-        ).CreateRed();
-    }
-
-    public static BlockSyntax Block(SyntaxList<StatementSyntax> statements)
-    {
-        return Block(List<AttributeListSyntax>(), Token(SyntaxKind.OpenBraceToken), statements, Token(SyntaxKind.CloseBraceToken));
-    }
-
     public static ArrayCreationExpressionSyntax ArrayCreationExpression(ArrayTypeSyntax type, InitializerExpressionSyntax? initializer)
     {
         return (ArrayCreationExpressionSyntax)SyntaxFactoryInternal.ArrayCreationExpression(
@@ -402,6 +387,41 @@ public static partial class SyntaxFactory
     public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
     {
         return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
+    }
+
+    public static BlockSyntax Block(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken openBraceToken, SyntaxList<StatementSyntax> statements, SyntaxToken closeBraceToken)
+    {
+        return (BlockSyntax)SyntaxFactoryInternal.Block(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            statements.Node.ToGreenList<StatementSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static BlockSyntax Block(SyntaxList<StatementSyntax> statements)
+    {
+        return Block(List<AttributeListSyntax>(), Token(SyntaxKind.OpenBraceToken), statements, Token(SyntaxKind.CloseBraceToken));
+    }
+
+    public static LocalDeclarationStatementSyntax LocalDeclaration(SyntaxList<AttributeListSyntax> attributeLists, SyntaxTokenList modifiers, VariableDeclarationSyntax declaration, SyntaxToken semicolonToken)
+    {
+        return (LocalDeclarationStatementSyntax)SyntaxFactoryInternal.LocalDeclaration(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            modifiers.Node.ToGreenList<SyntaxTokenInternal>(),
+            (VariableDeclarationSyntaxInternal)declaration.Green,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static LocalDeclarationStatementSyntax LocalDeclaration(SyntaxList<AttributeListSyntax> attributeLists, SyntaxTokenList modifiers, VariableDeclarationSyntax declarations)
+    {
+        return LocalDeclaration(attributeLists, modifiers, declarations, Token(SyntaxKind.SemicolonToken));
+    }
+
+    public static LocalDeclarationStatementSyntax LocalDeclaration(VariableDeclarationSyntax declaration)
+    {
+        return LocalDeclaration(default, default, declaration);
     }
 
     public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SeparatedSyntaxList<VariableDeclaratorSyntax> variables)

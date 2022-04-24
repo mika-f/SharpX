@@ -82,6 +82,6 @@ internal class LocalDeclarationStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new LocalDeclarationStatementSyntax(this, parent, position);
     }
 }
