@@ -539,4 +539,23 @@ public static partial class SyntaxFactory
     {
         return WhileStatement(attributeLists, Token(SyntaxKind.WhileKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), statement);
     }
+
+    public static DoStatementSyntax DoStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken doKeyword, StatementSyntax statement, SyntaxToken whileKeyword, SyntaxToken openParenToken, ExpressionSyntax condition, SyntaxToken closeParenToken, SyntaxToken semicolonToken)
+    {
+        return (DoStatementSyntax)SyntaxFactoryInternal.DoStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)doKeyword.Node!,
+            (StatementSyntaxInternal)statement.Green,
+            (SyntaxTokenInternal)whileKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (ExpressionSyntaxInternal)condition.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static DoStatementSyntax DoStatement(SyntaxList<AttributeListSyntax> attributeLists, StatementSyntax statement, ExpressionSyntax condition)
+    {
+        return DoStatement(attributeLists, Token(SyntaxKind.DoKeyword), statement, Token(SyntaxKind.WhileKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), Token(SyntaxKind.SemicolonToken));
+    }
 }
