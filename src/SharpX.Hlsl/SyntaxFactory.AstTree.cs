@@ -493,4 +493,18 @@ public static partial class SyntaxFactory
     {
         return BreakStatement(attributeLists, Token(SyntaxKind.BreakKeyword), Token(SyntaxKind.SemicolonToken));
     }
+
+    public static ContinueStatementSyntax ContinueStatement(SyntaxList<AttributeListSyntax> attributeList, SyntaxToken continueKeyword, SyntaxToken semicolonToken)
+    {
+        return (ContinueStatementSyntax)SyntaxFactoryInternal.ContinueStatement(
+            attributeList.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)continueKeyword.Node!,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static ContinueStatementSyntax ContinueStatement(SyntaxList<AttributeListSyntax> attributeList)
+    {
+        return ContinueStatement(attributeList, Token(SyntaxKind.ContinueKeyword), Token(SyntaxKind.SemicolonToken));
+    }
 }

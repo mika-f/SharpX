@@ -50,7 +50,7 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
 
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new BreakStatementSyntaxInternal(Kind, _attributeLists, ContinueKeyword, SemicolonToken, diagnostics);
+            return new ContinueStatementSyntaxInternal(Kind, _attributeLists, ContinueKeyword, SemicolonToken, diagnostics);
         }
 
         public override GreenNode? GetSlot(int index)
@@ -66,7 +66,7 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
 
         public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
         {
-            throw new NotImplementedException();
+            return new ContinueStatementSyntax(this, parent, position);
         }
     }
 }
