@@ -507,4 +507,19 @@ public static partial class SyntaxFactory
     {
         return ContinueStatement(attributeList, Token(SyntaxKind.ContinueKeyword), Token(SyntaxKind.SemicolonToken));
     }
+
+    public static ReturnStatementSyntax ReturnStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken returnKeyword, ExpressionSyntax? expression, SyntaxToken semicolonToken)
+    {
+        return (ReturnStatementSyntax)SyntaxFactoryInternal.ReturnStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)returnKeyword.Node!,
+            (ExpressionSyntaxInternal?)expression?.Green,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static ReturnStatementSyntax ReturnStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax? expression = null)
+    {
+        return ReturnStatement(attributeLists, Token(SyntaxKind.ReturnKeyword), expression, Token(SyntaxKind.SemicolonToken));
+    }
 }

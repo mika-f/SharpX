@@ -86,6 +86,6 @@ internal class ReturnStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ReturnStatementSyntax(this, parent, position);
     }
 }
