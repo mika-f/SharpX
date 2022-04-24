@@ -522,4 +522,21 @@ public static partial class SyntaxFactory
     {
         return ReturnStatement(attributeLists, Token(SyntaxKind.ReturnKeyword), expression, Token(SyntaxKind.SemicolonToken));
     }
+
+    public static WhileStatementSyntax WhileStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken whileKeyword, SyntaxToken openParenToken, ExpressionSyntax condition, SyntaxToken closeParenToken, StatementSyntax statement)
+    {
+        return (WhileStatementSyntax)SyntaxFactoryInternal.WhileStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)whileKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (ExpressionSyntaxInternal)condition.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (StatementSyntaxInternal)statement.Green
+        ).CreateRed();
+    }
+
+    public static WhileStatementSyntax WhileStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax condition, StatementSyntax statement)
+    {
+        return WhileStatement(attributeLists, Token(SyntaxKind.WhileKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), statement);
+    }
 }

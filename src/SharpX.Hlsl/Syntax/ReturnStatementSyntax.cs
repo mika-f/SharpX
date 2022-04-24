@@ -60,7 +60,6 @@ public class ReturnStatementSyntax : StatementSyntax
         return WithAttributeLists(attributeLists);
     }
 
-
     public ReturnStatementSyntax WithReturnKeyword(SyntaxToken returnKeyword)
     {
         return Update(AttributeLists, returnKeyword, Expression, SemicolonToken);
