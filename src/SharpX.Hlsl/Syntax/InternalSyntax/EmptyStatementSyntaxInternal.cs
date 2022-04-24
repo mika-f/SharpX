@@ -61,6 +61,6 @@ internal class EmptyStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new EmptyStatementSyntax(this, parent, position);
     }
 }

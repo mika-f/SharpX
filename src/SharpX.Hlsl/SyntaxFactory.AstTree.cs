@@ -466,4 +466,17 @@ public static partial class SyntaxFactory
     {
         return ExpressionStatement(attributeLists, expression, Token(SyntaxKind.SemicolonToken));
     }
+
+    public static EmptyStatementSyntax EmptyStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken semicolonToken)
+    {
+        return (EmptyStatementSyntax)SyntaxFactoryInternal.EmptyStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static EmptyStatementSyntax EmptyStatement(SyntaxList<AttributeListSyntax> attributeLists)
+    {
+        return EmptyStatement(attributeLists, Token(SyntaxKind.SemicolonToken));
+    }
 }
