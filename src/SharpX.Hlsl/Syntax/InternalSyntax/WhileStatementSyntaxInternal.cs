@@ -98,6 +98,6 @@ internal class WhileStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new WhileStatementSyntax(this, parent, position);
     }
 }
