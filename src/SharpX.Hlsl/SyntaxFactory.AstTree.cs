@@ -479,4 +479,18 @@ public static partial class SyntaxFactory
     {
         return EmptyStatement(attributeLists, Token(SyntaxKind.SemicolonToken));
     }
+
+    public static BreakStatementSyntax BreakStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken breakKeyword, SyntaxToken semicolonToken)
+    {
+        return (BreakStatementSyntax)SyntaxFactoryInternal.BreakStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)breakKeyword.Node!,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static BreakStatementSyntax BreakStatement(SyntaxList<AttributeListSyntax> attributeLists)
+    {
+        return BreakStatement(attributeLists, Token(SyntaxKind.BreakKeyword), Token(SyntaxKind.SemicolonToken));
+    }
 }
