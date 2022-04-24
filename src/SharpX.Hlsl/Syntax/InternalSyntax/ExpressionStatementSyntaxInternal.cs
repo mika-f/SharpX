@@ -70,6 +70,6 @@ internal class ExpressionStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ExpressionStatementSyntax(this, parent, position);
     }
 }

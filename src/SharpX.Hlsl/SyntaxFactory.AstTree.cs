@@ -452,4 +452,18 @@ public static partial class SyntaxFactory
     {
         return EqualsValueClause(Token(SyntaxKind.EqualsToken), expression);
     }
+
+    public static ExpressionStatementSyntax ExpressionStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax expression, SyntaxToken semicolonToken)
+    {
+        return (ExpressionStatementSyntax)SyntaxFactoryInternal.ExpressionStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (ExpressionSyntaxInternal)expression.Green,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static ExpressionStatementSyntax ExpressionStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax expression)
+    {
+        return ExpressionStatement(attributeLists, expression, Token(SyntaxKind.SemicolonToken));
+    }
 }
