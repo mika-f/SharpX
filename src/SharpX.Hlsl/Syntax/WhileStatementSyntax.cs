@@ -67,8 +67,38 @@ public class WhileStatementSyntax : StatementSyntax
         return WithAttributeLists(attributeLists);
     }
 
+    public WhileStatementSyntax WithWhileKeyword(SyntaxToken whileKeyword)
+    {
+        return Update(AttributeLists, whileKeyword, OpenParenToken, Condition, CloseParenToken, Statement);
+    }
+
+    public WhileStatementSyntax WithOpenParenToken(SyntaxToken openParenToken)
+    {
+        return Update(AttributeLists, WhileKeyword, openParenToken, Condition, CloseParenToken, Statement);
+    }
+
+    public WhileStatementSyntax WithCondition(ExpressionSyntax condition)
+    {
+        return Update(AttributeLists, WhileKeyword, OpenParenToken, condition, CloseParenToken, Statement);
+    }
+
+    public WhileStatementSyntax WithCloseParenToken(SyntaxToken closeParenToken)
+    {
+        return Update(AttributeLists, WhileKeyword, OpenParenToken, Condition, closeParenToken, Statement);
+    }
+
+    public WhileStatementSyntax WithStatement(StatementSyntax statement)
+    {
+        return Update(AttributeLists, WhileKeyword, OpenParenToken, Condition, CloseParenToken, statement);
+    }
+
+    public new WhileStatementSyntax AddAttributeLists(params AttributeListSyntax[] items)
+    {
+        return WithAttributeLists(AttributeLists.AddRange(items));
+    }
+
     internal override StatementSyntax AddAttributeListsCore(params AttributeListSyntax[] items)
     {
-        throw new NotImplementedException();
+        return AddAttributeLists(items);
     }
 }
