@@ -37,7 +37,12 @@ public class StructDeclarationSyntax : TypeDeclarationSyntax
         return index == 3 ? _members : null;
     }
 
-    public StructDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
+    public StructDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<FieldDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
+    {
+        return Update(keyword, identifier, openBraceToken, new SyntaxList<MemberDeclarationSyntax>(members), closeBraceToken, semicolonToken);
+    }
+
+    private StructDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
     {
         if (keyword != Keyword || identifier != Identifier || openBraceToken != OpenBraceToken || members != Members || closeBraceToken != CloseBraceToken || semicolonToken != SemicolonToken)
             return SyntaxFactory.StructDeclaration(keyword, identifier, openBraceToken, new SyntaxList<FieldDeclarationSyntax>(members.Cast<FieldDeclarationSyntax>()), closeBraceToken, semicolonToken);
@@ -61,7 +66,7 @@ public class StructDeclarationSyntax : TypeDeclarationSyntax
 
     public StructDeclarationSyntax WithMembers(SyntaxList<FieldDeclarationSyntax> members)
     {
-        return Update(Keyword, Identifier, OpenBraceToken, new SyntaxList<MemberDeclarationSyntax>(members), CloseBraceToken, SemicolonToken);
+        return Update(Keyword, Identifier, OpenBraceToken, members, CloseBraceToken, SemicolonToken);
     }
 
     private StructDeclarationSyntax WithMembers(SyntaxList<MemberDeclarationSyntax> members)
