@@ -98,6 +98,6 @@ internal class StructDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new StructDeclarationSyntax(this, parent, position);
     }
 }

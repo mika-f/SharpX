@@ -715,4 +715,33 @@ public static partial class SyntaxFactory
     {
         return NameEquals(name, Token(SyntaxKind.EqualsToken));
     }
+
+    public static StructDeclarationSyntax StructDeclaration(SyntaxToken structKeyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<FieldDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
+    {
+        return (StructDeclarationSyntax)SyntaxFactoryInternal.StructDeclaration(
+            (SyntaxTokenInternal)structKeyword.Node!,
+            (SyntaxTokenInternal)identifier.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            members.Node.ToGreenList<FieldDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static StructDeclarationSyntax StructDeclaration(SyntaxToken identifier, SyntaxList<FieldDeclarationSyntax> members)
+    {
+        return StructDeclaration(
+            Token(SyntaxKind.StructKeyword),
+            identifier,
+            Token(SyntaxKind.OpenBraceToken),
+            members,
+            Token(SyntaxKind.CloseBraceToken),
+            Token(SyntaxKind.SemicolonToken)
+        );
+    }
+
+    public static StructDeclarationSyntax StructDeclaration(string identifier, SyntaxList<FieldDeclarationSyntax> members)
+    {
+        return StructDeclaration(Identifier(identifier), members);
+    }
 }
