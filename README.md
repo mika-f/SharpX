@@ -22,4 +22,5 @@ We should also like to use a new C# features, like Babel, a JavaScript Compiler,
 
 ## License
 
-MIT by [@6jz](https://twitter.com/6jz)
+* MIT by [@6jz](https://twitter.com/6jz)  
+* Some codes is taken from [dotnet/roslyn](https://github.com/dotnet/roslyn) - [MIT](https://github.com/dotnet/roslyn/blob/main/License.txt) by .NET Foundation and Contributors
