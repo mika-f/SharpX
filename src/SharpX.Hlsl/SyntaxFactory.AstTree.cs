@@ -348,47 +348,6 @@ public static partial class SyntaxFactory
         ).CreateRed();
     }
 
-    public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
-    {
-        return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(
-            (SyntaxTokenInternal)openBracketToken.Node!,
-            attributes.Node.ToGreenSeparatedList<AttributeSyntaxInternal>(),
-            (SyntaxTokenInternal)closeBracketToken.Node!
-        ).CreateRed();
-    }
-
-    public static AttributeListSyntax AttributeList(SeparatedSyntaxList<AttributeSyntax> attributes)
-    {
-        return AttributeList(Token(SyntaxKind.OpenBracketToken), attributes, Token(SyntaxKind.CloseBracketToken));
-    }
-
-    public static AttributeSyntax Attribute(NameSyntax name, AttributeArgumentListSyntax? argumentList = default)
-    {
-        return (AttributeSyntax)SyntaxFactoryInternal.Attribute(
-            (NameSyntaxInternal)name.Green,
-            (AttributeArgumentListSyntaxInternal?)argumentList?.Green
-        ).CreateRed();
-    }
-
-    public static AttributeArgumentListSyntax AttributeArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<AttributeArgumentSyntax> arguments, SyntaxToken closeParenToken)
-    {
-        return (AttributeArgumentListSyntax)SyntaxFactoryInternal.AttributeArgumentList(
-            (SyntaxTokenInternal)openParenToken.Node!,
-            arguments.Node.ToGreenSeparatedList<AttributeArgumentSyntaxInternal>(),
-            (SyntaxTokenInternal)closeParenToken.Node!
-        ).CreateRed();
-    }
-
-    public static AttributeArgumentListSyntax AttributeArgumentList(SeparatedSyntaxList<AttributeArgumentSyntax> arguments = default)
-    {
-        return AttributeArgumentList(Token(SyntaxKind.OpenParenToken), arguments, Token(SyntaxKind.CloseParenToken));
-    }
-
-    public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
-    {
-        return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
-    }
-
     public static BlockSyntax Block(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken openBraceToken, SyntaxList<StatementSyntax> statements, SyntaxToken closeBraceToken)
     {
         return (BlockSyntax)SyntaxFactoryInternal.Block(
@@ -687,5 +646,60 @@ public static partial class SyntaxFactory
     public static DefaultSwitchLabelSyntax DefaultSwitchLabel()
     {
         return DefaultSwitchLabel(Token(SyntaxKind.DefaultKeyword), Token(SyntaxKind.ColonToken));
+    }
+
+
+    public static CompilationUnitSyntax CompilationUnit(SyntaxList<MemberDeclarationSyntax> members, SyntaxToken endOfFileToken)
+    {
+        return (CompilationUnitSyntax)SyntaxFactoryInternal.CompilationUnit(
+            members.Node.ToGreenList<MemberDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)endOfFileToken.Node!
+        ).CreateRed();
+    }
+
+    public static CompilationUnitSyntax CompilationUnit(SyntaxList<MemberDeclarationSyntax> members = default)
+    {
+        return CompilationUnit(members, Token(SyntaxKind.EndOfFileToken));
+    }
+
+    public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
+    {
+        return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(
+            (SyntaxTokenInternal)openBracketToken.Node!,
+            attributes.Node.ToGreenSeparatedList<AttributeSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBracketToken.Node!
+        ).CreateRed();
+    }
+
+    public static AttributeListSyntax AttributeList(SeparatedSyntaxList<AttributeSyntax> attributes)
+    {
+        return AttributeList(Token(SyntaxKind.OpenBracketToken), attributes, Token(SyntaxKind.CloseBracketToken));
+    }
+
+    public static AttributeSyntax Attribute(NameSyntax name, AttributeArgumentListSyntax? argumentList = default)
+    {
+        return (AttributeSyntax)SyntaxFactoryInternal.Attribute(
+            (NameSyntaxInternal)name.Green,
+            (AttributeArgumentListSyntaxInternal?)argumentList?.Green
+        ).CreateRed();
+    }
+
+    public static AttributeArgumentListSyntax AttributeArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<AttributeArgumentSyntax> arguments, SyntaxToken closeParenToken)
+    {
+        return (AttributeArgumentListSyntax)SyntaxFactoryInternal.AttributeArgumentList(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            arguments.Node.ToGreenSeparatedList<AttributeArgumentSyntaxInternal>(),
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+    public static AttributeArgumentListSyntax AttributeArgumentList(SeparatedSyntaxList<AttributeArgumentSyntax> arguments = default)
+    {
+        return AttributeArgumentList(Token(SyntaxKind.OpenParenToken), arguments, Token(SyntaxKind.CloseParenToken));
+    }
+
+    public static AttributeArgumentSyntax AttributeArgument(ExpressionSyntax expression)
+    {
+        return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
     }
 }
