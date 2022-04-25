@@ -653,4 +653,12 @@ public static partial class SyntaxFactory
             Token(SyntaxKind.CloseBraceToken)
         );
     }
+
+    public static SwitchSectionSyntax SwitchSection(SyntaxList<SwitchLabelSyntax> labels, SyntaxList<StatementSyntax> statements)
+    {
+        return (SwitchSectionSyntax)SyntaxFactoryInternal.SwitchSection(
+            labels.Node.ToGreenList<SwitchLabelSyntaxInternal>(),
+            statements.Node.ToGreenList<StatementSyntaxInternal>()
+        ).CreateRed();
+    }
 }

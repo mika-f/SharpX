@@ -68,6 +68,6 @@ internal class SwitchSectionSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new SwitchSectionSyntax(this, parent, position);
     }
 }
