@@ -55,8 +55,11 @@ internal class SwitchStatementSyntaxInternal : StatementSyntaxInternal
         AdjustWidth(openBraceToken);
         OpenBraceToken = openBraceToken;
 
-        AdjustWidth(sections);
-        _sections = sections;
+        if (sections != null)
+        {
+            AdjustWidth(sections);
+            _sections = sections;
+        }
 
         AdjustWidth(closeBraceToken);
         CloseBraceToken = closeBraceToken;
@@ -118,6 +121,6 @@ internal class SwitchStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new SwitchStatementSyntax(this, parent, position);
     }
 }

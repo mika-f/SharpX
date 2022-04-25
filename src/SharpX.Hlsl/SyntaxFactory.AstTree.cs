@@ -624,4 +624,33 @@ public static partial class SyntaxFactory
     {
         return ElseClause(Token(SyntaxKind.ElseKeyword), statement);
     }
+
+    public static SwitchStatementSyntax SwitchStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken switchKeyword, SyntaxToken openParenToken, ExpressionSyntax expression, SyntaxToken closeParenToken, SyntaxToken openBraceToken, SyntaxList<SwitchSectionSyntax> sections,
+                                                        SyntaxToken closeBraceToken)
+    {
+        return (SwitchStatementSyntax)SyntaxFactoryInternal.SwitchStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)switchKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (ExpressionSyntaxInternal)expression.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            sections.Node.ToGreenList<SwitchSectionSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static SwitchStatementSyntax SwitchStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax expression, SyntaxList<SwitchSectionSyntax> sections)
+    {
+        return SwitchStatement(
+            attributeLists,
+            Token(SyntaxKind.SwitchKeyword),
+            Token(SyntaxKind.OpenParenToken),
+            expression,
+            Token(SyntaxKind.CloseParenToken),
+            Token(SyntaxKind.OpenBraceToken),
+            sections,
+            Token(SyntaxKind.CloseBraceToken)
+        );
+    }
 }
