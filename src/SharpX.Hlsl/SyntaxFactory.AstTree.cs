@@ -558,4 +558,39 @@ public static partial class SyntaxFactory
     {
         return DoStatement(attributeLists, Token(SyntaxKind.DoKeyword), statement, Token(SyntaxKind.WhileKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), Token(SyntaxKind.SemicolonToken));
     }
+
+    public static ForStatementSyntax ForStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken forKeyword, SyntaxToken openParenToken, VariableDeclarationSyntax? declaration, SeparatedSyntaxList<ExpressionSyntax> initializers, SyntaxToken firstSemicolonToken,
+                                                  ExpressionSyntax? condition, SyntaxToken secondSemicolonToken, SeparatedSyntaxList<ExpressionSyntax> incrementoes, SyntaxToken closeParenToken, StatementSyntax statement)
+    {
+        return (ForStatementSyntax)SyntaxFactoryInternal.ForStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)forKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (VariableDeclarationSyntaxInternal?)declaration?.Green,
+            initializers.Node.ToGreenSeparatedList<ExpressionSyntaxInternal>(),
+            (SyntaxTokenInternal)firstSemicolonToken.Node!,
+            (ExpressionSyntaxInternal?)condition?.Green,
+            (SyntaxTokenInternal)secondSemicolonToken.Node!,
+            incrementoes.Node.ToGreenSeparatedList<ExpressionSyntaxInternal>(),
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (StatementSyntaxInternal)statement.Green
+        ).CreateRed();
+    }
+
+    public static ForStatementSyntax ForStatement(SyntaxList<AttributeListSyntax> attributeLists, VariableDeclarationSyntax? declaration, SeparatedSyntaxList<ExpressionSyntax> initializers, ExpressionSyntax? expression, SeparatedSyntaxList<ExpressionSyntax> incrementors, StatementSyntax statement)
+    {
+        return ForStatement(
+            attributeLists,
+            Token(SyntaxKind.ForKeyword),
+            Token(SyntaxKind.OpenParenToken),
+            declaration,
+            initializers,
+            Token(SyntaxKind.SemicolonToken),
+            expression,
+            Token(SyntaxKind.SemicolonToken),
+            incrementors,
+            Token(SyntaxKind.CloseParenToken),
+            statement
+        );
+    }
 }

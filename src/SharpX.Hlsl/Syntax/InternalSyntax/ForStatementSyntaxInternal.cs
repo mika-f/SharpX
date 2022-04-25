@@ -168,6 +168,6 @@ internal class ForStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ForStatementSyntax(this, parent, position);
     }
 }
