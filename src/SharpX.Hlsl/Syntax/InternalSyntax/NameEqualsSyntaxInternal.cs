@@ -52,6 +52,6 @@ internal class NameEqualsSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new NameEqualsSyntax(this, parent, position);
     }
 }

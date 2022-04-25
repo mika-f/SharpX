@@ -285,6 +285,7 @@ public static partial class SyntaxFactory
     {
         return IdentifierName(Identifier(name));
     }
+
     public static BlockSyntax Block(IEnumerable<StatementSyntax> statements)
     {
         return Block(List(statements));

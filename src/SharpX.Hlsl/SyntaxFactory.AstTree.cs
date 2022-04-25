@@ -702,4 +702,17 @@ public static partial class SyntaxFactory
     {
         return (AttributeArgumentSyntax)SyntaxFactoryInternal.AttributeArgument((ExpressionSyntaxInternal)expression.Green).CreateRed();
     }
+
+    public static NameEqualsSyntax NameEquals(IdentifierNameSyntax name, SyntaxToken equalsToken)
+    {
+        return (NameEqualsSyntax)SyntaxFactoryInternal.NameEquals(
+            (IdentifierNameSyntaxInternal)name.Green,
+            (SyntaxTokenInternal)equalsToken.Node!
+        ).CreateRed();
+    }
+
+    public static NameEqualsSyntax NameEquals(IdentifierNameSyntax name)
+    {
+        return NameEquals(name, Token(SyntaxKind.EqualsToken));
+    }
 }
