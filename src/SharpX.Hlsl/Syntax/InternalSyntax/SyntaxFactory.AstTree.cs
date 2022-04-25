@@ -635,14 +635,23 @@ internal static partial class SyntaxFactory
 
     public static TechniqueDeclarationSyntaxInternal TechniqueDeclaration(SyntaxTokenInternal techniqueKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, SyntaxListInternal<PassDeclarationSyntaxInternal> members, SyntaxTokenInternal closeBraceToken)
     {
-        if (techniqueKeyword.Kind != SyntaxKind.TechniqueKeyword)
-            throw new ArgumentException(nameof(techniqueKeyword));
         if (identifier.Kind != SyntaxKind.IdentifierToken)
             throw new ArgumentException(nameof(identifier));
         if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
             throw new ArgumentException(nameof(openBraceToken));
         if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
             throw new ArgumentException(nameof(closeBraceToken));
+
+        switch (techniqueKeyword.Kind)
+        {
+            case SyntaxKind.TechniqueKeyword:
+            case SyntaxKind.Technique10Keyword:
+            case SyntaxKind.Technique11Keyword:
+                break;
+
+            default:
+                throw new ArgumentException(nameof(techniqueKeyword));
+        }
 
         return new TechniqueDeclarationSyntaxInternal(SyntaxKind.TechniqueDeclaration, techniqueKeyword, identifier, openBraceToken, members.Node, closeBraceToken);
     }
