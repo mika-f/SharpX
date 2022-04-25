@@ -61,6 +61,6 @@ internal class CaseSwitchLabelSyntaxInternal : SwitchLabelSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new CaseSwitchLabelSyntax(this, parent, position);
     }
 }

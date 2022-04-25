@@ -661,4 +661,18 @@ public static partial class SyntaxFactory
             statements.Node.ToGreenList<StatementSyntaxInternal>()
         ).CreateRed();
     }
+
+    public static CaseSwitchLabelSyntax CaseSwitchLabel(SyntaxToken caseKeyword, ExpressionSyntax value, SyntaxToken colonToken)
+    {
+        return (CaseSwitchLabelSyntax)SyntaxFactoryInternal.CaseSwitchLabel(
+            (SyntaxTokenInternal)caseKeyword.Node!,
+            (ExpressionSyntaxInternal)value.Green,
+            (SyntaxTokenInternal)colonToken.Node!
+        ).CreateRed();
+    }
+
+    public static CaseSwitchLabelSyntax CaseSwitchLabel(ExpressionSyntax value)
+    {
+        return CaseSwitchLabel(Token(SyntaxKind.CaseKeyword), value, Token(SyntaxKind.ColonToken));
+    }
 }
