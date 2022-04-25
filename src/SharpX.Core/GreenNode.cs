@@ -183,7 +183,7 @@ public abstract class GreenNode
     {
         var sb = new StringBuilder();
         var writer = new StringWriter(sb, CultureInfo.InvariantCulture);
-        WriteTo(writer, true, true);
+        WriteTo(writer);
 
         return sb.ToString();
     }
@@ -198,12 +198,90 @@ public abstract class GreenNode
     }
 
 
-    public void WriteTo(TextWriter writer)
+    public void WriteTo(TextWriter writer, bool leading = true, bool trailing = true)
     {
-        WriteTo(writer, true, true);
+        static void ProcessStack(TextWriter writer, Stack<(GreenNode Node, bool Leading, bool Trailing)> stack)
+        {
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                var currentNode = current.Node;
+                var currentLeading = current.Leading;
+                var currentTrailing = current.Trailing;
+
+                if (currentNode.IsToken)
+                {
+                    currentNode.WriteTokenTo(writer, currentLeading, currentTrailing);
+                    continue;
+                }
+
+                if (currentNode.IsTrivia)
+                {
+                    currentNode.WriteTriviaTo(writer);
+                    continue;
+                }
+
+                var firstIndex = GetFirstNonNullChildIndex(currentNode);
+                var lastIndex = GetLastNonNullChildIndex(currentNode);
+
+                for (var i = lastIndex; i >= firstIndex; i--)
+                {
+                    var child = currentNode.GetSlot(i);
+                    if (child != null)
+                    {
+                        var first = i == firstIndex;
+                        var last = i == lastIndex;
+
+                        stack.Push((child, currentLeading | !first, currentTrailing | !last));
+                    }
+                }
+            }
+        }
+
+        var stack = new Stack<(GreenNode Node, bool Leading, bool Trailing)>();
+        stack.Push((this, leading, trailing));
+
+        ProcessStack(writer, stack);
     }
 
-    public void WriteTo(TextWriter writer, bool leading, bool trailing) { }
+    private static int GetFirstNonNullChildIndex(GreenNode node)
+    {
+        var n = node.SlotCount;
+        var firstIndex = 0;
+
+        for (; firstIndex < n; firstIndex++)
+        {
+            var child = node.GetSlot(firstIndex);
+            if (child != null)
+                break;
+        }
+
+        return firstIndex;
+    }
+
+    private static int GetLastNonNullChildIndex(GreenNode node)
+    {
+        var n = node.SlotCount;
+        var lastIndex = n - 1;
+
+        for (; lastIndex >= 0; lastIndex--)
+        {
+            var child = node.GetSlot(lastIndex);
+            if (child != null) break;
+        }
+
+        return lastIndex;
+    }
+
+    protected virtual void WriteTriviaTo(TextWriter writer)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected virtual void WriteTokenTo(TextWriter writer, bool leading, bool trailing)
+    {
+        throw new NotImplementedException();
+    }
 
     #endregion
 
