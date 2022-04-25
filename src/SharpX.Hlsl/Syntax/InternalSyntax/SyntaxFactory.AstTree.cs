@@ -647,7 +647,7 @@ internal static partial class SyntaxFactory
         return new TechniqueDeclarationSyntaxInternal(SyntaxKind.TechniqueDeclaration, techniqueKeyword, identifier, openBraceToken, members.Node, closeBraceToken);
     }
 
-    public static PassDeclarationSyntaxInternal PassDeclaration(SyntaxTokenInternal passKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, SyntaxListInternal<MemberDeclarationSyntaxInternal> members, SyntaxTokenInternal closeBraceToken)
+    public static PassDeclarationSyntaxInternal PassDeclaration(SyntaxTokenInternal passKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, SyntaxListInternal<StatementSyntaxInternal> members, SyntaxTokenInternal closeBraceToken)
     {
         if (passKeyword.Kind != SyntaxKind.PassKeyword)
             throw new ArgumentException(nameof(passKeyword));

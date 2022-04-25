@@ -8,21 +8,21 @@ using SharpX.Core.Syntax.InternalSyntax;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
-internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
+internal class PassDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 {
-    private readonly GreenNode? _members;
+    private readonly GreenNode? _statements;
 
-    public override SyntaxTokenInternal Keyword { get; }
+    public SyntaxTokenInternal Keyword { get; }
 
-    public override SyntaxTokenInternal Identifier { get; }
+    public SyntaxTokenInternal Identifier { get; }
 
-    public override SyntaxTokenInternal OpenBraceToken { get; }
+    public SyntaxTokenInternal OpenBraceToken { get; }
 
-    public override SyntaxListInternal<MemberDeclarationSyntaxInternal> Members => new(_members);
+    public SyntaxListInternal<StatementSyntaxInternal> Statements => new(_statements);
 
-    public override SyntaxTokenInternal CloseBraceToken { get; }
+    public SyntaxTokenInternal CloseBraceToken { get; }
 
-    public PassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, GreenNode? members, SyntaxTokenInternal closeBraceToken) : base(kind)
+    public PassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, GreenNode? statements, SyntaxTokenInternal closeBraceToken) : base(kind)
     {
         SlotCount = 5;
 
@@ -35,17 +35,17 @@ internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
         AdjustWidth(openBraceToken);
         OpenBraceToken = openBraceToken;
 
-        if (members != null)
+        if (statements != null)
         {
-            AdjustWidth(members);
-            _members = members;
+            AdjustWidth(statements);
+            _statements = statements;
         }
 
         AdjustWidth(closeBraceToken);
         CloseBraceToken = closeBraceToken;
     }
 
-    public PassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, GreenNode? members, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public PassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, GreenNode? statements, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 5;
 
@@ -58,10 +58,10 @@ internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
         AdjustWidth(openBraceToken);
         OpenBraceToken = openBraceToken;
 
-        if (members != null)
+        if (statements != null)
         {
-            AdjustWidth(members);
-            _members = members;
+            AdjustWidth(statements);
+            _statements = statements;
         }
 
         AdjustWidth(closeBraceToken);
@@ -70,7 +70,7 @@ internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PassDeclarationSyntaxInternal(Kind, Keyword, Identifier, OpenBraceToken, _members, CloseBraceToken, diagnostics);
+        return new PassDeclarationSyntaxInternal(Kind, Keyword, Identifier, OpenBraceToken, _statements, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)
@@ -80,7 +80,7 @@ internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
             0 => Keyword,
             1 => Identifier,
             2 => OpenBraceToken,
-            3 => _members,
+            3 => _statements,
             4 => CloseBraceToken,
             _ => null
         };
@@ -88,6 +88,6 @@ internal class PassDeclarationSyntaxInternal : TypeDeclarationSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new PassDeclarationSyntax(this, parent, position);
     }
 }

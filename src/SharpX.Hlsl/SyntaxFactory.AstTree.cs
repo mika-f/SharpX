@@ -771,4 +771,31 @@ public static partial class SyntaxFactory
     {
         return TechniqueDeclaration(Identifier(identifier), members);
     }
+
+    public static PassDeclarationSyntax PassDeclaration(SyntaxToken passKeyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<StatementSyntax> members, SyntaxToken closeBraceToken)
+    {
+        return (PassDeclarationSyntax)SyntaxFactoryInternal.PassDeclaration(
+            (SyntaxTokenInternal)passKeyword.Node!,
+            (SyntaxTokenInternal)identifier.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            members.Node.ToGreenList<StatementSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static PassDeclarationSyntax PassDeclaration(SyntaxToken identifier, SyntaxList<StatementSyntax> members)
+    {
+        return PassDeclaration(
+            Token(SyntaxKind.PassKeyword),
+            identifier,
+            Token(SyntaxKind.OpenBraceToken),
+            members,
+            Token(SyntaxKind.CloseBraceToken)
+        );
+    }
+
+    public static PassDeclarationSyntax PassDeclaration(string identifier, SyntaxList<StatementSyntax> members)
+    {
+        return PassDeclaration(Identifier(identifier), members);
+    }
 }
