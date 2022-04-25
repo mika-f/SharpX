@@ -5,6 +5,9 @@
 
 namespace SharpX.Core.Syntax.InternalSyntax;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.Syntax.InternalSyntax.SyntaxList" />
+/// </summary>
 public abstract partial class SyntaxListInternal : GreenNode
 {
     public override string Language => throw new InvalidOperationException();

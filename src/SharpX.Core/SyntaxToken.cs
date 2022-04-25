@@ -5,6 +5,9 @@
 
 namespace SharpX.Core;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.SyntaxToken" />
+/// </summary>
 public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 {
     public SyntaxToken(SyntaxNode? parent, GreenNode? token, int position, int index)

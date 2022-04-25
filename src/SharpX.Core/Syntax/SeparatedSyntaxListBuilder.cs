@@ -5,6 +5,10 @@
 
 namespace SharpX.Core.Syntax;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.Syntax.SeparatedSyntaxListBuilder{T}" />
+/// </summary>
+/// <typeparam name="TNode"></typeparam>
 public struct SeparatedSyntaxListBuilder<TNode> where TNode : SyntaxNode
 {
     private readonly SyntaxListBuilder _builder;

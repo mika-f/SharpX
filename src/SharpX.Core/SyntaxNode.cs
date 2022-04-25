@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace SharpX.Core;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.SyntaxNode" />
+/// </summary>
 [DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
 public abstract class SyntaxNode
 {

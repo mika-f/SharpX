@@ -5,6 +5,10 @@
 
 namespace SharpX.Core.Syntax.InternalSyntax;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.Syntax.InternalSyntax.SeparatedSyntaxList{T}" />
+/// </summary>
+/// <typeparam name="TNode"></typeparam>
 public readonly struct SeparatedSyntaxListInternal<TNode> where TNode : GreenNode
 {
     private readonly SyntaxListInternal<GreenNode> _list;

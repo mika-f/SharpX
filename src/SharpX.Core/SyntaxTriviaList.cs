@@ -7,6 +7,9 @@ using System.Collections;
 
 namespace SharpX.Core;
 
+/// <summary>
+///     represents <see cref="Microsoft.CodeAnalysis.SyntaxTriviaList" />
+/// </summary>
 public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
 {
     public static SyntaxTriviaList Empty => default;
