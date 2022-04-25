@@ -593,4 +593,22 @@ public static partial class SyntaxFactory
             statement
         );
     }
+
+    public static IfStatementSyntax IfStatement(SyntaxList<AttributeListSyntax> attributeLists, SyntaxToken ifKeyword, SyntaxToken openParenToken, ExpressionSyntax condition, SyntaxToken closeParenToken, StatementSyntax statement, ElseClauseSyntax? @else)
+    {
+        return (IfStatementSyntax)SyntaxFactoryInternal.IfStatement(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (SyntaxTokenInternal)ifKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (ExpressionSyntaxInternal)condition.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!,
+            (StatementSyntaxInternal)statement.Green,
+            (ElseClauseSyntaxInternal?)@else?.Green
+        ).CreateRed();
+    }
+
+    public static IfStatementSyntax IfStatement(SyntaxList<AttributeListSyntax> attributeLists, ExpressionSyntax condition, StatementSyntax statement, ElseClauseSyntax? @else = default)
+    {
+        return IfStatement(attributeLists, Token(SyntaxKind.IfKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), statement, @else);
+    }
 }

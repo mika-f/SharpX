@@ -114,6 +114,6 @@ internal class IfStatementSyntaxInternal : StatementSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new IfStatementSyntax(this, parent, position);
     }
 }
