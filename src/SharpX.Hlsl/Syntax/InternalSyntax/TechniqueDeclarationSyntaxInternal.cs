@@ -88,6 +88,6 @@ internal class TechniqueDeclarationSyntaxInternal : TypeDeclarationSyntaxInterna
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new TechniqueDeclarationSyntax(this, parent, position);
     }
 }
