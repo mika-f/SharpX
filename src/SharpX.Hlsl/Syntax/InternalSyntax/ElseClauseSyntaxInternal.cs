@@ -52,6 +52,6 @@ internal class ElseClauseSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ElseClauseSyntax(this, parent, position);
     }
 }

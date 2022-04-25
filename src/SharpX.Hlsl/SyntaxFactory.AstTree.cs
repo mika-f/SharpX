@@ -611,4 +611,17 @@ public static partial class SyntaxFactory
     {
         return IfStatement(attributeLists, Token(SyntaxKind.IfKeyword), Token(SyntaxKind.OpenParenToken), condition, Token(SyntaxKind.CloseParenToken), statement, @else);
     }
+
+    public static ElseClauseSyntax ElseClause(SyntaxToken elseKeyword, StatementSyntax statement)
+    {
+        return (ElseClauseSyntax)SyntaxFactoryInternal.ElseClause(
+            (SyntaxTokenInternal)elseKeyword.Node!,
+            (StatementSyntaxInternal)statement.Green
+        ).CreateRed();
+    }
+
+    public static ElseClauseSyntax ElseClause(StatementSyntax statement)
+    {
+        return ElseClause(Token(SyntaxKind.ElseKeyword), statement);
+    }
 }
