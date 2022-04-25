@@ -43,8 +43,13 @@ internal class SyntaxTriviaInternal : HlslSyntaxNodeInternal
         return _text;
     }
 
+    protected override void WriteTriviaTo(TextWriter writer)
+    {
+        writer.Write(_text);
+    }
+
     public static implicit operator SyntaxTrivia(SyntaxTriviaInternal trivia)
     {
-        return new(default, trivia, 0, 0);
+        return new SyntaxTrivia(default, trivia, 0, 0);
     }
 }

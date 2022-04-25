@@ -96,6 +96,23 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
         return trivia?.FullWidth ?? 0;
     }
 
+    protected override void WriteTokenTo(TextWriter writer, bool leading, bool trailing)
+    {
+        if (leading)
+        {
+            var trivia = GetLeadingTrivia();
+            trivia?.WriteTo(writer);
+        }
+
+        writer.Write(Text);
+
+        if (trailing)
+        {
+            var trivia = GetTrailingTrivia();
+            trivia?.WriteTo(writer);
+        }
+    }
+
 
     #region Factories
 
