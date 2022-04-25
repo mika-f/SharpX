@@ -675,4 +675,17 @@ public static partial class SyntaxFactory
     {
         return CaseSwitchLabel(Token(SyntaxKind.CaseKeyword), value, Token(SyntaxKind.ColonToken));
     }
+
+    public static DefaultSwitchLabelSyntax DefaultSwitchLabel(SyntaxToken defaultKeyword, SyntaxToken colonToken)
+    {
+        return (DefaultSwitchLabelSyntax)SyntaxFactoryInternal.DefaultSwitchLabel(
+            (SyntaxTokenInternal)defaultKeyword.Node!,
+            (SyntaxTokenInternal)colonToken.Node!
+        ).CreateRed();
+    }
+
+    public static DefaultSwitchLabelSyntax DefaultSwitchLabel()
+    {
+        return DefaultSwitchLabel(Token(SyntaxKind.DefaultKeyword), Token(SyntaxKind.ColonToken));
+    }
 }

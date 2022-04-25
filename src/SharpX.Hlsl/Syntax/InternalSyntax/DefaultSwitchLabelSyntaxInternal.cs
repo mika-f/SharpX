@@ -52,6 +52,6 @@ internal class DefaultSwitchLabelSyntaxInternal : SwitchLabelSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new DefaultSwitchLabelSyntax(this, parent, position);
     }
 }
