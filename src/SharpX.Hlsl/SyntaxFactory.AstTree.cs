@@ -838,4 +838,16 @@ public static partial class SyntaxFactory
     {
         return Semantics(IdentifierName(identifier));
     }
+
+    public static ParameterSyntax Parameter(SyntaxList<AttributeListSyntax> attributeLists, SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax? @default = default, SemanticSyntax? semantics = default)
+    {
+        return (ParameterSyntax)SyntaxFactoryInternal.Parameter(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            modifiers.Node.ToGreenList<SyntaxTokenInternal>(),
+            (TypeSyntaxInternal)type.Green,
+            (SyntaxTokenInternal)identifier.Node!,
+            (EqualsValueClauseSyntaxInternal?)@default?.Green,
+            (SemanticSyntaxInternal?)semantics?.Green
+        ).CreateRed();
+    }
 }
