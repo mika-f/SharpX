@@ -70,6 +70,6 @@ internal class ParameterListSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new ParameterListSyntax(this, parent, position);
     }
 }

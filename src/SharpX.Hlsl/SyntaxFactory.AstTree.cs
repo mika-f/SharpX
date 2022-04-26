@@ -839,6 +839,25 @@ public static partial class SyntaxFactory
         return Semantics(IdentifierName(identifier));
     }
 
+    public static ParameterListSyntax ParameterList(SyntaxToken openParenToken, SeparatedSyntaxList<ParameterSyntax> parameters, SyntaxToken closeParenToken)
+    {
+        return (ParameterListSyntax)SyntaxFactoryInternal.ParameterList(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            parameters.Node.ToGreenSeparatedList<ParameterSyntaxInternal>(),
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+    public static ParameterListSyntax ParameterList(SeparatedSyntaxList<ParameterSyntax> parameters)
+    {
+        return ParameterList(Token(SyntaxKind.OpenParenToken), parameters, Token(SyntaxKind.CloseParenToken));
+    }
+
+    public static ParameterListSyntax ParameterList(params ParameterSyntax[] parameters)
+    {
+        return ParameterList(SeparatedList(parameters.ToList()));
+    }
+
     public static ParameterSyntax Parameter(SyntaxList<AttributeListSyntax> attributeLists, SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax? @default = default, SemanticSyntax? semantics = default)
     {
         return (ParameterSyntax)SyntaxFactoryInternal.Parameter(
