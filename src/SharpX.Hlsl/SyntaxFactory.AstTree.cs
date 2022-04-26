@@ -798,4 +798,22 @@ public static partial class SyntaxFactory
     {
         return PassDeclaration(Identifier(identifier), members);
     }
+
+    public static SemanticSyntax Semantics(SyntaxToken colonToken, IdentifierNameSyntax identifier)
+    {
+        return (SemanticSyntax)SyntaxFactoryInternal.Semantics(
+            (SyntaxTokenInternal)colonToken.Node!,
+            (IdentifierNameSyntaxInternal)identifier.Green
+        ).CreateRed();
+    }
+
+    public static SemanticSyntax Semantics(IdentifierNameSyntax identifier)
+    {
+        return Semantics(Token(SyntaxKind.ColonToken), identifier);
+    }
+
+    public static SemanticSyntax Semantics(string identifier)
+    {
+        return Semantics(IdentifierName(identifier));
+    }
 }

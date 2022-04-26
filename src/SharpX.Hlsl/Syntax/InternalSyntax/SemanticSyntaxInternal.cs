@@ -52,6 +52,6 @@ internal class SemanticSyntaxInternal : HlslSyntaxNodeInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new SemanticSyntax(this, parent, position);
     }
 }

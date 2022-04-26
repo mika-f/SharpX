@@ -742,6 +742,8 @@ public enum SyntaxKind
 
     MethodDeclaration,
 
+    Semantics,
+
     ParameterList,
 
     Parameter,

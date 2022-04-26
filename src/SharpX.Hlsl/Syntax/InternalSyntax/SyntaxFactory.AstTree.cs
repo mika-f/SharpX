@@ -688,6 +688,14 @@ internal static partial class SyntaxFactory
         return new MethodDeclarationSyntaxInternal(SyntaxKind.MethodDeclaration, attributeLists.Node, returnType, identifier, parameterList, semantics, body);
     }
 
+    public static SemanticSyntaxInternal Semantics(SyntaxTokenInternal colonToken, IdentifierNameSyntaxInternal identifier)
+    {
+        if (identifier.Kind != SyntaxKind.IdentifierName)
+            throw new ArgumentException(nameof(identifier));
+
+        return new SemanticSyntaxInternal(SyntaxKind.Semantics, colonToken, identifier);
+    }
+
     public static ParameterListSyntaxInternal ParameterList(SyntaxTokenInternal openParenToken, SeparatedSyntaxListInternal<ParameterSyntaxInternal> parameters, SyntaxTokenInternal closeParenToken)
     {
         if (openParenToken.Kind != SyntaxKind.OpenParenToken)
