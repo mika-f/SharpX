@@ -799,6 +799,28 @@ public static partial class SyntaxFactory
         return PassDeclaration(Identifier(identifier), members);
     }
 
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, SemanticSyntax? semantic, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
+    {
+        return (FieldDeclarationSyntax)SyntaxFactoryInternal.FieldDeclaration(
+            (TypeSyntaxInternal)type.Green,
+            (SyntaxTokenInternal)identifier.Node!,
+            (BracketedArgumentListSyntaxInternal?)arguments?.Green,
+            (SemanticSyntaxInternal?)semantic?.Green,
+            (EqualsValueClauseSyntaxInternal?)initializer?.Green,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
+    {
+        return FieldDeclaration(type, identifier, arguments, semantic, initializer, Token(SyntaxKind.SemicolonToken));
+    }
+
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, string identifier, BracketedArgumentListSyntax? arguments = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
+    {
+        return FieldDeclaration(type, Identifier(identifier), arguments, semantic, initializer);
+    }
+
     public static SemanticSyntax Semantics(SyntaxToken colonToken, IdentifierNameSyntax identifier)
     {
         return (SemanticSyntax)SyntaxFactoryInternal.Semantics(

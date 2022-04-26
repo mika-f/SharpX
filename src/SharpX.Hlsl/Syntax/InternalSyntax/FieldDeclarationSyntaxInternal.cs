@@ -107,6 +107,6 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new FieldDeclarationSyntax(this, parent, position);
     }
 }
