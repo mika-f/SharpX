@@ -104,6 +104,6 @@ internal class MethodDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new MethodDeclarationSyntax(this, parent, position);
     }
 }

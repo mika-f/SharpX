@@ -821,6 +821,18 @@ public static partial class SyntaxFactory
         return FieldDeclaration(type, Identifier(identifier), arguments, semantic, initializer);
     }
 
+    public static MethodDeclarationSyntax MethodDeclaration(SyntaxList<AttributeListSyntax> attributeLists, TypeSyntax returnType, SyntaxToken identifier, ParameterListSyntax parameters, SemanticSyntax? semantics, BlockSyntax body)
+    {
+        return (MethodDeclarationSyntax)SyntaxFactoryInternal.MethodDeclaration(
+            attributeLists.Node.ToGreenList<AttributeListSyntaxInternal>(),
+            (TypeSyntaxInternal)returnType.Green,
+            (SyntaxTokenInternal)identifier.Node!,
+            (ParameterListSyntaxInternal)parameters.Green,
+            (SemanticSyntaxInternal?)semantics?.Green,
+            (BlockSyntaxInternal)body.Green
+        ).CreateRed();
+    }
+
     public static SemanticSyntax Semantics(SyntaxToken colonToken, IdentifierNameSyntax identifier)
     {
         return (SemanticSyntax)SyntaxFactoryInternal.Semantics(
