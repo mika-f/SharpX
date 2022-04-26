@@ -91,8 +91,11 @@ internal class SwitchStatementSyntaxInternal : StatementSyntaxInternal
         AdjustWidth(openBraceToken);
         OpenBraceToken = openBraceToken;
 
-        AdjustWidth(sections);
-        _sections = sections;
+        if (sections != null)
+        {
+            AdjustWidth(sections);
+            _sections = sections;
+        }
 
         AdjustWidth(closeBraceToken);
         CloseBraceToken = closeBraceToken;
