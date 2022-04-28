@@ -9,6 +9,10 @@ namespace SharpX.CLI.Models;
 
 public class SharpXConfig
 {
+    [JsonPropertyName("compilerOptions")]
+    public CompilerOptions CompilerOptions { get; set; }
+
+
     [JsonPropertyName("files")]
     public List<string> Files { get; set; }
 
@@ -20,4 +24,18 @@ public class SharpXConfig
 
     [JsonPropertyName("plugins")]
     public List<string> Plugins { get; set; }
+
+    public static SharpXConfig Default => new()
+    {
+        CompilerOptions = new CompilerOptions
+        {
+            Libraries = new List<string>(),
+            OutDir = "./out/",
+            Target = "none"
+        },
+        Files = new List<string>(),
+        Includes = new List<string> { "./src/**/*.cs" },
+        Excludes = new List<string>(),
+        Plugins = new List<string>()
+    };
 }
