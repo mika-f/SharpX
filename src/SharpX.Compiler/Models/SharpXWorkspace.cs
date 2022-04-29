@@ -19,6 +19,8 @@ internal class SharpXWorkspace
 
     public ProjectId ProjectId { get; }
 
+    public Project Project => Solution.GetProject(ProjectId)!;
+
     public Solution Solution { get; }
 
     private SharpXWorkspace(Workspace workspace, ProjectId projectId, Solution solution)
@@ -58,7 +60,7 @@ internal class SharpXWorkspace
 
     public SharpXWorkspace AddMetadataReferences(params MetadataReference[] references)
     {
-        var refs = Solution.GetProject(ProjectId)!.MetadataReferences;
+        var refs = Project.MetadataReferences;
         return WithMetadataReferences(refs.Concat(references));
     }
 
@@ -80,9 +82,14 @@ internal class SharpXWorkspace
         return WithSolution(Solution.AddDocuments(documents.ToImmutableArray()));
     }
 
-    public ImmutableArray<DocumentId> GetAllDocuments()
+    public ImmutableArray<DocumentId> GetAllDocumentIds()
     {
-        return Solution.GetProject(ProjectId)!.Documents.Select(w => w.Id).ToImmutableArray();
+        return GetAllDocuments().Select(w => w.Id).ToImmutableArray();
+    }
+
+    public ImmutableArray<Document> GetAllDocuments()
+    {
+        return Project.Documents.ToImmutableArray();
     }
 
     public SharpXWorkspace RemoveDocuments(IEnumerable<DocumentId> ids)
@@ -92,7 +99,7 @@ internal class SharpXWorkspace
 
     public DocumentId? GetDocumentIdFromPath(string path)
     {
-        var document = Solution.GetProject(ProjectId)?.Documents.FirstOrDefault(w => w.FilePath == path);
+        var document = Project.Documents.FirstOrDefault(w => w.FilePath == path);
         return document?.Id;
     }
 
