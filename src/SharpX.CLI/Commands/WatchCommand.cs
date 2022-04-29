@@ -104,6 +104,8 @@ internal class WatchCommand : CompileCommand
     {
         try
         {
+            Task.Delay(TimeSpan.FromMilliseconds(250), ct).Wait(ct);
+
             var sw = new Stopwatch();
             sw.Start();
 
