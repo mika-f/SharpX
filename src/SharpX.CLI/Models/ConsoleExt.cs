@@ -31,7 +31,7 @@ public static class ConsoleExt
 
     public static void WriteWarning(string message)
     {
-        Console.WriteLine(Chalk.BgBrightYellow + "[warning]".PadRight(MaxLabelLength) + Chalk.White + " " + message);
+        Console.WriteLine(Chalk.BrightYellow + "[warning]".PadRight(MaxLabelLength) + Chalk.White + " " + message);
     }
 
     public static void WriteError(string message)
