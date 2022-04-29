@@ -25,7 +25,7 @@ internal class WatchCommand : CompileCommand
         ConsoleExt.WriteInfo("start initial compilation...");
 
         var source = new CancellationTokenSource();
-        var compiler = new CSharpCompiler(ToCompilerOptions());
+        var compiler = new CSharpCompiler(ToCompilerOptions(FromConfigJson()));
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
             ConsoleExt.WriteError("failed to load plugins");

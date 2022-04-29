@@ -5,11 +5,13 @@
 
 using System.Diagnostics;
 using System.Reflection;
+using System.Text.Json;
 
 using Kokuban;
 
 using Microsoft.CodeAnalysis;
 
+using SharpX.CLI.Attributes;
 using SharpX.CLI.Extensions;
 using SharpX.CLI.Models;
 using SharpX.Compiler;
@@ -19,12 +21,17 @@ namespace SharpX.CLI.Commands;
 
 internal class CompileCommand
 {
+    private const string DefaultConfig = "sharpx.config.json";
+
+    [Option(IsRequired = false, Order = 0)]
+    public string Project { get; set; }
+
     public async Task<int> RunAsync()
     {
         ConsoleExt.WriteInfo(Chalk.Bold + $"sharpx compile - v{Assembly.GetExecutingAssembly().GetName().Version}");
 
         var source = new CancellationTokenSource();
-        var compiler = new CSharpCompiler(ToCompilerOptions());
+        var compiler = new CSharpCompiler(ToCompilerOptions(FromConfigJson()));
 
         Console.CancelKeyPress += (_, _) => source.Cancel();
 
@@ -83,8 +90,27 @@ internal class CompileCommand
         }
     }
 
-    protected CSharpCompilerOptions ToCompilerOptions()
+    protected SharpXConfig? FromConfigJson()
     {
-        return CSharpCompilerOptions.Default;
+        if (string.IsNullOrWhiteSpace(Project) && File.Exists(DefaultConfig))
+        {
+            var sr = new StreamReader(DefaultConfig);
+            return JsonSerializer.Deserialize<SharpXConfig>(sr.ReadToEnd());
+        }
+
+        if (File.Exists(Project))
+        {
+            var sr = new StreamReader(DefaultConfig);
+            return JsonSerializer.Deserialize<SharpXConfig>(sr.ReadToEnd());
+        }
+
+        return null;
+    }
+
+    protected CSharpCompilerOptions ToCompilerOptions(SharpXConfig? config)
+    {
+        if (config == null)
+            return CSharpCompilerOptions.Default;
+        return new CSharpCompilerOptions(null, config.Includes, config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
     }
 }

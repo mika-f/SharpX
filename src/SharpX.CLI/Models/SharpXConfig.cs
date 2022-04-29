@@ -34,7 +34,7 @@ public class SharpXConfig
             Target = "none"
         },
         Files = new List<string>(),
-        Includes = new List<string> { "./src/**/*.cs" },
+        Includes = new List<string> { "./src/" },
         Excludes = new List<string>(),
         Plugins = new List<string>()
     };
