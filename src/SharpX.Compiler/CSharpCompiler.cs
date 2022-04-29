@@ -103,6 +103,8 @@ public class CSharpCompiler : IDisposable
 
     public async Task<bool> CompileAsync(CancellationToken ct)
     {
+        _errors.Clear();
+
         if (_workspace == null)
         {
             _workspace = SharpXWorkspace.Create();
