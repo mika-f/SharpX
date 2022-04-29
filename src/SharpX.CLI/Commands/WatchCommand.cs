@@ -25,7 +25,8 @@ internal class WatchCommand : CompileCommand
         ConsoleExt.WriteInfo("start initial compilation...");
 
         var source = new CancellationTokenSource();
-        var compiler = new CSharpCompiler(ToCompilerOptions(FromConfigJson()));
+        var options = ToCompilerOptions(FromConfigJson());
+        var compiler = new CSharpCompiler(options);
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
             ConsoleExt.WriteError("failed to load plugins");
@@ -50,14 +51,12 @@ internal class WatchCommand : CompileCommand
 
         try
         {
-            var watcher = new FileSystemWatcher
+            var disposables = new CompositeDisposable();
+            if (options.Sources == null)
             {
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = "*",
-                IncludeSubdirectories = true,
-                EnableRaisingEvents = true
-            };
-
+                ConsoleExt.WriteError("failed to start watching filesystem - sources is empty");
+                return ExitCodes.Failure;
+            }
 
             var handler = CreateThrottleEventHandler(TimeSpan.FromSeconds(1), (_, _) =>
             {
@@ -65,21 +64,31 @@ internal class WatchCommand : CompileCommand
                 RecompileAsync(compiler, source.Token);
             });
 
-            watcher.Created += handler;
-            watcher.Changed += handler;
-            watcher.Deleted += handler;
+
+            foreach (var item in options.Sources)
+            {
+                var watcher = new FileSystemWatcher(item)
+                {
+                    NotifyFilter = NotifyFilters.LastWrite,
+                    Filter = "*",
+                    IncludeSubdirectories = true,
+                    EnableRaisingEvents = true
+                };
+
+                watcher.Created += handler;
+                watcher.Changed += handler;
+                watcher.Deleted += handler;
+
+                disposables.Add(watcher);
+            }
 
             Console.CancelKeyPress += (_, _) => source.Cancel();
 
             while (!source.IsCancellationRequested)
                 Console.ReadKey(true);
 
+            disposables.Dispose();
             compiler.Dispose();
-
-            watcher.Created -= handler;
-            watcher.Changed -= handler;
-            watcher.Deleted -= handler;
-            watcher.Dispose();
 
             return ExitCodes.Success;
         }
@@ -110,7 +119,7 @@ internal class WatchCommand : CompileCommand
         catch (Exception e)
         {
             if (Debugger.IsAttached)
-                Debug.WriteLine(e);
+                Debugger.Break();
 
             ConsoleExt.WriteDebug(e.StackTrace!);
             ConsoleExt.WriteError($"compile failure with exception: {e.Message}");
