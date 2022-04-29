@@ -19,6 +19,11 @@ internal class BackendRegistry : IBackendRegistry
         _containers = new List<BackendContainer>();
     }
 
+    public BackendContainer? GetLanguageContainer(string language)
+    {
+        return _containers.FirstOrDefault(w => w.Language == language);
+    }
+
     public void RegisterBackendVisitor(string language, Type visitor, uint priority)
     {
         if (!IsAssignableToGenericType(visitor, typeof(CSharpSyntaxVisitor<>), typeof(SyntaxNode)))

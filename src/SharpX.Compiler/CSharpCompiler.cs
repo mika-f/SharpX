@@ -117,7 +117,8 @@ public class CSharpCompiler : IDisposable
         if (!isSuccessful)
             return false;
 
-        return true;
+        isSuccessful &= await CompileCSharpSources(ct);
+        return isSuccessful;
     }
 
     private SharpXWorkspace EnumerableSources()
@@ -153,6 +154,19 @@ public class CSharpCompiler : IDisposable
 
         _errors.AddRange(diagnostics.Select(w => w.ToErrorMessage()));
         return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
+    }
+
+    private async Task<bool> CompileCSharpSources(CancellationToken ct)
+    {
+        var workspace = _workspace!;
+        var container = _registry?.GetLanguageContainer(_options.Target);
+        if (container == null)
+        {
+            _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"could not find target runtime: {_options.Target}"));
+            return true;
+        }
+
+        return true;
     }
 
     private static IEnumerable<string> ScanSourceDirectory(List<string>? sources)
