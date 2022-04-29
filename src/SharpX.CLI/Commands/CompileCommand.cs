@@ -76,7 +76,7 @@ internal class CompileCommand
             }
 
             ConsoleExt.WriteError($"compile failure in {sw.ElapsedMilliseconds.ToReadableString()} with {compiler.Errors.Count(w => w.Severity == DiagnosticSeverity.Error)} errors");
-            return ExitCodes.Success;
+            return ExitCodes.Failure;
         }
         catch (Exception e)
         {
@@ -111,6 +111,6 @@ internal class CompileCommand
     {
         if (config == null)
             return CSharpCompilerOptions.Default;
-        return new CSharpCompilerOptions(null, config.Includes, config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
+        return new CSharpCompilerOptions(config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
     }
 }

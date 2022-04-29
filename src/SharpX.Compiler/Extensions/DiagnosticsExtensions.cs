@@ -3,18 +3,16 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
+using SharpX.Compiler.Models;
+
 namespace SharpX.Compiler.Extensions;
 
-// ReSharper disable once InconsistentNaming
-internal static class IEnumerableExtensions
+internal static class DiagnosticsExtensions
 {
-    public static IEnumerable<T> NonNullable<T>(this IEnumerable<T?> obj)
+    public static RoslynDiagnostic ToErrorMessage(this Diagnostic diagnostic)
     {
-        return obj.Where(w => w != null).Select(w => w!);
-    }
-
-    public static bool None<T>(this IEnumerable<T> obj)
-    {
-        return !obj.Any();
+        return new RoslynDiagnostic(diagnostic);
     }
 }

@@ -47,11 +47,6 @@ public class CSharpCompiler : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public CSharpCompiler WithSource(string? source)
-    {
-        return new CSharpCompiler(_options with { Source = source }, _workspace, _host, _registry);
-    }
-
     public CSharpCompiler WithSources(List<string>? sources)
     {
         return new CSharpCompiler(_options with { Sources = sources }, _workspace, _host, _registry);
@@ -116,12 +111,16 @@ public class CSharpCompiler : IDisposable
 
         _workspace = EnumerableSources();
 
+        var isSuccessful = await PrecompileCSharpSources(ct);
+        if (!isSuccessful)
+            return false;
+
         return true;
     }
 
     private SharpXWorkspace EnumerableSources()
     {
-        var items = ScanSources(_options.Sources).Concat(ScanSourceDirectory(_options.Source)).ToImmutableArray();
+        var items = ScanSourceDirectory(_options.Sources).ToImmutableArray();
         var workspace = _workspace!;
 
         foreach (var item in items)
@@ -130,26 +129,54 @@ public class CSharpCompiler : IDisposable
             workspace = documentId == null ? workspace.AddDocuments(item) : workspace.WithDocumentText(documentId, item);
         }
 
-        var removed = workspace.GetAllDocuments()
+        var removed = workspace.GetAllDocumentIds()
                                .Except(items.Select(w => workspace.GetDocumentIdFromPath(w)))
                                .NonNullable();
 
         return workspace.RemoveDocuments(removed);
     }
 
-    private static IEnumerable<string> ScanSourceDirectory(string? source)
+    private async Task<bool> PrecompileCSharpSources(CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(source))
-            return Array.Empty<string>();
+        var workspace = _workspace!;
+        var diagnostics = await workspace.GetAllDocuments()
+                                         .ToAsyncEnumerable()
+                                         .SelectAwait(async w => await w.GetSyntaxTreeAsync(ct))
+                                         .NonNullable()
+                                         .SelectMany(w => w.GetDiagnostics(ct).ToAsyncEnumerable())
+                                         .ToListAsync(ct);
 
-        if (!Directory.Exists(source))
-            return Array.Empty<string>();
+        if (diagnostics.None())
+            return true;
 
-        return Directory.GetFiles(source, "*.cs", SearchOption.AllDirectories);
+        _errors.AddRange(diagnostics.Select(w => w.ToErrorMessage()));
+        return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
     }
 
-    private static IEnumerable<string> ScanSources(List<string>? sources)
+    private static IEnumerable<string> ScanSourceDirectory(List<string>? sources)
     {
-        return sources == null ? Array.Empty<string>() : sources.Where(File.Exists).ToArray();
+        var items = new List<string>();
+
+        if (sources == null)
+            return items;
+
+        foreach (var source in sources)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                continue;
+
+            if (File.Exists(source))
+            {
+                items.Add(source);
+                continue;
+            }
+
+            if (!Directory.Exists(source))
+                continue;
+
+            items.AddRange(Directory.GetFileSystemEntries(source, "*.cs", SearchOption.AllDirectories));
+        }
+
+        return items;
     }
 }

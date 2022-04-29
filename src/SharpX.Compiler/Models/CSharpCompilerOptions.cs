@@ -5,11 +5,10 @@
 
 namespace SharpX.Compiler.Models;
 
-public record CSharpCompilerOptions(string? Source, List<string>? Sources, string Output, string Target, List<string> Libraries, List<string> Plugins)
+public record CSharpCompilerOptions(List<string>? Sources, string Output, string Target, List<string> Libraries, List<string> Plugins)
 {
     public static CSharpCompilerOptions Default => new(
-        "./",
-        null,
+        new List<string> { "./src/" },
         "./out/",
         "none",
         new List<string>(),

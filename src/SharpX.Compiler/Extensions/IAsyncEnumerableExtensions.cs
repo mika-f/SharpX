@@ -6,15 +6,10 @@
 namespace SharpX.Compiler.Extensions;
 
 // ReSharper disable once InconsistentNaming
-internal static class IEnumerableExtensions
+public static class IAsyncEnumerableExtensions
 {
-    public static IEnumerable<T> NonNullable<T>(this IEnumerable<T?> obj)
+    public static IAsyncEnumerable<T> NonNullable<T>(this IAsyncEnumerable<T?> obj)
     {
         return obj.Where(w => w != null).Select(w => w!);
-    }
-
-    public static bool None<T>(this IEnumerable<T> obj)
-    {
-        return !obj.Any();
     }
 }
