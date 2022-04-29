@@ -49,7 +49,9 @@ internal class SharpXWorkspace
 
     public SharpXWorkspace WithDocumentText(DocumentId id, string path)
     {
-        var source = SourceText.From(File.ReadAllText(path), Encoding.UTF8);
+        using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+        using var sr = new StreamReader(fs);
+        var source = SourceText.From(sr.ReadToEnd(), Encoding.UTF8);
         return WithSolution(Solution.WithDocumentText(id, source));
     }
 
@@ -71,7 +73,9 @@ internal class SharpXWorkspace
         foreach (var path in paths)
         {
             var documentId = DocumentId.CreateNewId(ProjectId, path);
-            var source = SourceText.From(File.ReadAllText(path), Encoding.UTF8);
+            using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            using var sr = new StreamReader(fs);
+            var source = SourceText.From(sr.ReadToEnd(), Encoding.UTF8);
             var version = VersionStamp.Create();
             var textAndVersion = TextAndVersion.Create(source, version);
             var loader = TextLoader.From(textAndVersion);
