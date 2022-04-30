@@ -16,6 +16,6 @@ public class PluginEntryPoint : IBackend
     public void EntryPoint(IBackendRegistry registry)
     {
         Debug.WriteLine("");
-        registry.RegisterBackendVisitor("HLSL", typeof(NodeVisitor), 0);
+        registry.RegisterBackendVisitor("HLSL", typeof(NodeVisitor), typeof(HlslSyntaxNode), 0);
     }
 }

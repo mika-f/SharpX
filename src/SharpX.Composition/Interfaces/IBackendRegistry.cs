@@ -7,5 +7,5 @@ namespace SharpX.Composition.Interfaces;
 
 public interface IBackendRegistry
 {
-    void RegisterBackendVisitor(string language, Type visitor, uint priority);
+    void RegisterBackendVisitor(string language, Type visitor, Type @return, uint priority);
 }

@@ -19,28 +19,34 @@ internal class BackendRegistry : IBackendRegistry
         _containers = new List<BackendContainer>();
     }
 
-    public BackendContainer? GetLanguageContainer(string language)
-    {
-        return _containers.FirstOrDefault(w => w.Language == language);
-    }
-
-    public void RegisterBackendVisitor(string language, Type visitor, uint priority)
+    public void RegisterBackendVisitor(string language, Type visitor, Type @return, uint priority)
     {
         if (!IsAssignableToGenericType(visitor, typeof(CSharpSyntaxVisitor<>), typeof(SyntaxNode)))
             throw new ArgumentException("visitor must be inherit from CSharpSyntaxVisitor<T> and T is must be inherit from SharpX.Core.SyntaxNode", nameof(visitor));
 
+        if (!@return.IsAssignableTo(typeof(SyntaxNode)))
+            throw new ArgumentException("return must be inherit from SharpX.Core.SyntaxNode", nameof(@return));
+
         if (_containers.Any(w => w.Language == language))
         {
             var container = _containers.First(w => w.Language == language);
+            if (container.ReturnType != @return)
+                throw new ArgumentException("the return type must be same across language backend implementations", nameof(@return));
+
             container.Register(priority, visitor);
         }
         else
         {
-            var container = new BackendContainer(language);
+            var container = new BackendContainer(language, @return);
             container.Register(priority, visitor);
 
             _containers.Add(container);
         }
+    }
+
+    public BackendContainer? GetLanguageContainer(string language)
+    {
+        return _containers.FirstOrDefault(w => string.Equals(w.Language, language, StringComparison.InvariantCultureIgnoreCase));
     }
 
     private static bool IsAssignableToGenericType(Type given, Type generics, params Type[] constraints)

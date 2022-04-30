@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using SharpX.Composition.Interfaces;
+
 using MemberDeclarationSyntax = SharpX.Hlsl.Syntax.MemberDeclarationSyntax;
 
 namespace SharpX.Hlsl.CSharp;
@@ -15,9 +17,9 @@ internal class NodeVisitor : CSharpSyntaxVisitor<HlslSyntaxNode>
 {
     private readonly SemanticModel _semanticModel;
 
-    public NodeVisitor(SemanticModel semanticModel)
+    public NodeVisitor(IBackendVisitorArgs args)
     {
-        _semanticModel = semanticModel;
+        _semanticModel = args.SemanticModel;
     }
 
     public override HlslSyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
