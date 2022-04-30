@@ -23,8 +23,8 @@ public class CSharpCompiler : IDisposable
     private readonly List<IErrorMessage> _errors;
     private readonly CSharpCompilerOptions _options;
     private SharpXPluginHost? _host;
-    private SharpXWorkspace? _workspace;
     private BackendRegistry? _registry;
+    private SharpXWorkspace? _workspace;
 
     public IReadOnlyCollection<IErrorMessage> Errors => _errors.AsReadOnly();
 
@@ -40,7 +40,6 @@ public class CSharpCompiler : IDisposable
     public CSharpCompiler() : this(CSharpCompilerOptions.Default) { }
 
     public CSharpCompiler(CSharpCompilerOptions options) : this(options, null) { }
-
 
     public void Dispose()
     {
@@ -87,7 +86,7 @@ public class CSharpCompiler : IDisposable
         catch (Exception e)
         {
             if (Debugger.IsAttached)
-                Debug.WriteLine(e.Message);
+                Debugger.Break();
 
             return false;
         }
@@ -113,11 +112,11 @@ public class CSharpCompiler : IDisposable
 
         _workspace = EnumerableSources();
 
-        var isSuccessful = await PrecompileCSharpSources(ct);
+        var isSuccessful = await PrecompileCSharpSourcesAsync(ct);
         if (!isSuccessful)
             return false;
 
-        isSuccessful &= await CompileCSharpSources(ct);
+        isSuccessful &= await CompileCSharpSourcesAsync(ct);
         return isSuccessful;
     }
 
@@ -139,7 +138,7 @@ public class CSharpCompiler : IDisposable
         return workspace.RemoveDocuments(removed);
     }
 
-    private async Task<bool> PrecompileCSharpSources(CancellationToken ct)
+    private async Task<bool> PrecompileCSharpSourcesAsync(CancellationToken ct)
     {
         var workspace = _workspace!;
         var diagnostics = await workspace.GetAllDocuments()
@@ -156,7 +155,7 @@ public class CSharpCompiler : IDisposable
         return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
     }
 
-    private async Task<bool> CompileCSharpSources(CancellationToken ct)
+    private async Task<bool> CompileCSharpSourcesAsync(CancellationToken ct)
     {
         var workspace = _workspace!;
         var container = _registry?.GetLanguageContainer(_options.Target);
@@ -165,6 +164,37 @@ public class CSharpCompiler : IDisposable
             _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"could not find target runtime: {_options.Target}"));
             return true;
         }
+
+        var lockObj = new object();
+
+        await Parallel.ForEachAsync(workspace.GetAllDocuments(), ct, async (w, c) =>
+        {
+            var syntax = await w.GetSyntaxRootAsync(c);
+            var model = await w.GetSemanticModelAsync(c);
+
+            if (syntax == null || model == null)
+                lock (lockObj)
+                {
+                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Error, $"failed to get SemanticModel and/or SyntaxRoot for compiling - {w.FilePath}"));
+                    return;
+                }
+
+            var args = new BackendVisitorArgs { SemanticModel = model };
+            var source = container.RunAsync(syntax, args);
+
+            lock (lockObj)
+            {
+                if (source == null)
+                {
+                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, "root visitor returns null"));
+                }
+                else
+                {
+                    var str = source.ToFullString();
+                    Debug.WriteLine(str);
+                }
+            }
+        });
 
         return true;
     }
