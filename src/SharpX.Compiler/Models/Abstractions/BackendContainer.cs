@@ -3,10 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Linq.Expressions;
 using System.Reflection;
 
-using SharpX.Composition.Interfaces;
-using SharpX.Core;
+using Microsoft.CodeAnalysis;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Compiler.Models.Abstractions;
 
@@ -30,7 +32,22 @@ internal class BackendContainer
         _visitors.Add(priority, visitor);
     }
 
-    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, IBackendVisitorArgs args)
+    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model)
+    {
+        var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
+        var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }));
+
+        foreach (var visitor in _visitors)
+        {
+            var visitorInstance = Activator.CreateInstance(visitor.Value, args);
+            register.Invoke(instance, new[] { visitorInstance });
+        }
+
+
+        return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+    }
+
+    private (object, MethodInfo, MethodInfo) CreateRootSyntaxVisitorInstance()
     {
         var activator = typeof(RootCSharpSyntaxVisitor<>).MakeGenericType(ReturnType);
         var instance = Activator.CreateInstance(activator);
@@ -42,16 +59,27 @@ internal class BackendContainer
         if (register == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Register(CSharpSyntaxVisitor<{ReturnType.FullName}>)");
 
-        foreach (var visitor in _visitors)
-        {
-            var visitorInstance = Activator.CreateInstance(visitor.Value, args);
-            register.Invoke(instance, new[] { visitorInstance });
-        }
-
         var visit = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public);
         if (visit == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Visit(Microsoft.CodeAnalysis.SyntaxNode)");
 
-        return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+        return (instance, register, visit);
+    }
+
+    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit)
+    {
+        var parameter = Expression.Parameter(typeof(Microsoft.CodeAnalysis.SyntaxNode));
+        var invocation = Expression.Invoke(visit, parameter);
+        var cast = Expression.Convert(invocation, ReturnType);
+        var lambda = Expression.Lambda(cast, parameter);
+        var @delegate = lambda.Compile();
+
+        var activator = typeof(BackendVisitorArgs<>).MakeGenericType(ReturnType);
+        var instance = Activator.CreateInstance(activator, semanticModel, @delegate);
+
+        if (instance == null)
+            throw new InvalidOperationException($"failed to create the instance of BackendVisitorArgs<{ReturnType.FullName}>.");
+
+        return instance;
     }
 }

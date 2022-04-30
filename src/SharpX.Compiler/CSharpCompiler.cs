@@ -179,8 +179,7 @@ public class CSharpCompiler : IDisposable
                     return;
                 }
 
-            var args = new BackendVisitorArgs { SemanticModel = model };
-            var source = container.RunAsync(syntax, args);
+            var source = container.RunAsync(syntax, model);
 
             lock (lockObj)
             {

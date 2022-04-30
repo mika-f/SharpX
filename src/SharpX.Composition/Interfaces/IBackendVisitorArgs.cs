@@ -5,9 +5,13 @@
 
 using Microsoft.CodeAnalysis;
 
+using SyntaxNode = SharpX.Core.SyntaxNode;
+
 namespace SharpX.Composition.Interfaces;
 
-public interface IBackendVisitorArgs
+public interface IBackendVisitorArgs<out TResult> where TResult : SyntaxNode
 {
+    protected internal Func<Microsoft.CodeAnalysis.SyntaxNode?, TResult> Delegate { get; }
+
     SemanticModel SemanticModel { get; }
 }

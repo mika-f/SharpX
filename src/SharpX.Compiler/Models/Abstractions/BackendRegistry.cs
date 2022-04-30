@@ -3,8 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis.CSharp;
-
+using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
 using SharpX.Core;
 
@@ -21,8 +20,8 @@ internal class BackendRegistry : IBackendRegistry
 
     public void RegisterBackendVisitor(string language, Type visitor, Type @return, uint priority)
     {
-        if (!IsAssignableToGenericType(visitor, typeof(CSharpSyntaxVisitor<>), typeof(SyntaxNode)))
-            throw new ArgumentException("visitor must be inherit from CSharpSyntaxVisitor<T> and T is must be inherit from SharpX.Core.SyntaxNode", nameof(visitor));
+        if (!IsAssignableToGenericType(visitor, typeof(CompositeCSharpSyntaxVisitor<>), typeof(SyntaxNode)))
+            throw new ArgumentException("visitor must be inherit from CompositeCSharpSyntaxVisitor<T> and T is must be inherit from SharpX.Core.SyntaxNode", nameof(visitor));
 
         if (!@return.IsAssignableTo(typeof(SyntaxNode)))
             throw new ArgumentException("return must be inherit from SharpX.Core.SyntaxNode", nameof(@return));
