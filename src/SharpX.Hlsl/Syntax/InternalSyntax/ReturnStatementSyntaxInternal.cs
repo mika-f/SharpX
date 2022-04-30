@@ -3,8 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -44,7 +48,7 @@ internal class ReturnStatementSyntaxInternal : StatementSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
-    public ReturnStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal returnKeyword, ExpressionSyntaxInternal? expression, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public ReturnStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal returnKeyword, ExpressionSyntaxInternal? expression, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 4;
 
@@ -67,9 +71,14 @@ internal class ReturnStatementSyntaxInternal : StatementSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new ReturnStatementSyntaxInternal(Kind, _attributeLists, ReturnKeyword, Expression, SemicolonToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ReturnStatementSyntaxInternal(Kind, _attributeLists, ReturnKeyword, Expression, SemicolonToken, diagnostics);
+        return new ReturnStatementSyntaxInternal(Kind, _attributeLists, ReturnKeyword, Expression, SemicolonToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

@@ -23,14 +23,36 @@ public static partial class SyntaxFactory
 
     public static SyntaxTrivia Tab => SyntaxFactoryInternal.Tab;
 
+    public static SyntaxTrivia ElasticCarriageReturnLineFeed => SyntaxFactoryInternal.ElasticCarriageReturnLineFeed;
+
+    public static SyntaxTrivia ElasticLineFeed => SyntaxFactoryInternal.ElasticLineFeed;
+
+    public static SyntaxTrivia ElasticCarriageReturn => SyntaxFactoryInternal.ElasticCarriageReturn;
+
+    public static SyntaxTrivia ElasticSpace => SyntaxFactoryInternal.ElasticSpace;
+
+    public static SyntaxTrivia ElasticTab => SyntaxFactoryInternal.ElasticTab;
+
+    public static SyntaxTrivia ElasticMarker => SyntaxFactoryInternal.ElasticZeroSpace;
+
     public static SyntaxTrivia EndOfLine(string text)
     {
         return SyntaxFactoryInternal.EndOfLine(text);
     }
 
+    public static SyntaxTrivia ElasticEndOfLine(string text)
+    {
+        return SyntaxFactoryInternal.EndOfLine(text, true);
+    }
+
     public static SyntaxTrivia Whitespace(string text)
     {
         return SyntaxFactoryInternal.Whitespace(text);
+    }
+
+    public static SyntaxTrivia ElasticWhitespace(string text)
+    {
+        return SyntaxFactoryInternal.Whitespace(text, true);
     }
 
     public static SyntaxTrivia Comment(string text)
@@ -40,7 +62,7 @@ public static partial class SyntaxFactory
 
     public static SyntaxToken Token(SyntaxKind kind)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Token(null, kind, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Token(ElasticMarker.UnderlyingNode, kind, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Token(SyntaxTriviaList leading, SyntaxKind kind, SyntaxTriviaList trailing)
@@ -63,7 +85,7 @@ public static partial class SyntaxFactory
 
     public static SyntaxToken Identifier(string text)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Identifier(text));
+        return new SyntaxToken(SyntaxFactoryInternal.Identifier(ElasticMarker.UnderlyingNode, text, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Identifier(SyntaxTriviaList leading, string text, SyntaxTriviaList trailing)
@@ -78,47 +100,47 @@ public static partial class SyntaxFactory
 
     public static SyntaxToken Literal(int value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(string text, int value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, text, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, text, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(float value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(string text, float value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, text, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, text, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(double value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(string text, double value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, text, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, text, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(char value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(string text, char value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, text, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, text, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxToken Literal(string value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(null, value, null));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxList<TNode> List<TNode>() where TNode : SyntaxNode

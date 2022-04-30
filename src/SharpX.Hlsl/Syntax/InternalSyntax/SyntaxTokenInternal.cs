@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -52,16 +56,21 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
 
     public SyntaxTokenInternal(SyntaxKind kind, int fullWidth) : base(kind, fullWidth) { }
 
-    public SyntaxTokenInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base(kind, fullWidth, diagnostics) { }
+    public SyntaxTokenInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, fullWidth, diagnostics, annotations) { }
 
-    public SyntaxTokenInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public SyntaxTokenInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         FullWidth = Text.Length;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new SyntaxTokenInternal(Kind, FullWidth, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTokenInternal(Kind, FullWidth, diagnostics);
+        return new SyntaxTokenInternal(Kind, FullWidth, diagnostics, GetAnnotations());
     }
 
     public override bool IsToken => true;

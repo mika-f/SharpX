@@ -1,5 +1,9 @@
-﻿using SharpX.Core;
+﻿using Microsoft.CodeAnalysis;
+
+using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax
 {
@@ -31,7 +35,7 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
             SemicolonToken = semicolonToken;
         }
 
-        public ContinueStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal continueKeyword, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+        public ContinueStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal continueKeyword, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
         {
             SlotCount = 3;
 
@@ -48,9 +52,14 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
             SemicolonToken = semicolonToken;
         }
 
+        public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+        {
+            return new ContinueStatementSyntaxInternal(Kind, _attributeLists, ContinueKeyword, SemicolonToken, GetDiagnostics(), annotations);
+        }
+
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new ContinueStatementSyntaxInternal(Kind, _attributeLists, ContinueKeyword, SemicolonToken, diagnostics);
+            return new ContinueStatementSyntaxInternal(Kind, _attributeLists, ContinueKeyword, SemicolonToken, diagnostics, GetAnnotations());
         }
 
         public override GreenNode? GetSlot(int index)

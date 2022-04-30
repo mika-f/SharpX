@@ -3,8 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -60,7 +64,8 @@ internal class ParameterSyntaxInternal : HlslSyntaxNodeInternal
         }
     }
 
-    public ParameterSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, GreenNode? modifiers, TypeSyntaxInternal type, SyntaxTokenInternal identifier, EqualsValueClauseSyntaxInternal? @default, SemanticSyntaxInternal? semantics, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public ParameterSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, GreenNode? modifiers, TypeSyntaxInternal type, SyntaxTokenInternal identifier, EqualsValueClauseSyntaxInternal? @default, SemanticSyntaxInternal? semantics, DiagnosticInfo[]? diagnostics,
+                                   SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 6;
 
@@ -95,9 +100,14 @@ internal class ParameterSyntaxInternal : HlslSyntaxNodeInternal
         }
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new ParameterSyntaxInternal(Kind, _attributeLists, _modifiers, Type, Identifier, Default, Semantics, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ParameterSyntaxInternal(Kind, _attributeLists, _modifiers, Type, Identifier, Default, Semantics, diagnostics);
+        return new ParameterSyntaxInternal(Kind, _attributeLists, _modifiers, Type, Identifier, Default, Semantics, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

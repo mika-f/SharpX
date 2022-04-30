@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -19,7 +23,7 @@ internal class AttributeArgumentSyntaxInternal : HlslSyntaxNodeInternal
         Expression = expression;
     }
 
-    public AttributeArgumentSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal expression, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public AttributeArgumentSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal expression, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 1;
 
@@ -27,9 +31,14 @@ internal class AttributeArgumentSyntaxInternal : HlslSyntaxNodeInternal
         Expression = expression;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new AttributeArgumentSyntaxInternal(Kind, Expression, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new AttributeArgumentSyntaxInternal(Kind, Expression, diagnostics);
+        return new AttributeArgumentSyntaxInternal(Kind, Expression, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

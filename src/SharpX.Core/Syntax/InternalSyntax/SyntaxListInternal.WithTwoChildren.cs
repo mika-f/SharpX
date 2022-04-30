@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 namespace SharpX.Core.Syntax.InternalSyntax;
 
 public abstract partial class SyntaxListInternal
@@ -23,7 +25,7 @@ public abstract partial class SyntaxListInternal
             _node2 = node2;
         }
 
-        public WithTwoChildren(GreenNode node1, GreenNode node2, DiagnosticInfo[]? diagnostics) : base(diagnostics)
+        public WithTwoChildren(GreenNode node1, GreenNode node2, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(diagnostics, annotations)
         {
             SlotCount = 2;
 
@@ -49,9 +51,14 @@ public abstract partial class SyntaxListInternal
             throw new NotImplementedException();
         }
 
+        public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+        {
+            return new WithTwoChildren(_node1, _node2, GetDiagnostics(), annotations);
+        }
+
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new WithTwoChildren(_node1, _node2, diagnostics);
+            return new WithTwoChildren(_node1, _node2, diagnostics, GetAnnotations());
         }
     }
 }

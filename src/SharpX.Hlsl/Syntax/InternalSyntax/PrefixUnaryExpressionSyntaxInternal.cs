@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -24,7 +28,7 @@ internal class PrefixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
         Operand = operand;
     }
 
-    public PrefixUnaryExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal operatorToken, ExpressionSyntaxInternal operand, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public PrefixUnaryExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal operatorToken, ExpressionSyntaxInternal operand, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 2;
 
@@ -35,9 +39,14 @@ internal class PrefixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
         Operand = operand;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new PrefixUnaryExpressionSyntaxInternal(Kind, OperatorToken, Operand, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PrefixUnaryExpressionSyntaxInternal(Kind, OperatorToken, Operand, diagnostics);
+        return new PrefixUnaryExpressionSyntaxInternal(Kind, OperatorToken, Operand, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

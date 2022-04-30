@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 namespace SharpX.Core.Syntax.InternalSyntax;
 
 /// <summary>
@@ -16,7 +18,7 @@ public abstract partial class SyntaxListInternal : GreenNode
 
     protected SyntaxListInternal() : base(ListKind) { }
 
-    protected SyntaxListInternal(DiagnosticInfo[]? diagnostics) : base(ListKind, diagnostics) { }
+    protected SyntaxListInternal(DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(ListKind, diagnostics, annotations) { }
 
     public override bool IsTriviaWithEndOfLine()
     {

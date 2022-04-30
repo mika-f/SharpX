@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -34,7 +38,7 @@ internal class IncludeDirectiveSyntaxInternal : DirectiveTriviaSyntaxInternal
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public IncludeDirectiveSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal includeKeyword, SyntaxTokenInternal file, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public IncludeDirectiveSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal includeKeyword, SyntaxTokenInternal file, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 4;
 
@@ -51,9 +55,14 @@ internal class IncludeDirectiveSyntaxInternal : DirectiveTriviaSyntaxInternal
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new IncludeDirectiveSyntaxInternal(Kind, HashToken, IncludeKeyword, File, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new IncludeDirectiveSyntaxInternal(Kind, HashToken, IncludeKeyword, File, EndOfDirectiveToken, diagnostics);
+        return new IncludeDirectiveSyntaxInternal(Kind, HashToken, IncludeKeyword, File, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

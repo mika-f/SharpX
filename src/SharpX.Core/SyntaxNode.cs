@@ -56,6 +56,24 @@ public abstract class SyntaxNode
         return GetType().Name + " " + KindText + " " + ToString();
     }
 
+
+    public override string ToString()
+    {
+        return Green.ToString();
+    }
+
+    public virtual string ToFullString()
+    {
+        return Green.ToFullString();
+    }
+
+    public virtual void WriteTo(TextWriter writer)
+    {
+        Green.WriteTo(writer);
+    }
+
+    #region Syntax
+
     public SyntaxNode? GetRed(ref SyntaxNode? field, int slot)
     {
         var r = field;
@@ -98,20 +116,9 @@ public abstract class SyntaxNode
         return GetRed(ref field, 0);
     }
 
-    public override string ToString()
-    {
-        return Green.ToString();
-    }
+    #endregion
 
-    public virtual string ToFullString()
-    {
-        return Green.ToFullString();
-    }
-
-    public virtual void WriteTo(TextWriter writer)
-    {
-        Green.WriteTo(writer, true, true);
-    }
+    #region Slots
 
     public virtual int GetChildPosition(int index)
     {
@@ -163,4 +170,6 @@ public abstract class SyntaxNode
 
         return index;
     }
+
+    #endregion
 }

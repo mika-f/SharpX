@@ -5,7 +5,12 @@
 
 using System.Diagnostics;
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
+using SyntaxToken = SharpX.Core.SyntaxToken;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -24,7 +29,11 @@ internal abstract class HlslSyntaxNodeInternal : GreenNode
 
     protected HlslSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base((int)kind, fullWidth, diagnostics) { }
 
+    protected HlslSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base((int)kind, fullWidth, diagnostics, annotations) { }
+
     protected HlslSyntaxNodeInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base((int)kind, diagnostics) { }
+
+    protected HlslSyntaxNodeInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base((int)kind, diagnostics, annotations) { }
 
     public override SyntaxToken CreateSeparator<TNode>(SyntaxNode element)
     {

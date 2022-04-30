@@ -5,40 +5,60 @@
 
 using System.Globalization;
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+using SharpX.Core.Extensions;
 using SharpX.Core.Syntax.InternalSyntax;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
 internal static partial class SyntaxFactory
 {
-    private const string Crlf = "\r\n";
+    private const string CrLf = "\r\n";
 
-    internal static readonly SyntaxTriviaInternal CarriageReturnLineFeed = EndOfLine(Crlf);
+    internal static readonly SyntaxTriviaInternal CarriageReturnLineFeed = EndOfLine(CrLf);
     internal static readonly SyntaxTriviaInternal LineFeed = EndOfLine("\n");
     internal static readonly SyntaxTriviaInternal CarriageReturn = EndOfLine("\r");
     internal static readonly SyntaxTriviaInternal Space = Whitespace(" ");
     internal static readonly SyntaxTriviaInternal Tab = Whitespace("\t");
 
-    public static SyntaxTriviaInternal EndOfLine(string text)
+    internal static readonly SyntaxTriviaInternal ElasticCarriageReturnLineFeed = EndOfLine(CrLf, true);
+    internal static readonly SyntaxTriviaInternal ElasticLineFeed = EndOfLine("\n", true);
+    internal static readonly SyntaxTriviaInternal ElasticCarriageReturn = EndOfLine("\r", true);
+    internal static readonly SyntaxTriviaInternal ElasticSpace = Whitespace(" ", true);
+    internal static readonly SyntaxTriviaInternal ElasticTab = Whitespace("\t", true);
+
+    internal static readonly SyntaxTriviaInternal ElasticZeroSpace = Whitespace(string.Empty, true);
+
+
+    public static SyntaxTriviaInternal EndOfLine(string text, bool elastic = false)
     {
         var trivia = text switch
         {
-            "\r" => CarriageReturn,
-            "\n" => LineFeed,
-            "\r\n" => CarriageReturnLineFeed,
+            "\r" => elastic ? ElasticCarriageReturn : CarriageReturn,
+            "\n" => elastic ? ElasticLineFeed : LineFeed,
+            "\r\n" => elastic ? ElasticCarriageReturnLineFeed : CarriageReturnLineFeed,
             _ => null
         };
 
         if (trivia != null)
             return trivia;
 
-        return new SyntaxTriviaInternal(SyntaxKind.EndOfLineTrivia, text);
+        trivia = new SyntaxTriviaInternal(SyntaxKind.EndOfLineTrivia, text);
+        if (!elastic)
+            return trivia;
+
+        return trivia.WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation });
     }
 
-    public static SyntaxTriviaInternal Whitespace(string text)
+    public static SyntaxTriviaInternal Whitespace(string text, bool elastic = false)
     {
-        return new SyntaxTriviaInternal(SyntaxKind.WhitespaceTrivia, text);
+        var trivia = new SyntaxTriviaInternal(SyntaxKind.WhitespaceTrivia, text);
+        if (!elastic)
+            return trivia;
+
+        return trivia.WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation });
     }
 
     public static SyntaxTriviaInternal Comment(string text)

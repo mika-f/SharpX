@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -23,14 +25,19 @@ internal class SyntaxIdentifierExtendedInternal : SyntaxIdentifierInternal
         _value = value;
     }
 
-    public SyntaxIdentifierExtendedInternal(SyntaxKind kind, string text, string value, DiagnosticInfo[]? diagnostics) : base(text, diagnostics)
+    public SyntaxIdentifierExtendedInternal(SyntaxKind kind, string text, string value, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(text, diagnostics, annotations)
     {
         ContextualKind = kind;
         _value = value;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new SyntaxIdentifierExtendedInternal(Kind, Text, ValueText, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxIdentifierExtendedInternal(Kind, Text, ValueText, diagnostics);
+        return new SyntaxIdentifierExtendedInternal(Kind, Text, ValueText, diagnostics, GetAnnotations());
     }
 }

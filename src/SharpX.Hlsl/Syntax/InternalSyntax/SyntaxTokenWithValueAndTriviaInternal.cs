@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -27,7 +29,7 @@ internal class SyntaxTokenWithValueAndTriviaInternal<T> : SyntaxTokenWithValueIn
         }
     }
 
-    public SyntaxTokenWithValueAndTriviaInternal(SyntaxKind kind, string text, T value, GreenNode? leading, GreenNode? trailing, DiagnosticInfo[]? diagnostics) : base(kind, text, value, diagnostics)
+    public SyntaxTokenWithValueAndTriviaInternal(SyntaxKind kind, string text, T value, GreenNode? leading, GreenNode? trailing, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, text, value, diagnostics, annotations)
     {
         if (leading != null)
         {
@@ -52,8 +54,13 @@ internal class SyntaxTokenWithValueAndTriviaInternal<T> : SyntaxTokenWithValueIn
         return _trailing;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, diagnostics);
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, diagnostics, GetAnnotations());
     }
 }

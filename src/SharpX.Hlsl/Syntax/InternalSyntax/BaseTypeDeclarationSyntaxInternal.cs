@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -17,5 +19,5 @@ internal abstract class BaseTypeDeclarationSyntaxInternal : MemberDeclarationSyn
 
     protected BaseTypeDeclarationSyntaxInternal(SyntaxKind kind) : base(kind) { }
 
-    protected BaseTypeDeclarationSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics) { }
+    protected BaseTypeDeclarationSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations) { }
 }

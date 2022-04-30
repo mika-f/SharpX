@@ -4,9 +4,12 @@
 // ------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+
+using Microsoft.CodeAnalysis;
 
 using SharpX.Core.Syntax.InternalSyntax;
 
@@ -21,7 +24,11 @@ public abstract class GreenNode
     public const int ListKind = 1;
 
     private static readonly ConditionalWeakTable<GreenNode, DiagnosticInfo[]> DiagnosticsTable = new();
+    private static readonly ConditionalWeakTable<GreenNode, SyntaxAnnotation[]> AnnotationsTable = new();
     private static readonly DiagnosticInfo[] EmptyDiagnostics = Array.Empty<DiagnosticInfo>();
+    private static readonly SyntaxAnnotation[] EmptyAnnotations = Array.Empty<SyntaxAnnotation>();
+
+    public bool ContainsAnnotations { get; }
 
     public bool ContainsDiagnostics { get; }
 
@@ -54,6 +61,25 @@ public abstract class GreenNode
         }
     }
 
+
+    protected GreenNode(int kind, int fullWidth, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations)
+    {
+        RawKind = kind;
+        FullWidth = fullWidth;
+
+        if (diagnostics?.Length > 0)
+        {
+            ContainsDiagnostics = true;
+            DiagnosticsTable.Add(this, diagnostics);
+        }
+
+        if (annotations?.Length > 0)
+        {
+            ContainsAnnotations = true;
+            AnnotationsTable.Add(this, annotations);
+        }
+    }
+
     protected GreenNode(int kind, DiagnosticInfo[]? diagnostics)
     {
         RawKind = kind;
@@ -62,6 +88,23 @@ public abstract class GreenNode
         {
             ContainsDiagnostics = true;
             DiagnosticsTable.Add(this, diagnostics);
+        }
+    }
+
+    protected GreenNode(int kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations)
+    {
+        RawKind = kind;
+
+        if (diagnostics?.Length > 0)
+        {
+            ContainsDiagnostics = true;
+            DiagnosticsTable.Add(this, diagnostics);
+        }
+
+        if (annotations?.Length > 0)
+        {
+            ContainsAnnotations = true;
+            AnnotationsTable.Add(this, annotations);
         }
     }
 
@@ -94,6 +137,102 @@ public abstract class GreenNode
 
         return SetDiagnostics(errors);
     }
+
+    #region Annotations
+
+    public bool HasAnnotations(string annotationKind)
+    {
+        var annotations = GetAnnotations();
+        if (annotations == EmptyAnnotations)
+            return false;
+
+        foreach (var a in annotations)
+            if (a.Kind == annotationKind)
+                return true;
+
+        return false;
+    }
+
+    public bool HasAnnotations(IEnumerable<string> annotationKinds)
+    {
+        var annotations = GetAnnotations();
+        if (annotations == EmptyAnnotations)
+            return false;
+
+        var kinds = annotationKinds.ToArray();
+
+        foreach (var a in annotations)
+            if (kinds.Contains(a.Kind))
+                return true;
+
+        return false;
+    }
+
+    public bool HasAnnotation([NotNullWhen(true)] SyntaxAnnotation? annotation)
+    {
+        var annotations = GetAnnotations();
+        if (annotations == EmptyAnnotations)
+            return false;
+
+        foreach (var a in annotations)
+            if (a == annotation)
+                return true;
+
+        return false;
+    }
+
+    public IEnumerable<SyntaxAnnotation> GetAnnotations(string annotationKind)
+    {
+        if (string.IsNullOrWhiteSpace(annotationKind))
+            throw new ArgumentNullException(nameof(annotationKind));
+
+        var annotations = GetAnnotations();
+        if (annotations == EmptyAnnotations)
+            return EmptyAnnotations;
+
+        return GetAnnotationsSlow(annotations, annotationKind);
+    }
+
+    private static IEnumerable<SyntaxAnnotation> GetAnnotationsSlow(SyntaxAnnotation[] annotations, string annotationKind)
+    {
+        foreach (var annotation in annotations)
+            if (annotation.Kind == annotationKind)
+                yield return annotation;
+    }
+
+    public IEnumerable<SyntaxAnnotation> GetAnnotations(IEnumerable<string>? annotationKinds)
+    {
+        if (annotationKinds == null)
+            throw new ArgumentNullException(nameof(annotationKinds));
+
+        var annotations = GetAnnotations();
+        if (annotations == EmptyAnnotations)
+            return EmptyAnnotations;
+
+        return GetAnnotationsSlow(annotations, annotationKinds);
+    }
+
+    private static IEnumerable<SyntaxAnnotation> GetAnnotationsSlow(SyntaxAnnotation[] annotations, IEnumerable<string> annotationKinds)
+    {
+        var kinds = annotationKinds.ToArray();
+
+        foreach (var annotation in annotations)
+            if (kinds.Contains(annotation.Kind))
+                yield return annotation;
+    }
+
+    public SyntaxAnnotation[] GetAnnotations()
+    {
+        if (ContainsAnnotations)
+            if (AnnotationsTable.TryGetValue(this, out var annotations))
+                return annotations;
+
+        return EmptyAnnotations;
+    }
+
+    public abstract GreenNode SetAnnotations(SyntaxAnnotation[]? annotations);
+
+    #endregion
 
     #region Diagnostics
 

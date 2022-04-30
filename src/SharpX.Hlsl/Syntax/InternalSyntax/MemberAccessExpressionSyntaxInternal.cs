@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -30,7 +34,7 @@ internal class MemberAccessExpressionSyntaxInternal : ExpressionSyntaxInternal
         Name = name;
     }
 
-    public MemberAccessExpressionSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal expression, SyntaxTokenInternal operatorToken, SimpleNameSyntaxInternal name, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public MemberAccessExpressionSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal expression, SyntaxTokenInternal operatorToken, SimpleNameSyntaxInternal name, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 3;
 
@@ -44,9 +48,14 @@ internal class MemberAccessExpressionSyntaxInternal : ExpressionSyntaxInternal
         Name = name;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new MemberAccessExpressionSyntaxInternal(Kind, Expression, OperatorToken, Name, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new MemberAccessExpressionSyntaxInternal(Kind, Expression, OperatorToken, Name, diagnostics);
+        return new MemberAccessExpressionSyntaxInternal(Kind, Expression, OperatorToken, Name, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

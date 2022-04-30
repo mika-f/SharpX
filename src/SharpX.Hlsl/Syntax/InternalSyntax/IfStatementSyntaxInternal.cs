@@ -3,8 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -60,7 +64,7 @@ internal class IfStatementSyntaxInternal : StatementSyntaxInternal
     }
 
     public IfStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal ifKeyword, SyntaxTokenInternal openParenToken, ExpressionSyntaxInternal condition, SyntaxTokenInternal closeParenToken, StatementSyntaxInternal statement, ElseClauseSyntaxInternal? @else,
-                                     DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+                                     DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 7;
 
@@ -92,9 +96,14 @@ internal class IfStatementSyntaxInternal : StatementSyntaxInternal
         }
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new IfStatementSyntaxInternal(Kind, _attributeLists, IfKeyword, OpenParenToken, Condition, CloseParenToken, Statement, Else, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new IfStatementSyntaxInternal(Kind, _attributeLists, IfKeyword, OpenParenToken, Condition, CloseParenToken, Statement, Else, diagnostics);
+        return new IfStatementSyntaxInternal(Kind, _attributeLists, IfKeyword, OpenParenToken, Condition, CloseParenToken, Statement, Else, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

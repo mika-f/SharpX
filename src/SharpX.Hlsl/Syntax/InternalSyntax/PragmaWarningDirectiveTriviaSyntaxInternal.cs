@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -51,7 +55,7 @@ internal class PragmaWarningDirectiveTriviaSyntaxInternal : DirectiveTriviaSynta
     }
 
     public PragmaWarningDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal pragmaKeyword, SyntaxTokenInternal warningKeyword, SyntaxTokenInternal openParenToken, WarningSpecifierListSyntaxInternal warningSpecifiers, SyntaxTokenInternal closeParenToken,
-                                                      SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+                                                      SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 7;
 
@@ -77,9 +81,14 @@ internal class PragmaWarningDirectiveTriviaSyntaxInternal : DirectiveTriviaSynta
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new PragmaWarningDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, WarningKeyword, OpenParenToken, WarningSpecifiers, CloseParenToken, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PragmaWarningDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, WarningKeyword, OpenParenToken, WarningSpecifiers, CloseParenToken, EndOfDirectiveToken, diagnostics);
+        return new PragmaWarningDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, WarningKeyword, OpenParenToken, WarningSpecifiers, CloseParenToken, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

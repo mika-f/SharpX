@@ -14,6 +14,9 @@ using MemberDeclarationSyntax = SharpX.Hlsl.Syntax.MemberDeclarationSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
+/**
+ * TODO: support to NormalizeWhitespace like methods for normalizing/reformatting syntax trees.
+ */
 internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 {
     private readonly SemanticModel _semanticModel;
@@ -36,7 +39,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitStructDeclaration(StructDeclarationSyntax node)
     {
-        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
+        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText).WithTrailingTrivia(node.Identifier.TrailingTrivia);
         var members = node.Members.Select(w => (MemberDeclarationSyntax?)Visit(w))
                           .Where(w => w != null)
                           .OfType<FieldDeclarationSyntax>();

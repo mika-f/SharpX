@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -34,7 +38,8 @@ internal class ElifDirectiveTriviaSyntaxInternal : ConditionalDirectiveTriviaSyn
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public ElifDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal elifKeyword, ExpressionSyntaxInternal condition, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public ElifDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal elifKeyword, ExpressionSyntaxInternal condition, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) :
+        base(kind, diagnostics, annotations)
     {
         SlotCount = 4;
 
@@ -51,9 +56,14 @@ internal class ElifDirectiveTriviaSyntaxInternal : ConditionalDirectiveTriviaSyn
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new ElifDirectiveTriviaSyntaxInternal(Kind, HashToken, ElifKeyword, Condition, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ElifDirectiveTriviaSyntaxInternal(Kind, HashToken, ElifKeyword, Condition, EndOfDirectiveToken, diagnostics);
+        return new ElifDirectiveTriviaSyntaxInternal(Kind, HashToken, ElifKeyword, Condition, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

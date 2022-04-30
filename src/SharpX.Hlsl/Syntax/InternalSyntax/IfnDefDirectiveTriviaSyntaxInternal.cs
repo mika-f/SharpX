@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -34,7 +38,8 @@ internal class IfnDefDirectiveTriviaSyntaxInternal : ConditionalDirectiveTriviaS
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public IfnDefDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal ifnDefKeyword, ExpressionSyntaxInternal condition, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public IfnDefDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal ifnDefKeyword, ExpressionSyntaxInternal condition, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) :
+        base(kind, diagnostics, annotations)
     {
         SlotCount = 4;
 
@@ -51,9 +56,14 @@ internal class IfnDefDirectiveTriviaSyntaxInternal : ConditionalDirectiveTriviaS
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new IfnDefDirectiveTriviaSyntaxInternal(Kind, HashToken, IfnDefKeyword, Condition, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new IfnDefDirectiveTriviaSyntaxInternal(Kind, HashToken, IfnDefKeyword, Condition, EndOfDirectiveToken, diagnostics);
+        return new IfnDefDirectiveTriviaSyntaxInternal(Kind, HashToken, IfnDefKeyword, Condition, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

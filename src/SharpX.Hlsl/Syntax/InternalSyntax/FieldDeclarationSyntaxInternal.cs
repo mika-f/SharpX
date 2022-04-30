@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -54,7 +58,7 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
     }
 
     public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken,
-                                          DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+                                          DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 6;
 
@@ -86,9 +90,14 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, diagnostics);
+        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

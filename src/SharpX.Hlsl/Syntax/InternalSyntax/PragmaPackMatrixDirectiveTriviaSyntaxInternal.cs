@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -51,7 +55,7 @@ internal class PragmaPackMatrixDirectiveTriviaSyntaxInternal : DirectiveTriviaSy
     }
 
     public PragmaPackMatrixDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal pragmaKeyword, SyntaxTokenInternal packMatrixKeyword, SyntaxTokenInternal openParenToken, SyntaxTokenInternal columnMajorOrRowMajorKeyword,
-                                                         SyntaxTokenInternal closeParenToken, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+                                                         SyntaxTokenInternal closeParenToken, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 7;
 
@@ -77,9 +81,14 @@ internal class PragmaPackMatrixDirectiveTriviaSyntaxInternal : DirectiveTriviaSy
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new PragmaPackMatrixDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, PackMatrixKeyword, OpenParenToken, ColumnMajorOrRowMajorKeyword, CloseParenToken, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PragmaPackMatrixDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, PackMatrixKeyword, OpenParenToken, ColumnMajorOrRowMajorKeyword, CloseParenToken, EndOfDirectiveToken, diagnostics);
+        return new PragmaPackMatrixDirectiveTriviaSyntaxInternal(Kind, HashToken, PragmaKeyword, PackMatrixKeyword, OpenParenToken, ColumnMajorOrRowMajorKeyword, CloseParenToken, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

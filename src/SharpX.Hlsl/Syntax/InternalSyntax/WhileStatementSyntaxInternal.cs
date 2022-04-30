@@ -3,8 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -51,7 +55,7 @@ internal class WhileStatementSyntaxInternal : StatementSyntaxInternal
     }
 
     public WhileStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal whileKeyword, SyntaxTokenInternal openParenToken, ExpressionSyntaxInternal condition, SyntaxTokenInternal closeParenToken, StatementSyntaxInternal statement,
-                                        DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+                                        DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 6;
 
@@ -77,9 +81,14 @@ internal class WhileStatementSyntaxInternal : StatementSyntaxInternal
         Statement = statement;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new WhileStatementSyntaxInternal(Kind, _attributeLists, WhileKeyword, OpenParenToken, Condition, CloseParenToken, Statement, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new WhileStatementSyntaxInternal(Kind, _attributeLists, WhileKeyword, OpenParenToken, Condition, CloseParenToken, Statement, diagnostics);
+        return new WhileStatementSyntaxInternal(Kind, _attributeLists, WhileKeyword, OpenParenToken, Condition, CloseParenToken, Statement, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

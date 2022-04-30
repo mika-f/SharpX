@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -42,7 +46,8 @@ internal class LineDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInternal
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public LineDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal lineKeyword, SyntaxTokenInternal line, SyntaxTokenInternal? file, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public LineDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal lineKeyword, SyntaxTokenInternal line, SyntaxTokenInternal? file, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) :
+        base(kind, diagnostics, annotations)
     {
         SlotCount = 5;
 
@@ -65,9 +70,14 @@ internal class LineDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInternal
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new LineDirectiveTriviaSyntaxInternal(Kind, HashToken, LineKeyword, Line, File, EndOfDirectiveToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new LineDirectiveTriviaSyntaxInternal(Kind, HashToken, LineKeyword, Line, File, EndOfDirectiveToken, diagnostics);
+        return new LineDirectiveTriviaSyntaxInternal(Kind, HashToken, LineKeyword, Line, File, EndOfDirectiveToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

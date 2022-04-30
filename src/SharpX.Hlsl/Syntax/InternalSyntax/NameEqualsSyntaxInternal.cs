@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -24,7 +28,7 @@ internal class NameEqualsSyntaxInternal : HlslSyntaxNodeInternal
         EqualsToken = equalsToken;
     }
 
-    public NameEqualsSyntaxInternal(SyntaxKind kind, IdentifierNameSyntaxInternal name, SyntaxTokenInternal equalsToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public NameEqualsSyntaxInternal(SyntaxKind kind, IdentifierNameSyntaxInternal name, SyntaxTokenInternal equalsToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 2;
 
@@ -35,9 +39,14 @@ internal class NameEqualsSyntaxInternal : HlslSyntaxNodeInternal
         EqualsToken = equalsToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new NameEqualsSyntaxInternal(Kind, Name, EqualsToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new NameEqualsSyntaxInternal(Kind, Name, EqualsToken, diagnostics);
+        return new NameEqualsSyntaxInternal(Kind, Name, EqualsToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)

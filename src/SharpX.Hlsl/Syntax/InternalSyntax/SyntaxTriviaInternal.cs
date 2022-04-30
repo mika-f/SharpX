@@ -3,7 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
+using SyntaxTrivia = SharpX.Core.SyntaxTrivia;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -13,24 +18,29 @@ internal class SyntaxTriviaInternal : HlslSyntaxNodeInternal
 
     public override bool IsTrivia => true;
 
-    public SyntaxTriviaInternal(SyntaxKind kind, string text, DiagnosticInfo[]? diagnostics = null) : base(kind, text.Length, diagnostics)
+    public SyntaxTriviaInternal(SyntaxKind kind, string text, DiagnosticInfo[]? diagnostics = null, SyntaxAnnotation[]? annotations = null) : base(kind, text.Length, diagnostics, annotations)
     {
         _text = text;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new SyntaxTriviaInternal(Kind, _text, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTriviaInternal(Kind, _text, diagnostics);
+        return new SyntaxTriviaInternal(Kind, _text, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)
     {
-        throw new InvalidOperationException();
+        throw Exceptions.Unreachable;
     }
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new InvalidOperationException();
+        throw Exceptions.Unreachable;
     }
 
     public override string ToFullString()

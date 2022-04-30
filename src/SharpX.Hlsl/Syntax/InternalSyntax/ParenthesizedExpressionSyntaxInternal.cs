@@ -3,7 +3,11 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
+
 using SharpX.Core;
+
+using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -29,7 +33,7 @@ internal class ParenthesizedExpressionSyntaxInternal : ExpressionSyntaxInternal
         CloseParenToken = closeParenToken;
     }
 
-    public ParenthesizedExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, ExpressionSyntaxInternal expression, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
+    public ParenthesizedExpressionSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, ExpressionSyntaxInternal expression, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 3;
 
@@ -43,9 +47,14 @@ internal class ParenthesizedExpressionSyntaxInternal : ExpressionSyntaxInternal
         CloseParenToken = closeParenToken;
     }
 
+    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
+    {
+        return new ParenthesizedExpressionSyntaxInternal(Kind, OpenParenToken, Expression, CloseParenToken, GetDiagnostics(), annotations);
+    }
+
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ParenthesizedExpressionSyntaxInternal(Kind, OpenParenToken, Expression, CloseParenToken, diagnostics);
+        return new ParenthesizedExpressionSyntaxInternal(Kind, OpenParenToken, Expression, CloseParenToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)
