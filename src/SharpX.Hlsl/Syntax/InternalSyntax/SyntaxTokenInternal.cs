@@ -64,14 +64,16 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
         return new SyntaxTokenInternal(Kind, FullWidth, diagnostics);
     }
 
+    public override bool IsToken => true;
+
     public override GreenNode? GetSlot(int index)
     {
-        throw new InvalidOperationException();
+        throw Exceptions.Unreachable;
     }
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new InvalidOperationException();
+        throw Exceptions.Unreachable;
     }
 
     public override object? GetValue()
