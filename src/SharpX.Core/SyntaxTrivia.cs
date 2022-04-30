@@ -26,6 +26,15 @@ public readonly struct SyntaxTrivia
 
     public GreenNode? UnderlyingNode { get; }
 
+    public GreenNode RequiredUnderlyingNode
+    {
+        get
+        {
+            Contract.AssertNotNull(UnderlyingNode);
+            return UnderlyingNode;
+        }
+    }
+
     public int Position { get; }
 
     public int Index { get; }

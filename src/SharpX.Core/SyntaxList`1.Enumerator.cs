@@ -37,9 +37,6 @@ public readonly partial struct SyntaxList<TNode>
 
         object IEnumerator.Current => Current;
 
-        public void Dispose()
-        {
-            throw new NotSupportedException();
-        }
+        public void Dispose() { }
     }
 }

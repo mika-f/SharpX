@@ -127,9 +127,9 @@ public abstract class SyntaxNode
 
         while (index > 0)
         {
-            index++;
+            index--;
 
-            var prev = GetNodeSlot(index);
+            var prev = GetCachedSlot(index);
             if (prev != null)
                 return prev.EndPosition + offset;
 

@@ -40,4 +40,14 @@ internal class SyntaxIdentifierExtendedInternal : SyntaxIdentifierInternal
     {
         return new SyntaxIdentifierExtendedInternal(Kind, Text, ValueText, diagnostics, GetAnnotations());
     }
+
+    public override SyntaxTokenInternal TokenWithLeadingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxIdentifierWithTriviaInternal(Kind, Text, ValueText, trivia, null, GetDiagnostics(), GetAnnotations());
+    }
+
+    public override SyntaxTokenInternal TokenWitTrailingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxIdentifierWithTriviaInternal(Kind, Text, ValueText, null, trivia, GetDiagnostics(), GetAnnotations());
+    }
 }

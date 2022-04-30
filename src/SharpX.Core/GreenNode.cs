@@ -430,6 +430,11 @@ public abstract class GreenNode
 
     public abstract bool IsTriviaWithEndOfLine();
 
+    public static GreenNode? CreateList<TFrom>(IEnumerable<TFrom> list, Func<TFrom, GreenNode> select)
+    {
+        return CreateList(list.ToList(), select);
+    }
+
     public static GreenNode? CreateList<TFrom>(List<TFrom> list, Func<TFrom, GreenNode> select)
     {
         switch (list.Count)

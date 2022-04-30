@@ -42,4 +42,14 @@ internal class SyntaxTokenWithValueInternal<T> : SyntaxTokenInternal
     {
         return new SyntaxTokenWithValueInternal<T>(Kind, _text, RawValue, diagnostics, GetAnnotations());
     }
+
+    public override SyntaxTokenInternal TokenWithLeadingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, _text, RawValue, trivia, null, GetDiagnostics(), GetAnnotations());
+    }
+
+    public override SyntaxTokenInternal TokenWitTrailingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, _text, RawValue, null, trivia, GetDiagnostics(), GetAnnotations());
+    }
 }

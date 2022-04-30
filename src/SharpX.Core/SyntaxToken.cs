@@ -50,6 +50,8 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 
     public int FullWidth => Node?.FullWidth ?? 0;
 
+    #region Trivia
+
     public SyntaxTriviaList LeadingTrivia => Node != null ? new SyntaxTriviaList(this, Node.GetLeadingTrivia(), Position) : default;
 
     public SyntaxTriviaList TrailingTrivia
@@ -65,13 +67,51 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
                 index = leading.IsList ? leading.SlotCount : 1;
 
             var trailing = Node.GetTrailingTrivia();
-            var trailingPosition = Position + this.FullWidth;
+            var trailingPosition = Position + FullWidth;
             if (trailing != null)
                 trailingPosition -= trailing.FullWidth;
 
             return new SyntaxTriviaList(this, trailing, trailingPosition, index);
         }
     }
+
+    public SyntaxToken WithLeadingTrivia(SyntaxTriviaList trivia)
+    {
+        return WithLeadingTrivia((IEnumerable<SyntaxTrivia>)trivia);
+    }
+
+    public SyntaxToken WithLeadingTrivia(params SyntaxTrivia[] trivia)
+    {
+        return WithLeadingTrivia((IEnumerable<SyntaxTrivia>)trivia);
+    }
+
+    public SyntaxToken WithLeadingTrivia(IEnumerable<SyntaxTrivia> trivia)
+    {
+        if (Node == null)
+            return default;
+
+        return new SyntaxToken(null, Node.WithLeadingTrivia(GreenNode.CreateList(trivia, static w => w.RequiredUnderlyingNode)), 0, 0);
+    }
+
+    public SyntaxToken WithTrailingTrivia(SyntaxTriviaList trivia)
+    {
+        return WithTrailingTrivia((IEnumerable<SyntaxTrivia>)trivia);
+    }
+
+    public SyntaxToken WithTrailingTrivia(params SyntaxTrivia[] trivia)
+    {
+        return WithTrailingTrivia((IEnumerable<SyntaxTrivia>)trivia);
+    }
+
+    public SyntaxToken WithTrailingTrivia(IEnumerable<SyntaxTrivia> trivia)
+    {
+        if (Node == null)
+            return default;
+
+        return new SyntaxToken(null, Node.WithTrailingTrivia(GreenNode.CreateList(trivia, static w => w.RequiredUnderlyingNode)), 0, 0);
+    }
+
+    #endregion
 
     public static bool operator ==(SyntaxToken left, SyntaxToken right)
     {

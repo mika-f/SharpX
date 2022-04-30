@@ -48,6 +48,8 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
 
     public override int RawContextualKind => (int)ContextualKind;
 
+    public override bool IsToken => true;
+
 
     public SyntaxTokenInternal(SyntaxKind kind) : base(kind)
     {
@@ -72,8 +74,6 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
     {
         return new SyntaxTokenInternal(Kind, FullWidth, diagnostics, GetAnnotations());
     }
-
-    public override bool IsToken => true;
 
     public override GreenNode? GetSlot(int index)
     {
@@ -122,6 +122,27 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
             var trivia = GetTrailingTrivia();
             trivia?.WriteTo(writer);
         }
+    }
+
+    public override GreenNode WithTrailingTrivia(GreenNode? trivia)
+    {
+        return TokenWitTrailingTrivia(trivia);
+    }
+
+    public override GreenNode WithLeadingTrivia(GreenNode? trivia)
+    {
+        return TokenWithLeadingTrivia(trivia);
+    }
+
+    public virtual SyntaxTokenInternal TokenWitTrailingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxTokenWithTriviaInternal(Kind, null, trivia);
+    }
+
+
+    public virtual SyntaxTokenInternal TokenWithLeadingTrivia(GreenNode? trivia)
+    {
+        return new SyntaxTokenWithTriviaInternal(Kind, trivia, null);
     }
 
 

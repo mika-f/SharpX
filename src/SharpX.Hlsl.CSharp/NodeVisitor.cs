@@ -39,11 +39,12 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitStructDeclaration(StructDeclarationSyntax node)
     {
-        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText).WithTrailingTrivia(node.Identifier.TrailingTrivia);
+        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
         var members = node.Members.Select(w => (MemberDeclarationSyntax?)Visit(w))
                           .Where(w => w != null)
                           .OfType<FieldDeclarationSyntax>();
 
-        return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members));
+        return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members))
+                            .WithKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword).WithTrailingTrivia(SyntaxFactory.Whitespace(" ")));
     }
 }
