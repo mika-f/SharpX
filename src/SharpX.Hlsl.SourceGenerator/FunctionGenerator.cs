@@ -4,6 +4,9 @@
 // ------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -19,7 +22,15 @@ public sealed class FunctionGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+#if DEBUG
+        if (!Debugger.IsAttached)
+            Debugger.Launch();
+#endif
+
         context.RegisterPostInitializationOutput(GenerateInitialStaticCodes);
+
+
+        var options = context.AnalyzerConfigOptionsProvider.Select(SelectOptions).WithComparer(new MSBuildOptionsComparer());
 
         var attributes = context.CompilationProvider.Select(static (compilation, token) =>
         {
@@ -27,15 +38,18 @@ public sealed class FunctionGenerator : IIncrementalGenerator
             return compilation.GetTypeByMetadataName("SharpX.Hlsl.SourceGenerator.Attributes.FunctionSourceAttribute") ?? throw new NullReferenceException("");
         }).WithComparer(SymbolEqualityComparer.Default);
 
+        var additionalTexts = context.AdditionalTextsProvider.Where(w => w.Path.EndsWith(".d.ts"))
+                                     .Collect();
+
         var providers = context.SyntaxProvider.CreateSyntaxProvider(Predicate, Transform)
                                .Combine(attributes)
+                               .Combine(additionalTexts)
+                               .Combine(options)
                                .Select(PostTransform)
                                .Where(w => w is (not null, _))
                                .WithComparer(new SyntaxProviderComparer());
 
-        var options = context.AnalyzerConfigOptionsProvider.Select(SelectOptions).WithComparer(new MSBuildOptionsComparer());
-
-        context.RegisterSourceOutput(providers.Combine(options), GenerateActualSource);
+        context.RegisterSourceOutput(providers, GenerateActualSource);
     }
 
     private static void GenerateInitialStaticCodes(IncrementalGeneratorPostInitializationContext context)
@@ -73,16 +87,25 @@ public class FunctionSourceAttribute : global::System.Attribute
         return decl.Modifiers.Any(w => w.IsKind(SyntaxKind.PartialKeyword)) ? symbol : default;
     }
 
-    private static (INamedTypeSymbol? Symbol, string? Source) PostTransform((INamedTypeSymbol? Left, INamedTypeSymbol Right) tuple, CancellationToken token)
+    private static (INamedTypeSymbol? Symbol, string? Source) PostTransform((((INamedTypeSymbol? Left, INamedTypeSymbol Right) Left, ImmutableArray<AdditionalText> Right) Left, MSBuildOptions Right) tuple, CancellationToken token)
     {
-        var left = tuple.Left;
+        var dir = tuple.Right.ProjectDirectory;
+        if (string.IsNullOrWhiteSpace(dir))
+            return default;
+
+        var left = tuple.Left.Left.Left;
         if (left == null)
             return default;
 
-        foreach (var attribute in left.GetAttributes().Where(attribute => attribute.AttributeClass?.Equals(tuple.Right, SymbolEqualityComparer.Default) == true))
+        var attr = tuple.Left.Left.Right;
+        var sources = tuple.Left.Right;
+        foreach (var attribute in left.GetAttributes().Where(attribute => attribute.AttributeClass?.Equals(attr, SymbolEqualityComparer.Default) == true))
         {
             token.ThrowIfCancellationRequested();
-            return (Symbol: left, Source: attribute.ConstructorArguments[0].Value as string);
+
+            var reference = Path.GetFullPath(Path.Combine(dir, (string)attribute.ConstructorArguments[0].Value!));
+            var source = sources.FirstOrDefault(w => w.Path == reference);
+            return (Symbol: left, Source: source?.GetText()?.ToString());
         }
 
         return default;
@@ -99,7 +122,7 @@ public class FunctionSourceAttribute : global::System.Attribute
         return new MSBuildOptions(projectDir);
     }
 
-    private static void GenerateActualSource(SourceProductionContext context, ((INamedTypeSymbol?, string?) Left, MSBuildOptions Right) arg2)
+    private static void GenerateActualSource(SourceProductionContext context, (INamedTypeSymbol?, string?) tuple)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
     }
