@@ -11,4 +11,11 @@
     <Folder Include="Types\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharpX.Hlsl.SourceGenerator\SharpX.Hlsl.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="ProjectDir" />
+  </ItemGroup>
 </Project>
