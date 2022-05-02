@@ -142,8 +142,8 @@ public class FunctionSourceAttribute : global::System.Attribute
             return;
 
         var source = new StringBuilder();
-        source.Append($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
-        source.Append($"public partial class {symbol.Name} {{");
+        source.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
+        source.AppendLine($"public partial class {symbol.Name} {{");
 
         foreach (var member in exports.SelectMany(w => w.Members))
         {
@@ -157,7 +157,7 @@ public class FunctionSourceAttribute : global::System.Attribute
             }
         }
 
-        source.Append("}");
+        source.AppendLine("}");
 
         context.AddSource($"{symbol.Name}.g.cs", source.ToString());
     }

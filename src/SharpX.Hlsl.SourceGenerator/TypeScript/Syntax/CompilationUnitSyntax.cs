@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿// ------------------------------------------------------------------------------------------
+//  Copyright (c) Natsuneko. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
+// ------------------------------------------------------------------------------------------
 
-namespace SharpX.Hlsl.SourceGenerator.TypeScript.Syntax
+using System.Collections.Generic;
+
+namespace SharpX.Hlsl.SourceGenerator.TypeScript.Syntax;
+
+internal sealed class CompilationUnitSyntax
 {
-    internal sealed class CompilationUnitSyntax
-    {
-        public List<MemberDeclarationSyntax> Members { get; }
+    public List<MemberDeclarationSyntax> Members { get; }
 
-        public CompilationUnitSyntax(List<MemberDeclarationSyntax> members)
-        {
-            Members = members;
-        }
+    public CompilationUnitSyntax(List<MemberDeclarationSyntax> members)
+    {
+        Members = members;
     }
 }
