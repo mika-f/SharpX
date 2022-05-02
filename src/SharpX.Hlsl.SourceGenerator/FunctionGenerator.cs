@@ -5,15 +5,22 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+
+using SharpX.Hlsl.SourceGenerator.Extensions;
+using SharpX.Hlsl.SourceGenerator.TypeScript;
+using SharpX.Hlsl.SourceGenerator.TypeScript.Syntax;
+
+using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
+using TypeDeclarationSyntax = SharpX.Hlsl.SourceGenerator.TypeScript.Syntax.TypeDeclarationSyntax;
 
 namespace SharpX.Hlsl.SourceGenerator;
 
@@ -22,11 +29,6 @@ public sealed class FunctionGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-#if DEBUG
-        if (!Debugger.IsAttached)
-            Debugger.Launch();
-#endif
-
         context.RegisterPostInitializationOutput(GenerateInitialStaticCodes);
 
 
@@ -125,5 +127,38 @@ public class FunctionSourceAttribute : global::System.Attribute
     private static void GenerateActualSource(SourceProductionContext context, (INamedTypeSymbol?, string?) tuple)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
+
+        var symbol = tuple.Item1;
+        if (symbol == null)
+            return;
+
+        var dts = tuple.Item2;
+        if (string.IsNullOrWhiteSpace(dts))
+            return;
+
+        var ts = Parser.ParseString(dts!);
+        var exports = ts.Members.OfType<ExportStatementSyntax>().ToArray();
+        if (exports.None())
+            return;
+
+        var source = new StringBuilder();
+        source.Append($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
+        source.Append($"public partial class {symbol.Name} {{");
+
+        foreach (var member in exports.SelectMany(w => w.Members))
+        {
+            if (member is not TypeDeclarationSyntax t)
+                continue;
+
+            foreach (var function in t.Functions)
+            {
+                var name = function.Identifier.ToFullString();
+                var ret = function.ReturnType.ToFullString();
+            }
+        }
+
+        source.Append("}");
+
+        context.AddSource($"{symbol.Name}.g.cs", source.ToString());
     }
 }
