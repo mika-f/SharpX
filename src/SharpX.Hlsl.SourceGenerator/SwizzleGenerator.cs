@@ -12,6 +12,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 using SharpX.Hlsl.SourceGenerator.Extensions;
 
@@ -37,7 +38,9 @@ public sealed class SwizzleGenerator : IIncrementalGenerator
                                .Where(w => w is not (null, _))
                                .WithComparer(new SyntaxProviderComparer());
 
-        context.RegisterSourceOutput(providers, GenerateActualSource);
+        var options = context.AnalyzerConfigOptionsProvider.Select(SelectOptions).WithComparer(new MSBuildOptionsComparer());
+
+        context.RegisterSourceOutput(providers.Combine(options), GenerateActualSource);
     }
 
     private static void GenerateInitialStaticCodes(IncrementalGeneratorPostInitializationContext context)
@@ -89,12 +92,24 @@ public class SwizzleAttribute : global::System.Attribute
         return (Symbol: symbol, Attributes: list.ToList());
     }
 
-    private static void GenerateActualSource(SourceProductionContext context, (INamedTypeSymbol, List<List<string>>) tuple)
+    private static MSBuildOptions SelectOptions(AnalyzerConfigOptionsProvider provider, CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+
+        var isDesignTimeBuild = provider.GlobalOptions.TryGetValue("build_property.DesignTimeBuild", out var designTimeBuild) && designTimeBuild == "true";
+        if (!provider.GlobalOptions.TryGetValue("build_property.ProjectDir", out var projectDir))
+            projectDir = "";
+
+        return new MSBuildOptions(projectDir, isDesignTimeBuild);
+    }
+
+
+    private static void GenerateActualSource(SourceProductionContext context, ((INamedTypeSymbol, List<List<string>>) Left, MSBuildOptions Right) tuple)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        var symbol = tuple.Item1;
-        var allAttributes = tuple.Item2;
+        var symbol = tuple.Left.Item1;
+        var allAttributes = tuple.Left.Item2;
 
         var source = new StringBuilder();
         source.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
@@ -103,14 +118,20 @@ public class SwizzleAttribute : global::System.Attribute
         foreach (var attributes in allAttributes)
             for (var i = 0; i < attributes.Count; i++)
             {
+                if (i + 1 > 4)
+                    continue;
+
+                if (tuple.Right.IsDesignTimeBuild)
+                    continue;
+
                 var signatures = attributes.Combination(i + 1, true);
                 foreach (var components in signatures)
                 {
                     var signature = string.Concat(components);
-                    var accessors = signature.Distinct().Count() == signature.Length ? "{ get; set; }" : "{ get; }";
+                    var accessors = components.Distinct().Count() == components.Length ? "{ get; set; }" : "{ get; }";
 
                     source.AppendLine($"    [global::SharpX.Hlsl.Primitives.Attributes.Compiler.Name(\"{signature.ToLowerInvariant()}\")]");
-                    source.AppendLine($"    public Vector{i + 1}<T> {signature} {accessors}");
+                    source.AppendLine($"    public global::SharpX.Hlsl.Primitives.Types.Vector{i + 1}<T> {signature} {accessors}");
                     source.AppendLine();
                 }
             }

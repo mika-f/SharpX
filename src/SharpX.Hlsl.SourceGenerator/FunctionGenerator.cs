@@ -123,7 +123,7 @@ public class FunctionSourceAttribute : global::System.Attribute
         if (!provider.GlobalOptions.TryGetValue("build_property.ProjectDir", out var projectDir))
             projectDir = "";
 
-        return new MSBuildOptions(projectDir);
+        return new MSBuildOptions(projectDir, false);
     }
 
     private static void GenerateActualSource(SourceProductionContext context, (INamedTypeSymbol?, string?) tuple)

@@ -12,16 +12,19 @@ internal sealed class MSBuildOptions : IEquatable<MSBuildOptions>
 {
     public string ProjectDirectory { get; }
 
-    public MSBuildOptions(string projectDirectory)
+    public bool IsDesignTimeBuild { get; }
+
+    public MSBuildOptions(string projectDirectory, bool isDesignTimeBuild)
     {
         ProjectDirectory = projectDirectory;
+        IsDesignTimeBuild = isDesignTimeBuild;
     }
 
     public bool Equals(MSBuildOptions? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return ProjectDirectory == other.ProjectDirectory;
+        return ProjectDirectory == other.ProjectDirectory && IsDesignTimeBuild == other.IsDesignTimeBuild;
     }
 
     public override bool Equals(object? obj)
@@ -31,6 +34,6 @@ internal sealed class MSBuildOptions : IEquatable<MSBuildOptions>
 
     public override int GetHashCode()
     {
-        return ProjectDirectory.GetHashCode();
+        return ProjectDirectory.GetHashCode() * (IsDesignTimeBuild ? -1 : 1);
     }
 }
