@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,7 @@ using SharpX.Hlsl.SourceGenerator.TypeScript.Syntax;
 
 using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 using TypeDeclarationSyntax = SharpX.Hlsl.SourceGenerator.TypeScript.Syntax.TypeDeclarationSyntax;
+using TypeSyntax = SharpX.Hlsl.SourceGenerator.TypeScript.Syntax.TypeSyntax;
 
 namespace SharpX.Hlsl.SourceGenerator;
 
@@ -145,20 +147,146 @@ public class FunctionSourceAttribute : global::System.Attribute
         source.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
         source.AppendLine($"public partial class {symbol.Name} {{");
 
+        var signatures = new List<string>();
+
         foreach (var member in exports.SelectMany(w => w.Members))
         {
             if (member is not TypeDeclarationSyntax t)
                 continue;
 
-            foreach (var function in t.Functions)
-            {
-                var name = function.Identifier.ToFullString();
-                var ret = function.ReturnType.ToFullString();
-            }
+            signatures.AddRange(t.Functions.SelectMany(ExpandSignatures));
+        }
+
+        foreach (var signature in signatures.Distinct())
+        {
+            source.AppendLine($"public static {signature}");
+            source.AppendLine("{");
+            source.AppendLine("    throw new global::System.NotImplementedException();");
+            source.AppendLine("}");
         }
 
         source.AppendLine("}");
 
         context.AddSource($"{symbol.Name}.g.cs", source.ToString());
+    }
+
+    private static List<string> ExpandSignatures(FunctionDeclarationSyntax function)
+    {
+        var name = function.Identifier.ToFullString();
+        var list = new List<string>();
+
+        // single and no expanding
+        if (function.Generics == null)
+        {
+            if (function.Parameters.Count == 0)
+            {
+                list.Add($"{function.ReturnType.ToFullString()} {name}()");
+            }
+            else if (function.Parameters.All(w => w.Type.ToFullString() == function.ReturnType.ToFullString()))
+            {
+                var signatures = ExpandType(function.Parameters.First().Type);
+                foreach (var signature in signatures)
+                {
+                    var sb = new StringBuilder();
+                    sb.Append($"{signature} {name}(");
+
+                    for (var i = 0; i < function.Parameters.Count; i++)
+                    {
+                        if (i != 0)
+                            sb.Append(", ");
+                        sb.Append($"{signature} {function.Parameters[i].Name.ToFullString()}");
+                    }
+
+                    sb.Append(")");
+
+                    list.Add(sb.ToString());
+                }
+            }
+        }
+
+
+        return list.Distinct().ToList();
+    }
+
+    private static List<string> ExpandType(TypeSyntax t)
+    {
+        if (t is SimpleTypeSyntax s)
+            return new List<string> { s.Identifier.ToFullString() };
+        if (t is GenericTypeSyntax g)
+            switch (g.Identifier.ToFullString())
+            {
+                case "Scalar":
+                    return ExpandScalar(g.Generics);
+
+                case "Vector":
+                    return ExpandVector(g.Generics);
+
+                case "Matrix":
+                    return ExpandMatrix(g.Generics);
+
+                case "Out":
+                    return new List<string>();
+            }
+
+        throw new ArgumentOutOfRangeException(nameof(t));
+    }
+
+    private static List<string> ExpandScalar(GenericsDeclarationSyntax generics)
+    {
+        var list = new List<string>();
+
+        if (generics.Generics.Count == 1)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+                list.Add(t.ToFullString());
+        }
+        else
+        {
+            throw new ArgumentException();
+        }
+
+        return list;
+    }
+
+    private static List<string> ExpandVector(GenericsDeclarationSyntax generics)
+    {
+        var list = new List<string>();
+
+        // no specify vector length
+        if (generics.Generics.Count == 1)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+            {
+                var component = t.ToFullString();
+                for (var i = 1; i <= 4; i++)
+                    list.Add(i == 1 ? component : $"global::SharpX.Hlsl.Primitives.Types.Vector{i}<{component}>");
+            }
+        }
+        else if (generics.Generics.Count == 2)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+            {
+                var component = t.ToFullString();
+                var length = generics.Generics[1].T.ToFullString();
+
+                list.Add(length == "1" ? component : $"global::SharpX.Hlsl.Primitives.Types.Vector{length}<{component}>");
+            }
+        }
+        else
+        {
+            throw new ArgumentException();
+        }
+
+        return list;
+    }
+
+    private static List<string> ExpandMatrix(GenericsDeclarationSyntax generics)
+    {
+        var list = new List<string>();
+
+        return list;
     }
 }

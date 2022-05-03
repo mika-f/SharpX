@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Functions\" />
-    <Folder Include="Types\" />
+    <None Remove="Functions\builtin.d.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Functions\builtin.d.ts" />
   </ItemGroup>
 
   <ItemGroup>
