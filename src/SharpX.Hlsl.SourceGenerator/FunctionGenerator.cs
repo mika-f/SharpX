@@ -147,7 +147,7 @@ public class FunctionSourceAttribute : global::System.Attribute
         source.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
         source.AppendLine($"public partial class {symbol.Name} {{");
 
-        var signatures = new List<string>();
+        var signatures = new List<CSharpSignature>();
 
         foreach (var member in exports.SelectMany(w => w.Members))
         {
@@ -159,10 +159,8 @@ public class FunctionSourceAttribute : global::System.Attribute
 
         foreach (var signature in signatures.Distinct())
         {
-            source.AppendLine($"public static {signature}");
-            source.AppendLine("{");
-            source.AppendLine("    throw new global::System.NotImplementedException();");
-            source.AppendLine("}");
+            source.AppendLine($"[global::SharpX.Hlsl.Primitives.Attributes.Compiler.Name(\"{signature.Name}\")]");
+            source.AppendLine($"public static extern {signature.Signature};");
         }
 
         source.AppendLine("}");
@@ -170,17 +168,17 @@ public class FunctionSourceAttribute : global::System.Attribute
         context.AddSource($"{symbol.Name}.g.cs", source.ToString());
     }
 
-    private static List<string> ExpandSignatures(FunctionDeclarationSyntax function)
+    private static List<CSharpSignature> ExpandSignatures(FunctionDeclarationSyntax function)
     {
         var name = function.Identifier.ToFullString();
-        var list = new List<string>();
+        var list = new List<CSharpSignature>();
 
         // single and no expanding
         if (function.Generics == null)
         {
             if (function.Parameters.Count == 0)
             {
-                list.Add($"{function.ReturnType.ToFullString()} {name}()");
+                list.Add(new CSharpSignature(name, $"{function.ReturnType.ToFullString()} {name.ToUpperCamelCase()}()"));
             }
             else if (function.Parameters.All(w => w.Type.ToFullString() == function.ReturnType.ToFullString()))
             {
@@ -188,7 +186,7 @@ public class FunctionSourceAttribute : global::System.Attribute
                 foreach (var signature in signatures)
                 {
                     var sb = new StringBuilder();
-                    sb.Append($"{signature} {name}(");
+                    sb.Append($"{signature} {name.ToUpperCamelCase()}(");
 
                     for (var i = 0; i < function.Parameters.Count; i++)
                     {
@@ -199,7 +197,7 @@ public class FunctionSourceAttribute : global::System.Attribute
 
                     sb.Append(")");
 
-                    list.Add(sb.ToString());
+                    list.Add(new CSharpSignature(name, sb.ToString()));
                 }
             }
         }
