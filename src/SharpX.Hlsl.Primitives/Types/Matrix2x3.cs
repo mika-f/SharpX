@@ -4,15 +4,23 @@
 // ------------------------------------------------------------------------------------------
 
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
+#if INCLUDE_MATRIX_INTELLISENSE
 using SharpX.Hlsl.SourceGenerator.Attributes;
+#endif
 
 namespace SharpX.Hlsl.Primitives.Types;
 
 [Component("&T2x3")]
 [ExternalComponent]
+#if INCLUDE_MATRIX_INTELLISENSE
 [Swizzle("_00", "_01", "_02", "_10", "_11", "_12")]
+#endif
 // ReSharper disable once InconsistentNaming
-public partial class Matrix2x3<T>
+public
+#if INCLUDE_MATRIX_INTELLISENSE
+    partial
+#endif
+    class Matrix2x3<T>
 {
     public Matrix2x3(Vector1<T> _) { }
 
