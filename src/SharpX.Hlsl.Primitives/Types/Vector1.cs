@@ -13,8 +13,6 @@ namespace SharpX.Hlsl.Primitives.Types;
 [ExternalComponent]
 public class Vector1<T>
 {
-    public Vector1(T _) { }
-
     public static extern implicit operator T(Vector1<T> _);
 
     public static extern implicit operator Vector1<T>(T _);
@@ -106,7 +104,6 @@ public class Vector1<T>
     public static extern Vector1<T> operator /(Vector1<T> a, T b);
 
     public static extern Vector1<T> operator %(Vector1<T> a, T b);
-
 
     public static extern Vector1<T> operator +(Vector1<T> a, Vector2<T> b);
 

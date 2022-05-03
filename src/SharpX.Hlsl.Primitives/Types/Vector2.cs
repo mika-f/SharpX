@@ -16,11 +16,7 @@ namespace SharpX.Hlsl.Primitives.Types;
 [Swizzle("R", "G")]
 public sealed partial class Vector2<T>
 {
-    public Vector2(T _) { }
-
     public Vector2(Vector1<T> _) { }
-
-    public Vector2(T _1, T _2) { }
 
     public Vector2(Vector1<T> _1, Vector1<T> _2) { }
 
