@@ -11,6 +11,8 @@ using Kokuban;
 using SharpX.CLI.Attributes;
 using SharpX.CLI.Models;
 
+#pragma warning disable CS8618
+
 namespace SharpX.CLI.Commands;
 
 internal class InitCommand

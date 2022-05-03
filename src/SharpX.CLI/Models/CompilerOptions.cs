@@ -5,6 +5,8 @@
 
 using System.Text.Json.Serialization;
 
+#pragma warning disable CS8618
+
 namespace SharpX.CLI.Models;
 
 public class CompilerOptions

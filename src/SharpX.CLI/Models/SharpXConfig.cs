@@ -5,13 +5,14 @@
 
 using System.Text.Json.Serialization;
 
+#pragma warning disable CS8618
+
 namespace SharpX.CLI.Models;
 
 public class SharpXConfig
 {
     [JsonPropertyName("compilerOptions")]
     public CompilerOptions CompilerOptions { get; set; }
-
 
     [JsonPropertyName("files")]
     public List<string> Files { get; set; }
