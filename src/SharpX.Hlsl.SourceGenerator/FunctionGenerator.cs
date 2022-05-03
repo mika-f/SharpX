@@ -159,8 +159,9 @@ public class FunctionSourceAttribute : global::System.Attribute
 
         foreach (var signature in signatures.Distinct())
         {
-            source.AppendLine($"[global::SharpX.Hlsl.Primitives.Attributes.Compiler.Name(\"{signature.Name}\")]");
-            source.AppendLine($"public static extern {signature.Signature};");
+            source.AppendLine($"    [global::SharpX.Hlsl.Primitives.Attributes.Compiler.Name(\"{signature.Name}\")]");
+            source.AppendLine($"    public static extern {signature.Signature};");
+            source.AppendLine();
         }
 
         source.AppendLine("}");
@@ -286,5 +287,18 @@ public class FunctionSourceAttribute : global::System.Attribute
         var list = new List<string>();
 
         return list;
+    }
+
+    private class SyntaxProviderComparer : IEqualityComparer<ValueTuple<INamedTypeSymbol?, string?>>
+    {
+        public bool Equals((INamedTypeSymbol?, string?) x, (INamedTypeSymbol?, string?) y)
+        {
+            return (x.Item1?.Equals(y.Item1, SymbolEqualityComparer.Default) ?? false) && x.Item2 == y.Item2;
+        }
+
+        public int GetHashCode((INamedTypeSymbol?, string?) obj)
+        {
+            return SymbolEqualityComparer.Default.GetHashCode(obj.Item1);
+        }
     }
 }
