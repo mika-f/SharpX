@@ -15,9 +15,9 @@ type Scalar<T> = {};
 type Vector<T, T1 extends number = any> = {};
 
 /**
- * Matrix<T> expands to T1x1, T4x1, ...and others.
+ * Matrix<T> expands to T2x2, T2x3, ...and others.
  * Example:
- *   Matrix<float> expands to float1x1, float1x2, ..., float4x4
+ *   Matrix<float> expands to float2x2, float2x3, ..., float4x4
  *
  * If you specify x and y such as Matrix<float, 1, 2>, it expands to float1x2
  */
@@ -111,7 +111,6 @@ export type Builtin = {
   degrees(x: Vector<float>): Vector<float>;
   degrees(x: Matrix<float>): Matrix<float>;
 
-  determinant(x: Matrix<float, 1, 1>): Matrix<float, 1, 1>;
   determinant(x: Matrix<float, 2, 2>): Matrix<float, 2, 2>;
   determinant(x: Matrix<float, 3, 3>): Matrix<float, 3, 3>;
   determinant(x: Matrix<float, 4, 4>): Matrix<float, 4, 4>;

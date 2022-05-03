@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
@@ -29,6 +30,8 @@ namespace SharpX.Hlsl.SourceGenerator;
 [Generator(LanguageNames.CSharp)]
 public sealed class FunctionGenerator : IIncrementalGenerator
 {
+    private static readonly Regex ExpandOut = new("Out<(.*?)>", RegexOptions.Compiled);
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(GenerateInitialStaticCodes);
@@ -174,7 +177,6 @@ public class FunctionSourceAttribute : global::System.Attribute
         var name = function.Identifier.ToFullString();
         var list = new List<CSharpSignature>();
 
-        // single and no expanding
         if (function.Generics == null)
         {
             if (function.Parameters.Count == 0)
@@ -201,6 +203,57 @@ public class FunctionSourceAttribute : global::System.Attribute
                     list.Add(new CSharpSignature(name, sb.ToString()));
                 }
             }
+            else
+            {
+                var parameters = function.Parameters.Select(w => ExpandType(w.Type)).ToArray();
+                var ret = ExpandType(function.ReturnType);
+
+                for (var i = 0; i < parameters[0].Count; i++)
+                {
+                    var sb = new StringBuilder();
+                    sb.Append($"{ret[0]} {name.ToUpperCamelCase()}(");
+
+                    for (var j = 0; j < parameters.Length; j++)
+                    {
+                        if (j != 0)
+                            sb.Append(", ");
+
+                        var parameter = parameters[j].ElementAtOrDefault(i);
+                        if (string.IsNullOrWhiteSpace(parameter))
+                            parameter = parameters[j][0];
+                        sb.Append($"{parameter} {function.Parameters[j].Name.ToFullString()}");
+                    }
+
+                    sb.Append(")");
+
+                    var s = sb.ToString();
+                    list.Add(new CSharpSignature(name, sb.ToString()));
+                }
+            }
+        }
+        else
+        {
+            if (function.Parameters.All(w => ExpandOut.Replace(w.Type.ToFullString(), "$1") == function.ReturnType.ToFullString()))
+            {
+                var signatures = ExpandGenerics(function.Generics.Generics[0]);
+                foreach (var signature in signatures)
+                {
+                    var sb = new StringBuilder();
+                    sb.Append($"{signature} {name.ToUpperCamelCase()}(");
+
+                    for (var i = 0; i < function.Parameters.Count; i++)
+                    {
+                        if (i != 0)
+                            sb.Append(", ");
+                        var hasOut = function.Parameters[i].Type.ToFullString().Contains("Out<");
+                        sb.Append($"{(hasOut ? "out " : "")}{signature} {function.Parameters[i].Name.ToFullString()}");
+                    }
+
+                    sb.Append(")");
+
+                    list.Add(new CSharpSignature(name, sb.ToString()));
+                }
+            }
         }
 
 
@@ -210,7 +263,7 @@ public class FunctionSourceAttribute : global::System.Attribute
     private static List<string> ExpandType(TypeSyntax t)
     {
         if (t is SimpleTypeSyntax s)
-            return new List<string> { s.Identifier.ToFullString() };
+            return new List<string> { NormalizeTypeName(s.Identifier.ToFullString()) };
         if (t is GenericTypeSyntax g)
             switch (g.Identifier.ToFullString())
             {
@@ -224,7 +277,10 @@ public class FunctionSourceAttribute : global::System.Attribute
                     return ExpandMatrix(g.Generics);
 
                 case "Out":
-                    return new List<string>();
+                {
+                    var o = ExpandType(g.Generics.Generics[0].T);
+                    return o.Select(w => $"out {w}").ToList();
+                }
             }
 
         throw new ArgumentOutOfRangeException(nameof(t));
@@ -238,7 +294,7 @@ public class FunctionSourceAttribute : global::System.Attribute
         {
             var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
             foreach (var t in types)
-                list.Add(t.ToFullString());
+                list.Add(NormalizeTypeName(t.ToFullString()));
         }
         else
         {
@@ -258,7 +314,7 @@ public class FunctionSourceAttribute : global::System.Attribute
             var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
             foreach (var t in types)
             {
-                var component = t.ToFullString();
+                var component = NormalizeTypeName(t.ToFullString());
                 for (var i = 1; i <= 4; i++)
                     list.Add(i == 1 ? component : $"global::SharpX.Hlsl.Primitives.Types.Vector{i}<{component}>");
             }
@@ -268,7 +324,7 @@ public class FunctionSourceAttribute : global::System.Attribute
             var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
             foreach (var t in types)
             {
-                var component = t.ToFullString();
+                var component = NormalizeTypeName(t.ToFullString());
                 var length = generics.Generics[1].T.ToFullString();
 
                 list.Add(length == "1" ? component : $"global::SharpX.Hlsl.Primitives.Types.Vector{length}<{component}>");
@@ -286,7 +342,82 @@ public class FunctionSourceAttribute : global::System.Attribute
     {
         var list = new List<string>();
 
+        if (generics.Generics.Count == 1)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+            {
+                var component = NormalizeTypeName(t.ToFullString());
+                for (var i = 2; i <= 4; i++)
+                for (var j = 2; j <= 4; j++)
+                    list.Add($"global::SharpX.Hlsl.Primitives.Types.Matrix{i}x{j}<{component}>");
+            }
+        }
+        else if (generics.Generics.Count == 2)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+            {
+                var component = NormalizeTypeName(t.ToFullString());
+                var i = generics.Generics[1].T.ToFullString();
+                for (var j = 2; j <= 4; j++)
+                    list.Add($"global::SharpX.Hlsl.Primitives.Types.Matrix{i}x{j}<{component}>");
+            }
+        }
+        else if (generics.Generics.Count == 3)
+        {
+            var types = generics.Generics[0].OrTypes.Append(generics.Generics[0].T);
+            foreach (var t in types)
+            {
+                var component = NormalizeTypeName(t.ToFullString());
+                var i = generics.Generics[1].T.ToFullString();
+                var j = generics.Generics[2].T.ToFullString();
+                list.Add($"global::SharpX.Hlsl.Primitives.Types.Matrix{i}x{j}<{component}>");
+            }
+        }
+        else
+        {
+            throw new ArgumentException();
+        }
+
         return list;
+    }
+
+    private static List<string> ExpandGenerics(GenericsSyntax generics)
+    {
+        var list = new List<string>();
+
+        if (generics.Constraint == null)
+            return list;
+
+        foreach (var constraint in generics.Constraint.Constraints)
+            list.AddRange(ExpandType(constraint));
+
+        return list;
+    }
+
+    private static string NormalizeTypeName(string t)
+    {
+        switch (t)
+        {
+            case "boolean":
+                return "bool";
+
+            case "Sampler1D":
+                return "global::SharpX.Hlsl.Primitives.Types.Sampler1D";
+
+            case "Sampler2D":
+                return "global::SharpX.Hlsl.Primitives.Types.Sampler2D";
+
+            case "Sampler3D":
+                return "global::SharpX.Hlsl.Primitives.Types.Sampler3D";
+
+            case "SamplerCUBE":
+                return "global::SharpX.Hlsl.Primitives.Types.SamplerCUBE";
+
+            default:
+                return t;
+        }
     }
 
     private class SyntaxProviderComparer : IEqualityComparer<ValueTuple<INamedTypeSymbol?, string?>>
