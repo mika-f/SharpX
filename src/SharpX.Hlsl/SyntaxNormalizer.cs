@@ -34,6 +34,11 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         return result;
     }
 
+    public override SyntaxToken VisitToken(SyntaxToken token)
+    {
+        return base.VisitToken(token);
+    }
+
     private static int GetDeclarationDepth(HlslSyntaxNode? node)
     {
         if (node == null)

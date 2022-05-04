@@ -42,7 +42,7 @@ public class StructDeclarationSyntax : TypeDeclarationSyntax
         return Update(keyword, identifier, openBraceToken, new SyntaxList<MemberDeclarationSyntax>(members), closeBraceToken, semicolonToken);
     }
 
-    private StructDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
+    public StructDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
     {
         if (keyword != Keyword || identifier != Identifier || openBraceToken != OpenBraceToken || members != Members || closeBraceToken != CloseBraceToken || semicolonToken != SemicolonToken)
             return SyntaxFactory.StructDeclaration(keyword, identifier, openBraceToken, new SyntaxList<FieldDeclarationSyntax>(members.Cast<FieldDeclarationSyntax>()), closeBraceToken, semicolonToken);

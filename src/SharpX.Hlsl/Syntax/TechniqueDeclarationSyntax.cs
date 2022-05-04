@@ -34,12 +34,12 @@ public class TechniqueDeclarationSyntax : TypeDeclarationSyntax
         return index == 3 ? _members : null;
     }
 
-    private TechniqueDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<PassDeclarationSyntax> members, SyntaxToken closeBraceToken)
+    public TechniqueDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<PassDeclarationSyntax> members, SyntaxToken closeBraceToken)
     {
         return Update(keyword, identifier, openBraceToken, new SyntaxList<MemberDeclarationSyntax>(members), closeBraceToken);
     }
 
-    private TechniqueDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken)
+    public TechniqueDeclarationSyntax Update(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<MemberDeclarationSyntax> members, SyntaxToken closeBraceToken)
     {
         if (keyword != Keyword || identifier != Identifier || openBraceToken != OpenBraceToken || members != Members || closeBraceToken != CloseBraceToken)
             return SyntaxFactory.TechniqueDeclaration(keyword, identifier, openBraceToken, new SyntaxList<PassDeclarationSyntax>(members.Cast<PassDeclarationSyntax>()), closeBraceToken);
