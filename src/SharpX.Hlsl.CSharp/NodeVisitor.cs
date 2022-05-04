@@ -44,7 +44,6 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                           .Where(w => w != null)
                           .OfType<FieldDeclarationSyntax>();
 
-        return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members))
-                            .WithKeyword(SyntaxFactory.Token(SyntaxKind.StructKeyword).WithTrailingTrivia(SyntaxFactory.Whitespace(" ")));
+        return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members));
     }
 }

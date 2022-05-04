@@ -82,4 +82,9 @@ internal class BracketedArgumentListSyntaxInternal : BaseArgumentListSyntaxInter
     {
         return new BracketedArgumentListSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBracketedArgumentList(this);
+    }
 }

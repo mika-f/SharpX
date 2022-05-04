@@ -100,4 +100,9 @@ internal class TechniqueDeclarationSyntaxInternal : TypeDeclarationSyntaxInterna
     {
         return new TechniqueDeclarationSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitTechniqueDeclaration(this);
+    }
 }

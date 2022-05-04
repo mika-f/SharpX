@@ -72,4 +72,9 @@ internal class CaseSwitchLabelSyntaxInternal : SwitchLabelSyntaxInternal
     {
         return new CaseSwitchLabelSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitCaseSwitchLabel(this);
+    }
 }

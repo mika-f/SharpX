@@ -88,4 +88,9 @@ public class StructDeclarationSyntax : TypeDeclarationSyntax
     {
         return WithMembers(Members.AddRange(items.Cast<MemberDeclarationSyntax>().ToArray()));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitStructDeclaration(this);
+    }
 }

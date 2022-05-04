@@ -44,4 +44,9 @@ public class ElseClauseSyntax : HlslSyntaxNode
     {
         return Update(ElseKeyword, statement);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitElseClause(this);
+    }
 }

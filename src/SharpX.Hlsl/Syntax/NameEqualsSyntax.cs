@@ -44,4 +44,9 @@ public class NameEqualsSyntax : HlslSyntaxNode
     {
         return Update(Name, equalsToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitNameEquals(this);
+    }
 }

@@ -81,4 +81,9 @@ internal class ExpressionStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new ExpressionStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitExpressionStatement(this);
+    }
 }

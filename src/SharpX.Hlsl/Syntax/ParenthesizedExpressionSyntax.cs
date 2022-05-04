@@ -51,4 +51,9 @@ public class ParenthesizedExpressionSyntax : ExpressionSyntax
     {
         return Update(OpenParenToken, Expression, closeParenToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitParenthesizedExpression(this);
+    }
 }

@@ -127,4 +127,9 @@ public class SwitchStatementSyntax : StatementSyntax
     {
         return WithSections(Sections.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitSwitchStatement(this);
+    }
 }

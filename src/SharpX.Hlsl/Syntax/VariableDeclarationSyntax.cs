@@ -67,4 +67,9 @@ public class VariableDeclarationSyntax : HlslSyntaxNode
     {
         return WithVariables(Variables.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitVariableDeclaration(this);
+    }
 }

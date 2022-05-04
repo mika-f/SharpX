@@ -115,4 +115,9 @@ internal class MethodDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
     {
         return new MethodDeclarationSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitMethodDeclaration(this);
+    }
 }

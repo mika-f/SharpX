@@ -44,4 +44,6 @@ internal abstract class HlslSyntaxNodeInternal : GreenNode
     {
         return Kind is SyntaxKind.EndOfLineTrivia or SyntaxKind.SingleLineCommentTrivia;
     }
+
+    public abstract TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor);
 }

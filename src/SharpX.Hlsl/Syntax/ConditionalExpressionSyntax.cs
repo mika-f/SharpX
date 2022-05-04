@@ -79,4 +79,9 @@ public class ConditionalExpressionSyntax : ExpressionSyntax
     {
         return Update(Condition, QuestionToken, WhenTrue, ColonToken, whenFalse);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitConditionalExpression(this);
+    }
 }

@@ -63,4 +63,9 @@ public class BinaryExpressionSyntax : ExpressionSyntax
     {
         return Update(Left, OperatorToken, right);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBinaryExpression(this);
+    }
 }

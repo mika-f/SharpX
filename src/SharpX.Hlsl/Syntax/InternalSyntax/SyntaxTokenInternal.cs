@@ -188,4 +188,9 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
     }
 
     #endregion
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitToken(this);
+    }
 }

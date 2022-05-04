@@ -81,4 +81,9 @@ internal class AttributeArgumentListSyntaxInternal : HlslSyntaxNodeInternal
     {
         return new AttributeArgumentListSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitAttributeArgumentList(this);
+    }
 }

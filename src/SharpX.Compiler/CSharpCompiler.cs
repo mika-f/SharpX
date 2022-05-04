@@ -15,6 +15,7 @@ using SharpX.Compiler.Models;
 using SharpX.Compiler.Models.Abstractions;
 using SharpX.Composition.Attributes;
 using SharpX.Composition.Interfaces;
+using SharpX.Core.Extensions;
 
 namespace SharpX.Compiler;
 
@@ -189,7 +190,7 @@ public class CSharpCompiler : IDisposable
                 }
                 else
                 {
-                    var str = source.ToFullString();
+                    var str = source.NormalizeWhitespace().ToFullString();
                     Debug.WriteLine(str);
                 }
             }

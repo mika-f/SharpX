@@ -109,4 +109,9 @@ internal class WhileStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new WhileStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitWhileStatement(this);
+    }
 }

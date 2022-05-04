@@ -44,4 +44,9 @@ public class PostfixUnaryExpressionSyntax : ExpressionSyntax
     {
         return Update(Operand, operatorToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitPostfixUnaryExpression(this);
+    }
 }

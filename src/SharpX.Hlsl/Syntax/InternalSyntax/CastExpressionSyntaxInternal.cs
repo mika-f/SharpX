@@ -82,4 +82,9 @@ internal class CastExpressionSyntaxInternal : ExpressionSyntaxInternal
     {
         return new CastExpressionSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitCastExpression(this);
+    }
 }

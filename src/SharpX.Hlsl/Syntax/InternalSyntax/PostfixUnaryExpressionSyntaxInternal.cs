@@ -63,4 +63,9 @@ internal class PostfixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
     {
         return new PostfixUnaryExpressionSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitPostfixUnaryExpression(this);
+    }
 }

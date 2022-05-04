@@ -64,4 +64,9 @@ public class AttributeArgumentListSyntax : HlslSyntaxNode
     {
         return WithArguments(Arguments.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitAttributeArgumentList(this);
+    }
 }

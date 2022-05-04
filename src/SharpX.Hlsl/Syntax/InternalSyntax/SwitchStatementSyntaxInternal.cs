@@ -135,4 +135,9 @@ internal class SwitchStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new SwitchStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitSwitchStatement(this);
+    }
 }

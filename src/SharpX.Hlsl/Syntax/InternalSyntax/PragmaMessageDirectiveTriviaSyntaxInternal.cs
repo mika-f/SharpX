@@ -91,4 +91,9 @@ internal class PragmaMessageDirectiveTriviaSyntaxInternal : DirectiveTriviaSynta
     {
         throw new NotImplementedException();
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -16,4 +16,11 @@ public abstract class HlslSyntaxNode : SyntaxNode
     internal new HlslSyntaxNode? Parent => (HlslSyntaxNode?)base.Parent;
 
     internal HlslSyntaxNode(GreenNode node, SyntaxNode? parent, int position) : base(node, parent, position) { }
+
+    protected override SyntaxNode NormalizeWhitespaceCore(string indentation, string eol, bool elasticTrivia)
+    {
+        return SyntaxNormalizer.Normalize(this, indentation, eol, elasticTrivia);
+    }
+
+    public abstract TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor);
 }

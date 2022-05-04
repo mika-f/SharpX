@@ -51,4 +51,9 @@ public class CaseSwitchLabelSyntax : SwitchLabelSyntax
     {
         return Update(CaseKeyword, Value, colonToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitCaseSwitchLabel(this);
+    }
 }

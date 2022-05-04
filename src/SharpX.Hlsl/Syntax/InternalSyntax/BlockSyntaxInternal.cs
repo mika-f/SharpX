@@ -98,4 +98,9 @@ internal class BlockSyntaxInternal : StatementSyntaxInternal
     {
         return new BlockSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBlock(this);
+    }
 }

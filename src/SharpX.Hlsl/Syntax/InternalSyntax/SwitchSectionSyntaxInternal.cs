@@ -79,4 +79,9 @@ internal class SwitchSectionSyntaxInternal : HlslSyntaxNodeInternal
     {
         return new SwitchSectionSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitSwitchSection(this);
+    }
 }

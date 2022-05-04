@@ -73,4 +73,9 @@ public class BracketedArgumentListSyntax : BaseArgumentListSyntax
     {
         return WithArguments(Arguments.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBracketedArgumentList(this);
+    }
 }

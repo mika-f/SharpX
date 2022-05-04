@@ -55,4 +55,9 @@ public class ArrayCreationExpressionSyntax : ExpressionSyntax
     {
         return Update(Type, initializer);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitArrayCreationExpression(this);
+    }
 }

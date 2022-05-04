@@ -63,4 +63,9 @@ internal class InvocationExpressionSyntaxInternal : ExpressionSyntaxInternal
     {
         return new InvocationExpressionSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitInvocationExpression(this);
+    }
 }

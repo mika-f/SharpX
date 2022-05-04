@@ -63,4 +63,9 @@ public class ArrayRankSpecifierSyntax : HlslSyntaxNode
     {
         return WithSizes(Sizes.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitArrayRankSpecifier(this);
+    }
 }

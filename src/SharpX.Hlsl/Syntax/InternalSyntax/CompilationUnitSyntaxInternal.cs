@@ -71,4 +71,9 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
     {
         return new CompilationUnitSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitCompilationUnit(this);
+    }
 }

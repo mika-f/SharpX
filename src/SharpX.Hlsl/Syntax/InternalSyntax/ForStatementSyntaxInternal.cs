@@ -179,4 +179,9 @@ internal class ForStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new ForStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitForStatement(this);
+    }
 }

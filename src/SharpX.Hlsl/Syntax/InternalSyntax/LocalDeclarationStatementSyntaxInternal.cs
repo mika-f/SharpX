@@ -94,4 +94,9 @@ internal class LocalDeclarationStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new LocalDeclarationStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitLocalDeclaration(this);
+    }
 }

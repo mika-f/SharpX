@@ -50,4 +50,9 @@ public sealed class GenericNameSyntax : SimpleNameSyntax
     {
         return WithTypeArgumentList(TypeArgumentList.WithArguments(TypeArgumentList.Arguments.AddRange(items)));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitGenericName(this);
+    }
 }

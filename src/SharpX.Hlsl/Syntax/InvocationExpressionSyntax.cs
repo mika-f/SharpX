@@ -60,4 +60,9 @@ public class InvocationExpressionSyntax : ExpressionSyntax
     {
         return WithArgumentList(ArgumentList.AddArguments(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitInvocationExpression(this);
+    }
 }

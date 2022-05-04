@@ -89,4 +89,9 @@ public class FieldDeclarationSyntax : MemberDeclarationSyntax
     {
         return Update(Type, Identifier, Arguments, Semantics, Initializer, semicolonToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitFieldDeclaration(this);
+    }
 }

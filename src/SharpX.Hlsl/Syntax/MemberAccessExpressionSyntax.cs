@@ -62,4 +62,9 @@ public class MemberAccessExpressionSyntax : ExpressionSyntax
     {
         return Update(Expression, OperatorToken, name);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitMemberAccessExpression(this);
+    }
 }

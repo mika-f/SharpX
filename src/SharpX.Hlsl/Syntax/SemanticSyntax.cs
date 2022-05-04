@@ -45,4 +45,9 @@ public class SemanticSyntax : HlslSyntaxNode
     {
         return Update(ColonToken, identifier);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitSemantics(this);
+    }
 }

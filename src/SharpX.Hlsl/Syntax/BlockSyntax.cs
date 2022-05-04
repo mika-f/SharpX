@@ -90,4 +90,9 @@ public class BlockSyntax : StatementSyntax
     {
         return WithStatements(Statements.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBlock(this);
+    }
 }

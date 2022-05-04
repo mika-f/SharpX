@@ -35,4 +35,9 @@ public class LiteralExpressionSyntax : ExpressionSyntax
     {
         return Update(token);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitLiteralExpression(this);
+    }
 }

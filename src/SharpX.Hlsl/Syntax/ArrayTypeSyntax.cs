@@ -60,4 +60,9 @@ public class ArrayTypeSyntax : TypeSyntax
     {
         return WithRankSpecifiers(RankSpecifiers.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitArrayType(this);
+    }
 }

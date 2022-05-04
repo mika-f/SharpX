@@ -82,4 +82,9 @@ internal class ArrayRankSpecifierSyntaxInternal : HlslSyntaxNodeInternal
     {
         return new ArrayRankSpecifierSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitArrayRankSpecifier(this);
+    }
 }

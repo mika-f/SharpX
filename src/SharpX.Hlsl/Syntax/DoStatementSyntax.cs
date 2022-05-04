@@ -115,4 +115,9 @@ public class DoStatementSyntax : StatementSyntax
     {
         return AddAttributeLists(items);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitDoStatement(this);
+    }
 }

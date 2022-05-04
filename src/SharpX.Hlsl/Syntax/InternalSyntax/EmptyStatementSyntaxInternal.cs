@@ -72,4 +72,9 @@ internal class EmptyStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new EmptyStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitEmptyStatement(this);
+    }
 }

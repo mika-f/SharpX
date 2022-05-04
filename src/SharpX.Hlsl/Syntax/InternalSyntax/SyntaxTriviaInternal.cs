@@ -62,4 +62,9 @@ internal class SyntaxTriviaInternal : HlslSyntaxNodeInternal
     {
         return new SyntaxTrivia(default, trivia, 0, 0);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitTrivia(this);
+    }
 }

@@ -97,4 +97,9 @@ public class MethodDeclarationSyntax : MemberDeclarationSyntax
     {
         return WithAttributeLists(AttributeLists.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitMethodDeclaration(this);
+    }
 }

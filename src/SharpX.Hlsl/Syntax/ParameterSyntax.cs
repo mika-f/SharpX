@@ -107,4 +107,9 @@ public class ParameterSyntax : HlslSyntaxNode
     {
         return WithModifiers(Modifiers.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitParameter(this);
+    }
 }

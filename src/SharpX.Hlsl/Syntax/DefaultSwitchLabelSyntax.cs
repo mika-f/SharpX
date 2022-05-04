@@ -42,4 +42,9 @@ public class DefaultSwitchLabelSyntax : SwitchLabelSyntax
     {
         return Update(DefaultKeyword, colonToken);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitDefaultSwitchLabel(this);
+    }
 }

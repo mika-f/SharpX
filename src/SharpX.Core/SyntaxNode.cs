@@ -116,6 +116,8 @@ public abstract class SyntaxNode
         return GetRed(ref field, 0);
     }
 
+    protected internal abstract SyntaxNode NormalizeWhitespaceCore(string indentation, string eol, bool elasticTrivia);
+
     #endregion
 
     #region Slots

@@ -63,4 +63,9 @@ internal class ElementAccessExpressionSyntaxInternal : ExpressionSyntaxInternal
     {
         return new ElementAccessExpressionSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitElementAccessExpression(this);
+    }
 }

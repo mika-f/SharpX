@@ -96,4 +96,9 @@ public class LocalDeclarationStatementSyntax : StatementSyntax
     {
         return WithModifiers(Modifiers.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitLocalDeclaration(this);
+    }
 }

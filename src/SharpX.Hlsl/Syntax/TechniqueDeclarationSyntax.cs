@@ -80,4 +80,9 @@ public class TechniqueDeclarationSyntax : TypeDeclarationSyntax
     {
         return WithMembers(Members.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitTechniqueDeclaration(this);
+    }
 }

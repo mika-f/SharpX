@@ -36,4 +36,9 @@ public sealed class IdentifierNameSyntax : SimpleNameSyntax
     {
         return Update(identifier);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitIdentifierName(this);
+    }
 }

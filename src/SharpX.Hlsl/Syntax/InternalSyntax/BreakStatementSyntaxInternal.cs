@@ -82,4 +82,9 @@ internal class BreakStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new BreakStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitBreakStatement(this);
+    }
 }

@@ -63,4 +63,9 @@ internal class NameEqualsSyntaxInternal : HlslSyntaxNodeInternal
     {
         return new NameEqualsSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitNameEquals(this);
+    }
 }

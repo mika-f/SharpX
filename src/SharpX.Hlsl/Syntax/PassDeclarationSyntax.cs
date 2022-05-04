@@ -70,4 +70,9 @@ public class PassDeclarationSyntax : MemberDeclarationSyntax
     {
         return WithStatements(Statements.AddRange(items));
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitPassDeclaration(this);
+    }
 }

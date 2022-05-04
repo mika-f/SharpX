@@ -44,4 +44,9 @@ public class PrefixUnaryExpressionSyntax : ExpressionSyntax
     {
         return Update(OperatorToken, operand);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitPrefixUnaryExpression(this);
+    }
 }

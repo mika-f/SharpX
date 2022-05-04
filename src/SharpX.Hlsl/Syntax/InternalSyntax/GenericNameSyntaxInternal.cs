@@ -63,4 +63,9 @@ internal class GenericNameSyntaxInternal : SimpleNameSyntaxInternal
     {
         return new GenericNameSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitGenericName(this);
+    }
 }

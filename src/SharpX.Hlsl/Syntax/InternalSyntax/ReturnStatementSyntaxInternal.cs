@@ -97,4 +97,9 @@ internal class ReturnStatementSyntaxInternal : StatementSyntaxInternal
     {
         return new ReturnStatementSyntax(this, parent, position);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitReturnStatement(this);
+    }
 }

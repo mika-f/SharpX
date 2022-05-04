@@ -36,4 +36,9 @@ public class AttributeArgumentSyntax : HlslSyntaxNode
     {
         return Update(expression);
     }
+
+    public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
+    {
+        return visitor.VisitAttributeArgument(this);
+    }
 }
