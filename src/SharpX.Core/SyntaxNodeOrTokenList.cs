@@ -15,14 +15,14 @@ namespace SharpX.Core;
 /// </summary>
 public readonly partial struct SyntaxNodeOrTokenList : IEquatable<SyntaxNodeOrTokenList>, IReadOnlyCollection<SyntaxNodeOrToken>
 {
-    private readonly int _index;
+    internal readonly int Index;
 
     public SyntaxNodeOrTokenList(SyntaxNode? node, int index) : this()
     {
         if (node != null)
         {
             Node = node;
-            _index = index;
+            Index = index;
         }
     }
 
@@ -59,7 +59,7 @@ public readonly partial struct SyntaxNodeOrTokenList : IEquatable<SyntaxNodeOrTo
                     {
                         var node = Node.Green.GetRequiredSlot(index);
                         return node.IsToken
-                            ? new SyntaxToken(Parent, node, Node.GetChildPosition(index), _index + index)
+                            ? new SyntaxToken(Parent, node, Node.GetChildPosition(index), Index + index)
                             : Node.GetRequiredNodeSlot(index);
                     }
                 }
@@ -177,6 +177,6 @@ public readonly partial struct SyntaxNodeOrTokenList : IEquatable<SyntaxNodeOrTo
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_index, Node);
+        return HashCode.Combine(Index, Node);
     }
 }

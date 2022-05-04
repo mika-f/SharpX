@@ -55,6 +55,21 @@ public readonly partial struct SeparatedSyntaxList<TNode> : IEquatable<Separated
         }
     }
 
+    public SyntaxToken GetSeparator(int index)
+    {
+        var node = _list.Node;
+        if (node != null)
+            if (unchecked((uint)index < (uint)SeparatedCount))
+            {
+                index = (index << 1) + 1;
+
+                var green = node.Green.GetRequiredSlot(index);
+                return new SyntaxToken(node.Parent, green, node.GetChildPosition(index), _list.Index + index);
+            }
+
+        throw new ArgumentOutOfRangeException(nameof(index));
+    }
+
     public IEnumerator<TNode> GetEnumerator()
     {
         return new Enumerator(this);

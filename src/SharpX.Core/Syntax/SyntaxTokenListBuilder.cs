@@ -10,7 +10,7 @@ namespace SharpX.Core.Syntax;
 /// <summary>
 ///     represents <see cref="Microsoft.CodeAnalysis.Syntax.SyntaxTokenListBuilder" />
 /// </summary>
-internal class SyntaxTokenListBuilder
+public class SyntaxTokenListBuilder
 {
     private int _count;
     private GreenNode?[] _nodes;

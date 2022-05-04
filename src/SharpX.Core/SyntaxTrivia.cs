@@ -8,7 +8,7 @@ namespace SharpX.Core;
 /// <summary>
 ///     represents <see cref="Microsoft.CodeAnalysis.SyntaxTrivia" />
 /// </summary>
-public readonly struct SyntaxTrivia
+public readonly struct SyntaxTrivia : IEquatable<SyntaxTrivia>
 {
     public SyntaxTrivia(SyntaxToken token, GreenNode? trivia, int position, int index)
     {
@@ -60,5 +60,30 @@ public readonly struct SyntaxTrivia
     public void WriteTo(TextWriter writer)
     {
         UnderlyingNode?.WriteTo(writer);
+    }
+
+    public static bool operator ==(SyntaxTrivia left, SyntaxTrivia right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(SyntaxTrivia left, SyntaxTrivia right)
+    {
+        return !left.Equals(right);
+    }
+
+    public bool Equals(SyntaxTrivia other)
+    {
+        return Token == other.Token && UnderlyingNode == other.UnderlyingNode && Position == other.Position && Index == other.Index;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is SyntaxTrivia other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Token, UnderlyingNode, Position, Index);
     }
 }

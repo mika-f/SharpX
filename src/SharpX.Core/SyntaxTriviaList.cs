@@ -57,6 +57,12 @@ public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
     public int Index { get; }
 
 
+    private GreenNode? GetGreenNodeAt(int i)
+    {
+        Contract.AssertNotNull(Node);
+        return GetGreenNodeAt(Node, i);
+    }
+
     public static GreenNode? GetGreenNodeAt(GreenNode node, int i)
     {
         Contract.Assert(node.IsList || i == 0 && !node.IsList, null);
@@ -93,6 +99,28 @@ public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
             }
 
             throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    public void CopyTo(int offset, SyntaxTrivia[] array, int arrayOffset, int count)
+    {
+        if (offset < 0 || count < 0 || Count < offset + count)
+            throw new IndexOutOfRangeException();
+
+        if (count == 0)
+            return;
+
+        var first = this[offset];
+        array[arrayOffset] = first;
+
+        var position = first.Position;
+        var current = first;
+
+        for (var i = 1; i < count; i++)
+        {
+            position += current.FullWidth;
+            current = new SyntaxTrivia(Token, GetGreenNodeAt(offset + i), position, Index + i);
+            array[arrayOffset + i] = current;
         }
     }
 }

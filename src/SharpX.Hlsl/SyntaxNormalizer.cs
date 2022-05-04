@@ -3,13 +3,28 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Core;
 using SharpX.Hlsl.Syntax;
 
 namespace SharpX.Hlsl;
 
 internal class SyntaxNormalizer : HlslSyntaxRewriter
 {
-    private SyntaxNormalizer(int initialDepth, string indentWhitespace, string eolWhitespace, bool useElasticTrivia) { }
+    private readonly int _initialDepth;
+    private readonly string _indentWhitespace;
+    private readonly bool _useElasticTrivia;
+    private readonly SyntaxTrivia _eolTrivia;
+
+    private bool _afterLineBreak;
+
+    private SyntaxNormalizer(int initialDepth, string indentWhitespace, string eolWhitespace, bool useElasticTrivia)
+    {
+        _initialDepth = initialDepth;
+        _indentWhitespace = indentWhitespace;
+        _useElasticTrivia = useElasticTrivia;
+        _eolTrivia = useElasticTrivia ? SyntaxFactory.ElasticEndOfLine(eolWhitespace) : SyntaxFactory.EndOfLine(eolWhitespace);
+        _afterLineBreak = true;
+    }
 
     internal static TNode Normalize<TNode>(TNode node, string indentWhitespace, string eolWhitespace, bool useElasticTrivia = false) where TNode : HlslSyntaxNode
     {
