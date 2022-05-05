@@ -149,6 +149,11 @@ public static partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static MemberAccessExpressionSyntax MemberAccessExpression(ExpressionSyntax expression, SimpleNameSyntax name)
+    {
+        return MemberAccessExpression(expression, Token(SyntaxKind.DotToken), name);
+    }
+
     public static BinaryExpressionSyntax BinaryExpression(SyntaxKind kind, ExpressionSyntax left, SyntaxToken operatorToken, ExpressionSyntax right)
     {
         return (BinaryExpressionSyntax)SyntaxFactoryInternal.BinaryExpression(

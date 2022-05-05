@@ -296,7 +296,22 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent == null || nextToken.Parent == null)
         {
             if (currentToken.Parent is IdentifierNameSyntax)
-                return currentToken.Parent.Parent is not SemanticSyntax and not RegisterSyntax;
+            {
+                if (currentToken.Parent.Parent is FieldDeclarationSyntax or MethodDeclarationSyntax)
+                    return true;
+                if (currentToken.Parent.Parent is ParameterSyntax)
+                    return true;
+                if (currentToken.Parent.Parent is AssignmentExpressionSyntax or BinaryExpressionSyntax)
+                    return true;
+                // if (currentToken.Parent.Parent is MemberAccessExpressionSyntax)
+                //     return true;
+                return false;
+            }
+
+            if (currentToken.Parent is LiteralExpressionSyntax)
+                if (currentToken.Parent.Parent is BinaryExpressionSyntax)
+                    return true;
+
             return false;
         }
 
@@ -536,9 +551,6 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             return 0;
 
         if (currentToken.Parent is StructDeclarationSyntax)
-            return 2;
-
-        if (currentToken.Parent is TopLevelModuleSyntax)
             return 2;
 
         return 1;

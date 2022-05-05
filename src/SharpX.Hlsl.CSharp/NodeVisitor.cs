@@ -14,7 +14,11 @@ using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 
 using AttributeListSyntax = SharpX.Hlsl.Syntax.AttributeListSyntax;
+using CSharpSyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
+using ExpressionSyntax = SharpX.Hlsl.Syntax.ExpressionSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
+using SimpleNameSyntax = SharpX.Hlsl.Syntax.SimpleNameSyntax;
+using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
@@ -25,6 +29,109 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     public NodeVisitor(IBackendVisitorArgs<HlslSyntaxNode> args) : base(args)
     {
         _semanticModel = args.SemanticModel;
+    }
+
+    public override HlslSyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
+    {
+        if (HasNameAttribute(node))
+            return SyntaxFactory.IdentifierName(GetAttributeData(node, typeof(NameAttribute))[0]);
+        return SyntaxFactory.IdentifierName(node.Identifier.ValueText);
+    }
+
+    public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        var name = (SimpleNameSyntax?)Visit(node.Name);
+
+        if (expression == null || name == null)
+            return null;
+
+        return SyntaxFactory.MemberAccessExpression(expression, name);
+    }
+
+    public override HlslSyntaxNode? VisitBinaryExpression(BinaryExpressionSyntax node)
+    {
+        var left = (ExpressionSyntax?)Visit(node.Left);
+        var right = (ExpressionSyntax?)Visit(node.Right);
+
+        if (left == null || right == null)
+            return null;
+
+        return node.Kind() switch
+        {
+            CSharpSyntaxKind.AddExpression => SyntaxFactory.BinaryExpression(SyntaxKind.AddExpression, left, right),
+            CSharpSyntaxKind.SubtractExpression => SyntaxFactory.BinaryExpression(SyntaxKind.SubtractExpression, left, right),
+            CSharpSyntaxKind.MultiplyExpression => SyntaxFactory.BinaryExpression(SyntaxKind.MultiplyExpression, left, right),
+            CSharpSyntaxKind.DivideExpression => SyntaxFactory.BinaryExpression(SyntaxKind.DivideExpression, left, right),
+            CSharpSyntaxKind.ModuloExpression => SyntaxFactory.BinaryExpression(SyntaxKind.ModuloExpression, left, right),
+            CSharpSyntaxKind.LogicalOrExpression => SyntaxFactory.BinaryExpression(SyntaxKind.LogicalOrExpression, left, right),
+            CSharpSyntaxKind.LogicalAndExpression => SyntaxFactory.BinaryExpression(SyntaxKind.LogicalAndExpression, left, right),
+            CSharpSyntaxKind.BitwiseOrExpression => SyntaxFactory.BinaryExpression(SyntaxKind.BitwiseOrExpression, left, right),
+            CSharpSyntaxKind.ExclusiveOrExpression => SyntaxFactory.BinaryExpression(SyntaxKind.ExclusiveOrExpression, left, right),
+            CSharpSyntaxKind.EqualsExpression => SyntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, left, right),
+            CSharpSyntaxKind.NotEqualsExpression => SyntaxFactory.BinaryExpression(SyntaxKind.NotEqualsExpression, left, right),
+            CSharpSyntaxKind.LessThanExpression => SyntaxFactory.BinaryExpression(SyntaxKind.LessThanExpression, left, right),
+            CSharpSyntaxKind.LessThanOrEqualExpression => SyntaxFactory.BinaryExpression(SyntaxKind.LessThanEqualsToken, left, right),
+            CSharpSyntaxKind.GreaterThanExpression => SyntaxFactory.BinaryExpression(SyntaxKind.GreaterThanExpression, left, right),
+            CSharpSyntaxKind.GreaterThanOrEqualExpression => SyntaxFactory.BinaryExpression(SyntaxKind.GreaterThanOrEqualExpression, left, right),
+            _ => null
+        };
+    }
+
+    public override HlslSyntaxNode? VisitAssignmentExpression(AssignmentExpressionSyntax node)
+    {
+        var left = (ExpressionSyntax?)Visit(node.Left);
+        var right = (ExpressionSyntax?)Visit(node.Right);
+
+        if (left == null || right == null)
+            return null;
+
+        return SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right);
+    }
+
+    public override HlslSyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
+    {
+        return node.Kind() switch
+        {
+            CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(node.Token.ToString())),
+            CSharpSyntaxKind.NumericLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(node.Token.ToString())),
+            _ => null
+        };
+    }
+
+    public override HlslSyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (expression == null)
+            return null;
+
+        var arguments = node.ArgumentList.Arguments.Select(w => (Syntax.ArgumentSyntax?)Visit(w))
+                            .Where(w => w != null)
+                            .OfType<Syntax.ArgumentSyntax>();
+
+        var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments.ToArray()));
+
+        return SyntaxFactory.InvocationExpression(expression, argumentList);
+    }
+
+    public override HlslSyntaxNode? VisitArgument(ArgumentSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (node.RefKindKeyword != default)
+            return null;
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.Argument(expression);
+    }
+
+    public override HlslSyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.ExpressionStatement(SyntaxFactory.List<AttributeListSyntax>(), expression);
     }
 
     public override HlslSyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
@@ -73,7 +180,18 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                              .ToArray();
 
         var parameterList = SyntaxFactory.ParameterList(parameters.ToArray());
-        return SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block());
+
+        if (node.ExpressionBody != null)
+            return null;
+        if (node.Body == null)
+            return null;
+
+        var statements = node.Body.Statements.Select(w => (StatementSyntax?)Visit(w))
+                             .Where(w => w != null)
+                             .OfType<StatementSyntax>()
+                             .ToArray();
+
+        return SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block(statements));
     }
 
     public override HlslSyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -172,6 +290,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return HasAttribute(t, typeof(ComponentAttribute));
     }
 
+    private bool HasNameAttribute(IdentifierNameSyntax t)
+    {
+        return HasAttribute(t, typeof(NameAttribute));
+    }
+
     private bool HasInlineAttribute(MemberDeclarationSyntax member)
     {
         return HasAttribute(member, typeof(InlineAttribute));
@@ -223,10 +346,12 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             return decl;
 
         var info = _semanticModel.GetSymbolInfo(node);
-        if (info.Symbol is not INamedTypeSymbol baseDecl)
-            return null;
+        if (info.Symbol is INamedTypeSymbol baseDecl)
+            return baseDecl.ConstructedFrom;
+        if (info.Symbol is IMethodSymbol methodDecl)
+            return methodDecl;
 
-        return baseDecl.ConstructedFrom;
+        return null;
     }
 
     #endregion
