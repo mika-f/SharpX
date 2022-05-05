@@ -36,7 +36,7 @@ public class SyntaxListBuilder
         if (item == null)
             throw new ArgumentNullException();
 
-        if (Count > _nodes.Length)
+        if (Count >= _nodes.Length)
             Array.Resize(ref _nodes, _nodes.Length * 2);
 
         _nodes[Count++] = item;

@@ -81,6 +81,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
 
     private SyntaxToken GetNextRelevantToken(SyntaxToken token)
     {
+        // maybe buggy
         var nextToken = token.GetNextToken(t => SyntaxToken.NonZeroWidth(t) || t.RawKind == (int)SyntaxKind.EndOfDirectiveToken, _ => false);
         if (_consideredSpan.Contains(nextToken.FullSpan))
             return nextToken;
@@ -434,7 +435,14 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                 return LineBreaksAfterCloseBrace(currentToken, nextToken);
 
             case SyntaxKind.CloseParenToken:
-                return (currentToken.Parent is StatementSyntax && nextToken.Parent != currentToken.Parent) || nextKind == SyntaxKind.OpenBraceToken ? 1 : 0;
+            {
+                if ((currentToken.Parent is StatementSyntax && nextToken.Parent != currentToken.Parent) || nextKind == SyntaxKind.OpenBraceToken)
+                    return 1;
+                if (currentToken.Parent is ParameterListSyntax)
+                    return 1;
+
+                return 0;
+            }
 
             case SyntaxKind.CloseBracketToken:
             {

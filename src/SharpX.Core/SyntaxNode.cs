@@ -135,11 +135,16 @@ public abstract class SyntaxNode
     {
         var r = element;
         if (r == null)
-        {
-            var green = Green.GetRequiredSlot(slot);
-            Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
-            r = element;
-        }
+            try
+            {
+                var green = Green.GetRequiredSlot(slot);
+                Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
+                r = element;
+            }
+            catch
+            {
+                // NOTE: I want the reason to get invalid green slot that has unreachable red????
+            }
 
         return r;
     }

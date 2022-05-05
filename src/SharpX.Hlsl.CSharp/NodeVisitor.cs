@@ -69,10 +69,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var @return = SyntaxFactory.IdentifierName(GetHlslName(node.ReturnType));
         var parameters = node.ParameterList.Parameters.Select(w => (Syntax.ParameterSyntax?)Visit(w))
                              .Where(w => w != null)
-                             .OfType<Syntax.ParameterSyntax>();
+                             .OfType<Syntax.ParameterSyntax>()
+                             .ToArray();
 
         var parameterList = SyntaxFactory.ParameterList(parameters.ToArray());
-
         return SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block());
     }
 
@@ -91,7 +91,13 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitParameter(ParameterSyntax node)
     {
-        return base.VisitParameter(node);
+        if (node.Type == null)
+            return null;
+
+        var type = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
+        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
+
+        return SyntaxFactory.Parameter(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
     }
 
     #region Helpers
