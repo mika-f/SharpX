@@ -19,15 +19,18 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 
     public BracketedArgumentListSyntaxInternal? Arguments { get; }
 
+    public RegisterSyntaxInternal? Register { get; }
+
     public SemanticSyntaxInternal? Semantics { get; }
 
     public EqualsValueClauseSyntaxInternal? Initializer { get; }
 
     public SyntaxTokenInternal SemicolonToken { get; }
 
-    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken) : base(kind)
+    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, RegisterSyntaxInternal? register, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer,
+                                          SyntaxTokenInternal semicolonToken) : base(kind)
     {
-        SlotCount = 6;
+        SlotCount = 7;
 
         AdjustWidth(type);
         Type = type;
@@ -39,6 +42,12 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
         {
             AdjustWidth(arguments);
             Arguments = arguments;
+        }
+
+        if (register != null)
+        {
+            AdjustWidth(register);
+            Register = register;
         }
 
         if (semantics != null)
@@ -57,10 +66,11 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
-    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken,
+    public FieldDeclarationSyntaxInternal(SyntaxKind kind, TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, RegisterSyntaxInternal? register, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer,
+                                          SyntaxTokenInternal semicolonToken,
                                           DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
-        SlotCount = 6;
+        SlotCount = 7;
 
         AdjustWidth(type);
         Type = type;
@@ -72,6 +82,12 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
         {
             AdjustWidth(arguments);
             Arguments = arguments;
+        }
+
+        if (register != null)
+        {
+            AdjustWidth(register);
+            Register = register;
         }
 
         if (semantics != null)
@@ -92,12 +108,12 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
 
     public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
     {
-        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, GetDiagnostics(), annotations);
+        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Register, Semantics, Initializer, SemicolonToken, GetDiagnostics(), annotations);
     }
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Semantics, Initializer, SemicolonToken, diagnostics, GetAnnotations());
+        return new FieldDeclarationSyntaxInternal(Kind, Type, Identifier, Arguments, Register, Semantics, Initializer, SemicolonToken, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)
@@ -107,9 +123,10 @@ internal class FieldDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
             0 => Type,
             1 => Identifier,
             2 => Arguments,
-            3 => Semantics,
-            4 => Initializer,
-            5 => SemicolonToken,
+            3 => Register,
+            4 => Semantics,
+            5 => Initializer,
+            6 => SemicolonToken,
             _ => null
         };
     }

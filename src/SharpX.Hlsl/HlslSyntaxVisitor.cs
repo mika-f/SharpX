@@ -275,6 +275,11 @@ public abstract class HlslSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitRegister(RegisterSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitParameterList(ParameterListSyntax node)
     {
         return DefaultVisit(node);

@@ -12,6 +12,7 @@ public class FieldDeclarationSyntax : MemberDeclarationSyntax
 {
     private BracketedArgumentListSyntax? _arguments;
     private EqualsValueClauseSyntax? _initializer;
+    private RegisterSyntax? _register;
     private SemanticSyntax? _semantics;
     private TypeSyntax? _type;
 
@@ -21,11 +22,13 @@ public class FieldDeclarationSyntax : MemberDeclarationSyntax
 
     public BracketedArgumentListSyntax? Arguments => GetRed(ref _arguments, 2);
 
-    public SemanticSyntax? Semantics => GetRed(ref _semantics, 3);
+    public RegisterSyntax? Register => GetRed(ref _register, 3);
 
-    public EqualsValueClauseSyntax? Initializer => GetRed(ref _initializer, 4);
+    public SemanticSyntax? Semantics => GetRed(ref _semantics, 4);
 
-    public SyntaxToken SemicolonToken => new(this, ((FieldDeclarationSyntaxInternal)Green).SemicolonToken, GetChildPosition(5), GetChildIndex(5));
+    public EqualsValueClauseSyntax? Initializer => GetRed(ref _initializer, 5);
+
+    public SyntaxToken SemicolonToken => new(this, ((FieldDeclarationSyntaxInternal)Green).SemicolonToken, GetChildPosition(6), GetChildIndex(6));
 
     internal FieldDeclarationSyntax(HlslSyntaxNodeInternal node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 
@@ -35,8 +38,9 @@ public class FieldDeclarationSyntax : MemberDeclarationSyntax
         {
             0 => GetRedAtZero(ref _type),
             2 => GetRed(ref _arguments, 2),
-            3 => GetRed(ref _semantics, 3),
-            4 => GetRed(ref _initializer, 4),
+            3 => GetRed(ref _register, 3),
+            4 => GetRed(ref _semantics, 5),
+            5 => GetRed(ref _initializer, 5),
             _ => null
         };
     }
@@ -47,47 +51,53 @@ public class FieldDeclarationSyntax : MemberDeclarationSyntax
         {
             0 => _type,
             2 => _arguments,
-            3 => _semantics,
-            4 => _initializer,
+            3 => _register,
+            4 => _semantics,
+            5 => _initializer,
             _ => null
         };
     }
 
-    public FieldDeclarationSyntax Update(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, SemanticSyntax? semantics, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
+    public FieldDeclarationSyntax Update(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, RegisterSyntax? register, SemanticSyntax? semantics, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
     {
-        if (type != Type || identifier != Identifier || arguments != Arguments || semantics != Semantics || initializer != Initializer || semicolonToken != SemicolonToken)
-            return SyntaxFactory.FieldDeclaration(type, identifier, arguments, semantics, initializer, semicolonToken);
+        if (type != Type || identifier != Identifier || arguments != Arguments || register != Register || semantics != Semantics || initializer != Initializer || semicolonToken != SemicolonToken)
+            return SyntaxFactory.FieldDeclaration(type, identifier, arguments, register, semantics, initializer, semicolonToken);
         return this;
     }
 
     public FieldDeclarationSyntax WithType(TypeSyntax type)
     {
-        return Update(type, Identifier, Arguments, Semantics, Initializer, SemicolonToken);
+        return Update(type, Identifier, Arguments, Register, Semantics, Initializer, SemicolonToken);
     }
 
     public FieldDeclarationSyntax WithIdentifier(SyntaxToken identifier)
     {
-        return Update(Type, identifier, Arguments, Semantics, Initializer, SemicolonToken);
+        return Update(Type, identifier, Arguments, Register, Semantics, Initializer, SemicolonToken);
     }
 
     public FieldDeclarationSyntax WithArguments(BracketedArgumentListSyntax? arguments)
     {
-        return Update(Type, Identifier, arguments, Semantics, Initializer, SemicolonToken);
+        return Update(Type, Identifier, arguments, Register, Semantics, Initializer, SemicolonToken);
+    }
+
+    public FieldDeclarationSyntax WithRegister(RegisterSyntax? register)
+    {
+        return Update(Type, Identifier, Arguments, register, Semantics, Initializer, SemicolonToken);
     }
 
     public FieldDeclarationSyntax WithSemantics(SemanticSyntax? semantics)
     {
-        return Update(Type, Identifier, Arguments, semantics, Initializer, SemicolonToken);
+        return Update(Type, Identifier, Arguments, Register, semantics, Initializer, SemicolonToken);
     }
 
     public FieldDeclarationSyntax WithInitializer(EqualsValueClauseSyntax? initializer)
     {
-        return Update(Type, Identifier, Arguments, Semantics, initializer, SemicolonToken);
+        return Update(Type, Identifier, Arguments, Register, Semantics, initializer, SemicolonToken);
     }
 
     public FieldDeclarationSyntax WithSemicolonToken(SyntaxToken semicolonToken)
     {
-        return Update(Type, Identifier, Arguments, Semantics, Initializer, semicolonToken);
+        return Update(Type, Identifier, Arguments, Register, Semantics, Initializer, semicolonToken);
     }
 
     public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default

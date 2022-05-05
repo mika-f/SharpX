@@ -670,14 +670,15 @@ internal static partial class SyntaxFactory
         return new PassDeclarationSyntaxInternal(SyntaxKind.PassDeclaration, passKeyword, identifier, openBraceToken, members.Node, closeBraceToken);
     }
 
-    public static FieldDeclarationSyntaxInternal FieldDeclaration(TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer, SyntaxTokenInternal semicolonToken)
+    public static FieldDeclarationSyntaxInternal FieldDeclaration(TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, RegisterSyntaxInternal? register, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer,
+                                                                  SyntaxTokenInternal semicolonToken)
     {
         if (identifier.Kind != SyntaxKind.IdentifierToken)
             throw new ArgumentException(nameof(identifier));
         if (semicolonToken.Kind != SyntaxKind.SemicolonToken)
             throw new ArgumentException(nameof(semicolonToken));
 
-        return new FieldDeclarationSyntaxInternal(SyntaxKind.FieldDeclaration, type, identifier, arguments, semantics, initializer, semicolonToken);
+        return new FieldDeclarationSyntaxInternal(SyntaxKind.FieldDeclaration, type, identifier, arguments, register, semantics, initializer, semicolonToken);
     }
 
     public static MethodDeclarationSyntaxInternal MethodDeclaration(SyntaxListInternal<AttributeListSyntaxInternal> attributeLists, TypeSyntaxInternal returnType, SyntaxTokenInternal identifier, ParameterListSyntaxInternal parameterList, SemanticSyntaxInternal? semantics, BlockSyntaxInternal body)
@@ -690,10 +691,28 @@ internal static partial class SyntaxFactory
 
     public static SemanticSyntaxInternal Semantics(SyntaxTokenInternal colonToken, IdentifierNameSyntaxInternal identifier)
     {
+        if (colonToken.Kind != SyntaxKind.ColonToken)
+            throw new ArgumentException(nameof(colonToken));
         if (identifier.Kind != SyntaxKind.IdentifierName)
             throw new ArgumentException(nameof(identifier));
 
         return new SemanticSyntaxInternal(SyntaxKind.Semantics, colonToken, identifier);
+    }
+
+    public static RegisterSyntaxInternal Register(SyntaxTokenInternal colonToken, SyntaxTokenInternal registerKeyword, SyntaxTokenInternal openParenToken, IdentifierNameSyntaxInternal identifier, SyntaxTokenInternal closeParenToken)
+    {
+        if (colonToken.Kind != SyntaxKind.ColonToken)
+            throw new ArgumentException(nameof(colonToken));
+        if (registerKeyword.Kind != SyntaxKind.RegisterKeyword)
+            throw new ArgumentException(nameof(registerKeyword));
+        if (openParenToken.Kind != SyntaxKind.OpenParenToken)
+            throw new ArgumentException(nameof(openParenToken));
+        if (identifier.Kind != SyntaxKind.IdentifierName)
+            throw new ArgumentException(nameof(identifier));
+        if (closeParenToken.Kind != SyntaxKind.CloseParenToken)
+            throw new ArgumentException(nameof(closeParenToken));
+
+        return new RegisterSyntaxInternal(SyntaxKind.Register, colonToken, registerKeyword, openParenToken, identifier, closeParenToken);
     }
 
     public static ParameterListSyntaxInternal ParameterList(SyntaxTokenInternal openParenToken, SeparatedSyntaxListInternal<ParameterSyntaxInternal> parameters, SyntaxTokenInternal closeParenToken)

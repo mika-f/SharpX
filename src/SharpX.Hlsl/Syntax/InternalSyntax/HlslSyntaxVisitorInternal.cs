@@ -267,6 +267,11 @@ internal abstract class HlslSyntaxVisitorInternal<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitRegister(RegisterSyntaxInternal node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitParameterList(ParameterListSyntaxInternal node)
     {
         return DefaultVisit(node);

@@ -799,26 +799,27 @@ public static partial class SyntaxFactory
         return PassDeclaration(Identifier(identifier), members);
     }
 
-    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, SemanticSyntax? semantic, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, RegisterSyntax? register, SemanticSyntax? semantic, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
     {
         return (FieldDeclarationSyntax)SyntaxFactoryInternal.FieldDeclaration(
             (TypeSyntaxInternal)type.Green,
             (SyntaxTokenInternal)identifier.Node!,
             (BracketedArgumentListSyntaxInternal?)arguments?.Green,
+            (RegisterSyntaxInternal?)register?.Green,
             (SemanticSyntaxInternal?)semantic?.Green,
             (EqualsValueClauseSyntaxInternal?)initializer?.Green,
             (SyntaxTokenInternal)semicolonToken.Node!
         ).CreateRed();
     }
 
-    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments = default, RegisterSyntax? register = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
     {
-        return FieldDeclaration(type, identifier, arguments, semantic, initializer, Token(SyntaxKind.SemicolonToken));
+        return FieldDeclaration(type, identifier, arguments, register, semantic, initializer, Token(SyntaxKind.SemicolonToken));
     }
 
-    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, string identifier, BracketedArgumentListSyntax? arguments = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
+    public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, string identifier, BracketedArgumentListSyntax? arguments = default, RegisterSyntax? register = default, SemanticSyntax? semantic = default, EqualsValueClauseSyntax? initializer = default)
     {
-        return FieldDeclaration(type, Identifier(identifier), arguments, semantic, initializer);
+        return FieldDeclaration(type, Identifier(identifier), arguments, register, semantic, initializer);
     }
 
     public static MethodDeclarationSyntax MethodDeclaration(SyntaxList<AttributeListSyntax> attributeLists, TypeSyntax returnType, SyntaxToken identifier, ParameterListSyntax parameters, SemanticSyntax? semantics, BlockSyntax body)
@@ -849,6 +850,29 @@ public static partial class SyntaxFactory
     public static SemanticSyntax Semantics(string identifier)
     {
         return Semantics(IdentifierName(identifier));
+    }
+
+
+    public static RegisterSyntax Register(SyntaxToken colonToken, SyntaxToken registerKeyword, SyntaxToken openParenToken, IdentifierNameSyntax identifier, SyntaxToken closeParenToken)
+    {
+        return (RegisterSyntax)SyntaxFactoryInternal.Register(
+            (SyntaxTokenInternal)colonToken.Node!,
+            (SyntaxTokenInternal)registerKeyword.Node!,
+            (SyntaxTokenInternal)openParenToken.Node!,
+            (IdentifierNameSyntaxInternal)identifier.Green,
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+
+    public static RegisterSyntax Register(IdentifierNameSyntax identifier)
+    {
+        return Register(Token(SyntaxKind.ColonToken), Token(SyntaxKind.RegisterKeyword), Token(SyntaxKind.OpenParenToken), identifier, Token(SyntaxKind.CloseParenToken));
+    }
+
+    public static RegisterSyntax Register(string identifier)
+    {
+        return Register(IdentifierName(identifier));
     }
 
     public static ParameterListSyntax ParameterList(SyntaxToken openParenToken, SeparatedSyntaxList<ParameterSyntax> parameters, SyntaxToken closeParenToken)

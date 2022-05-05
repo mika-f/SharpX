@@ -744,6 +744,8 @@ public enum SyntaxKind
 
     Semantics,
 
+    Register,
+
     ParameterList,
 
     Parameter,

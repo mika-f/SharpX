@@ -476,6 +476,7 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
             (TypeSyntax?)Visit(node.Type) ?? throw new ArgumentNullException(),
             VisitToken(node.Identifier),
             (BracketedArgumentListSyntax?)Visit(node.Arguments),
+            (RegisterSyntax?)Visit(node.Register),
             (SemanticSyntax?)Visit(node.Semantics),
             (EqualsValueClauseSyntax?)Visit(node.Initializer),
             VisitToken(node.SemicolonToken)
@@ -499,6 +500,17 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         return node.Update(
             VisitToken(node.ColonToken),
             (IdentifierNameSyntax?)Visit(node.Identifier) ?? throw new ArgumentNullException()
+        );
+    }
+
+    public override SyntaxNode? VisitRegister(RegisterSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.ColonToken),
+            VisitToken(node.RegisterKeyword),
+            VisitToken(node.OpenParenToken),
+            (IdentifierNameSyntax?)Visit(node.Register) ?? throw new ArgumentNullException(),
+            VisitToken(node.CloseParenToken)
         );
     }
 
