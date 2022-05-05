@@ -38,8 +38,13 @@ public sealed partial class Vector4<T>
 
     public Vector4(Vector1<T> _1, Vector3<T> _2) { }
 
+    public Vector4(Vector1<T> _1, Vector1<T> _2, Vector1<T> _3, Vector1<T> _4) { }
+
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector1<T>(Vector4<T> _);
+    public static extern explicit operator Vector4<T>(T _);
+
+    [ImplicitCastInCompiler]
+    public static extern explicit operator Vector4<T>(Vector1<T> _);
 
     [ImplicitCastInCompiler]
     public static extern explicit operator Vector4<T>(Vector2<T> _);
@@ -69,46 +74,6 @@ public sealed partial class Vector4<T>
 
     public static extern Vector4<T> operator %(Vector4<T> a, Vector4<T> b);
 
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector4<int> b);
-
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector4<int> b);
-
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector4<int> b);
-
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector4<int> b);
-
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector4<int> b);
-
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector4<float> b);
-
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector4<float> b);
-
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector4<float> b);
-
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector4<float> b);
-
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector4<float> b);
-
-    public static extern Vector4<T> operator +(Vector4<int> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator -(Vector4<int> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator *(Vector4<int> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator /(Vector4<int> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator %(Vector4<int> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator +(Vector4<float> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator -(Vector4<float> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator *(Vector4<float> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator /(Vector4<float> a, Vector4<T> b);
-
-    public static extern Vector4<T> operator %(Vector4<float> a, Vector4<T> b);
-
     public static extern Vector4<T> operator +(Vector4<T> a, T b);
 
     public static extern Vector4<T> operator -(Vector4<T> a, T b);
@@ -118,6 +83,16 @@ public sealed partial class Vector4<T>
     public static extern Vector4<T> operator /(Vector4<T> a, T b);
 
     public static extern Vector4<T> operator %(Vector4<T> a, T b);
+
+    public static extern Vector4<T> operator +(T a, Vector4<T> b);
+
+    public static extern Vector4<T> operator -(T a, Vector4<T> b);
+
+    public static extern Vector4<T> operator *(T a, Vector4<T> b);
+
+    public static extern Vector4<T> operator /(T a, Vector4<T> b);
+
+    public static extern Vector4<T> operator %(T a, Vector4<T> b);
 
     public static extern Vector4<T> operator +(Vector4<T> a, Vector1<T> b);
 

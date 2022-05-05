@@ -21,13 +21,16 @@ public sealed partial class Vector2<T>
     public Vector2(Vector1<T> _1, Vector1<T> _2) { }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector1<T>(Vector2<T> _);
+    public static extern explicit operator Vector2<T>(T _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector3<T>(Vector2<T> _);
+    public static extern explicit operator Vector2<T>(Vector1<T> _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector2<T> _);
+    public static extern explicit operator Vector2<T>(Vector3<T> _);
+
+    [ImplicitCastInCompiler]
+    public static extern explicit operator Vector2<T>(Vector4<T> _);
 
     public static extern bool operator >(Vector2<T> a, Vector2<T> b);
 
@@ -51,46 +54,6 @@ public sealed partial class Vector2<T>
 
     public static extern Vector2<T> operator %(Vector2<T> a, Vector2<T> b);
 
-    public static extern Vector2<T> operator +(Vector2<T> a, Vector2<int> b);
-
-    public static extern Vector2<T> operator -(Vector2<T> a, Vector2<int> b);
-
-    public static extern Vector2<T> operator *(Vector2<T> a, Vector2<int> b);
-
-    public static extern Vector2<T> operator /(Vector2<T> a, Vector2<int> b);
-
-    public static extern Vector2<T> operator %(Vector2<T> a, Vector2<int> b);
-
-    public static extern Vector2<T> operator +(Vector2<T> a, Vector2<float> b);
-
-    public static extern Vector2<T> operator -(Vector2<T> a, Vector2<float> b);
-
-    public static extern Vector2<T> operator *(Vector2<T> a, Vector2<float> b);
-
-    public static extern Vector2<T> operator /(Vector2<T> a, Vector2<float> b);
-
-    public static extern Vector2<T> operator %(Vector2<T> a, Vector2<float> b);
-
-    public static extern Vector2<T> operator +(Vector2<int> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator -(Vector2<int> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator *(Vector2<int> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator /(Vector2<int> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator %(Vector2<int> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator +(Vector2<float> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator -(Vector2<float> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator *(Vector2<float> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator /(Vector2<float> a, Vector2<T> b);
-
-    public static extern Vector2<T> operator %(Vector2<float> a, Vector2<T> b);
-
     public static extern Vector2<T> operator +(Vector2<T> a, T b);
 
     public static extern Vector2<T> operator -(Vector2<T> a, T b);
@@ -100,6 +63,16 @@ public sealed partial class Vector2<T>
     public static extern Vector2<T> operator /(Vector2<T> a, T b);
 
     public static extern Vector2<T> operator %(Vector2<T> a, T b);
+
+    public static extern Vector2<T> operator +(T a, Vector2<T> b);
+
+    public static extern Vector2<T> operator -(T a, Vector2<T> b);
+
+    public static extern Vector2<T> operator *(T a, Vector2<T> b);
+
+    public static extern Vector2<T> operator /(T a, Vector2<T> b);
+
+    public static extern Vector2<T> operator %(T a, Vector2<T> b);
 
     public static extern Vector2<T> operator +(Vector2<T> a, Vector1<T> b);
 

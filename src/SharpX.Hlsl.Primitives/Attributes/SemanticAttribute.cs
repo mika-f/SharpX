@@ -5,7 +5,7 @@
 
 namespace SharpX.Hlsl.Primitives.Attributes;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Parameter)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.ReturnValue)]
 public class SemanticAttribute : Attribute
 {
     public SemanticAttribute(string semantic) { }

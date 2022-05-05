@@ -18,13 +18,13 @@ public class Vector1<T>
     public static extern implicit operator Vector1<T>(T _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector2<T>(Vector1<T> _);
+    public static extern explicit operator Vector1<T>(Vector2<T> _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector3<T>(Vector1<T> _);
+    public static extern explicit operator Vector1<T>(Vector3<T> _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector1<T> _);
+    public static extern explicit operator Vector1<T>(Vector4<T> _);
 
     [ImplicitCastInCompiler]
     public static extern implicit operator bool(Vector1<T> _);
@@ -55,46 +55,6 @@ public class Vector1<T>
 
     public static extern Vector1<T> operator %(Vector1<T> a, Vector1<T> b);
 
-    public static extern Vector1<T> operator +(Vector1<T> a, Vector1<int> b);
-
-    public static extern Vector1<T> operator -(Vector1<T> a, Vector1<int> b);
-
-    public static extern Vector1<T> operator *(Vector1<T> a, Vector1<int> b);
-
-    public static extern Vector1<T> operator /(Vector1<T> a, Vector1<int> b);
-
-    public static extern Vector1<T> operator %(Vector1<T> a, Vector1<int> b);
-
-    public static extern Vector1<T> operator +(Vector1<T> a, Vector1<float> b);
-
-    public static extern Vector1<T> operator -(Vector1<T> a, Vector1<float> b);
-
-    public static extern Vector1<T> operator *(Vector1<T> a, Vector1<float> b);
-
-    public static extern Vector1<T> operator /(Vector1<T> a, Vector1<float> b);
-
-    public static extern Vector1<T> operator %(Vector1<T> a, Vector1<float> b);
-
-    public static extern Vector1<T> operator +(Vector1<int> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator -(Vector1<int> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator *(Vector1<int> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator /(Vector1<int> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator %(Vector1<int> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator +(Vector1<float> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator -(Vector1<float> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator *(Vector1<float> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator /(Vector1<float> a, Vector1<T> b);
-
-    public static extern Vector1<T> operator %(Vector1<float> a, Vector1<T> b);
-
     public static extern Vector1<T> operator +(Vector1<T> a, T b);
 
     public static extern Vector1<T> operator -(Vector1<T> a, T b);
@@ -104,6 +64,16 @@ public class Vector1<T>
     public static extern Vector1<T> operator /(Vector1<T> a, T b);
 
     public static extern Vector1<T> operator %(Vector1<T> a, T b);
+
+    public static extern Vector1<T> operator +(T a, Vector1<T> b);
+
+    public static extern Vector1<T> operator -(T a, Vector1<T> b);
+
+    public static extern Vector1<T> operator *(T a, Vector1<T> b);
+
+    public static extern Vector1<T> operator /(T a, Vector1<T> b);
+
+    public static extern Vector1<T> operator %(T a, Vector1<T> b);
 
     public static extern Vector1<T> operator +(Vector1<T> a, Vector2<T> b);
 

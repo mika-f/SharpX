@@ -5,7 +5,7 @@
 
 namespace SharpX.Hlsl.Primitives.Attributes;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.Struct | AttributeTargets.Property | AttributeTargets.Field)]
 public class RegisterAttribute : Attribute
 {
     public RegisterAttribute(string register) { }

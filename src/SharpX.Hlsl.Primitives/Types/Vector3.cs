@@ -27,13 +27,16 @@ public sealed partial class Vector3<T>
     public Vector3(Vector1<T> _1, Vector1<T> _2, Vector1<T> _3) { }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector1<T>(Vector3<T> _);
+    public static extern explicit operator Vector3<T>(T _);
+
+    [ImplicitCastInCompiler]
+    public static extern explicit operator Vector3<T>(Vector1<T> _);
 
     [ImplicitCastInCompiler]
     public static extern explicit operator Vector3<T>(Vector2<T> _);
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector3<T> _);
+    public static extern explicit operator Vector3<T>(Vector4<T> _);
 
     public static extern bool operator >(Vector3<T> a, Vector3<T> b);
 
@@ -57,46 +60,6 @@ public sealed partial class Vector3<T>
 
     public static extern Vector3<T> operator %(Vector3<T> a, Vector3<T> b);
 
-    public static extern Vector3<T> operator +(Vector3<T> a, Vector3<int> b);
-
-    public static extern Vector3<T> operator -(Vector3<T> a, Vector3<int> b);
-
-    public static extern Vector3<T> operator *(Vector3<T> a, Vector3<int> b);
-
-    public static extern Vector3<T> operator /(Vector3<T> a, Vector3<int> b);
-
-    public static extern Vector3<T> operator %(Vector3<T> a, Vector3<int> b);
-
-    public static extern Vector3<T> operator +(Vector3<T> a, Vector3<float> b);
-
-    public static extern Vector3<T> operator -(Vector3<T> a, Vector3<float> b);
-
-    public static extern Vector3<T> operator *(Vector3<T> a, Vector3<float> b);
-
-    public static extern Vector3<T> operator /(Vector3<T> a, Vector3<float> b);
-
-    public static extern Vector3<T> operator %(Vector3<T> a, Vector3<float> b);
-
-    public static extern Vector3<T> operator +(Vector3<int> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator -(Vector3<int> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator *(Vector3<int> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator /(Vector3<int> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator %(Vector3<int> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator +(Vector3<float> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator -(Vector3<float> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator *(Vector3<float> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator /(Vector3<float> a, Vector3<T> b);
-
-    public static extern Vector3<T> operator %(Vector3<float> a, Vector3<T> b);
-
     public static extern Vector3<T> operator +(Vector3<T> a, T b);
 
     public static extern Vector3<T> operator -(Vector3<T> a, T b);
@@ -106,6 +69,16 @@ public sealed partial class Vector3<T>
     public static extern Vector3<T> operator /(Vector3<T> a, T b);
 
     public static extern Vector3<T> operator %(Vector3<T> a, T b);
+
+    public static extern Vector3<T> operator +(T a, Vector3<T> b);
+
+    public static extern Vector3<T> operator -(T a, Vector3<T> b);
+
+    public static extern Vector3<T> operator *(T a, Vector3<T> b);
+
+    public static extern Vector3<T> operator /(T a, Vector3<T> b);
+
+    public static extern Vector3<T> operator %(T a, Vector3<T> b);
 
     public static extern Vector3<T> operator +(Vector3<T> a, Vector1<T> b);
 
