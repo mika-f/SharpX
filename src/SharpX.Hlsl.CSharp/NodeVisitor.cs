@@ -61,7 +61,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var t = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
 
-        return SyntaxFactory.FieldDeclaration(t, identifier);
+        var field = SyntaxFactory.FieldDeclaration(t, identifier);
+        if (HasSemanticsAttribute(node))
+            return field.WithSemantics(SyntaxFactory.Semantics(SyntaxFactory.IdentifierName(GetAttributeData(node, typeof(SemanticAttribute))[0])));
+        return field;
     }
 
     #region Helpers
@@ -139,6 +142,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     private bool HasInlineAttribute(MemberDeclarationSyntax member)
     {
         return HasAttribute(member, typeof(InlineAttribute));
+    }
+
+    private bool HasSemanticsAttribute(MemberDeclarationSyntax member)
+    {
+        return HasAttribute(member, typeof(SemanticAttribute));
     }
 
     private bool HasAttribute(SyntaxNode node, Type t)

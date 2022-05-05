@@ -295,7 +295,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent == null || nextToken.Parent == null)
         {
             if (currentToken.Parent is IdentifierNameSyntax)
-                return true;
+                return currentToken.Parent.Parent is not SemanticSyntax;
             return false;
         }
 
@@ -346,6 +346,14 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
 
         // [ ]=
         if (nextKind == SyntaxKind.EqualsToken)
+            return true;
+
+        // semantics [ ]:
+        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is SemanticSyntax)
+            return true;
+
+        // semantics :[ ]SEMANTICS
+        if (currentKind == SyntaxKind.ColonToken && currentToken.Parent is SemanticSyntax && nextToken.Parent is IdentifierNameSyntax)
             return true;
 
         // directives
