@@ -349,7 +349,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             return true;
 
         // [ ]:SEMANTICS
-        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is SemanticSyntax)
+        if (currentKind == SyntaxKind.IdentifierToken && nextKind == SyntaxKind.Semantics)
             return true;
 
         // :[ ]SEMANTICS

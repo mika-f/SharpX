@@ -13,6 +13,7 @@ using SharpX.Composition.Interfaces;
 using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 
+using AttributeListSyntax = SharpX.Hlsl.Syntax.AttributeListSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 
 namespace SharpX.Hlsl.CSharp;
@@ -34,26 +35,45 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
     {
-        return base.VisitClassDeclaration(node);
+        if (!HasInlineAttribute(node))
+            return null;
+
+        var members = node.Members.Select(w => (Syntax.MemberDeclarationSyntax?)Visit(w))
+                          .Where(w => w != null)
+                          .OfType<Syntax.MethodDeclarationSyntax>();
+        return SyntaxFactory.TopLevelModule(SyntaxFactory.List(members.Cast<Syntax.MemberDeclarationSyntax>().ToArray()));
     }
 
     public override HlslSyntaxNode? VisitStructDeclaration(StructDeclarationSyntax node)
     {
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
-
-        // if struct has [Inline] attribute, the members extract into global scope.
-        if (HasInlineAttribute(node))
-            return null;
-        // if struct has [CBuffer] attribute, it compiles into cbuffer declaration
-
-        if (HasCBufferAttribute(node)) return null;
-
         var members = node.Members.Select(w => (Syntax.MemberDeclarationSyntax?)Visit(w))
                           .Where(w => w != null)
                           .OfType<FieldDeclarationSyntax>();
 
+        // if struct has [Inline] attribute, the members extract into global scope.
+        if (HasInlineAttribute(node))
+            return SyntaxFactory.TopLevelModule(SyntaxFactory.List(members.Cast<Syntax.MemberDeclarationSyntax>().ToArray()));
 
+        // if struct has [CBuffer] attribute, it compiles into cbuffer declaration
+        if (HasCBufferAttribute(node))
+            return null;
+
+        // normal struct, compiles into struct simply.
         return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members));
+    }
+
+    public override HlslSyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
+    {
+        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
+        var @return = SyntaxFactory.IdentifierName(GetHlslName(node.ReturnType));
+        var parameters = node.ParameterList.Parameters.Select(w => (Syntax.ParameterSyntax?)Visit(w))
+                             .Where(w => w != null)
+                             .OfType<Syntax.ParameterSyntax>();
+
+        var parameterList = SyntaxFactory.ParameterList(parameters.ToArray());
+
+        return SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block());
     }
 
     public override HlslSyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
@@ -63,15 +83,22 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
         var field = SyntaxFactory.FieldDeclaration(t, identifier);
         if (HasSemanticsAttribute(node))
-            return field.WithSemantics(SyntaxFactory.Semantics(SyntaxFactory.IdentifierName(GetAttributeData(node, typeof(SemanticAttribute))[0])));
+            return field.WithSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute))[0]));
+        if (HasRegisterAttribute(node))
+            return field.WithRegister(SyntaxFactory.Register(GetAttributeData(node, typeof(RegisterAttribute))[0]));
         return field;
+    }
+
+    public override HlslSyntaxNode? VisitParameter(ParameterSyntax node)
+    {
+        return base.VisitParameter(node);
     }
 
     #region Helpers
 
     #region Namings
 
-    private static Regex _typeArgumentsRegex = new(@"&[A-Z]+?", RegexOptions.Compiled);
+    private static readonly Regex TypeArgumentsRegex = new(@"&[A-Z]+?", RegexOptions.Compiled);
 
     private string GetHlslName(TypeSyntax t)
     {
@@ -85,17 +112,17 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                 var arguments = generics?.TypeArguments.Select(GetHlslName) ?? Array.Empty<string>();
 
                 foreach (var argument in arguments)
-                    template = _typeArgumentsRegex.Replace(template, argument);
+                    template = TypeArgumentsRegex.Replace(template, argument);
 
-                return template;
+                return template.Trim();
             }
 
-            return g.ToFullString();
+            return g.ToFullString().Trim();
         }
         else
         {
             var hasComponentAttribute = HasComponentAttribute(t);
-            return hasComponentAttribute ? GetAttributeData(t, typeof(ComponentAttribute))[0] : t.ToFullString();
+            return hasComponentAttribute ? GetAttributeData(t, typeof(ComponentAttribute))[0].Trim() : t.ToFullString().Trim();
         }
     }
 
@@ -142,6 +169,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     private bool HasInlineAttribute(MemberDeclarationSyntax member)
     {
         return HasAttribute(member, typeof(InlineAttribute));
+    }
+
+    private bool HasRegisterAttribute(MemberDeclarationSyntax member)
+    {
+        return HasAttribute(member, typeof(RegisterAttribute));
     }
 
     private bool HasSemanticsAttribute(MemberDeclarationSyntax member)

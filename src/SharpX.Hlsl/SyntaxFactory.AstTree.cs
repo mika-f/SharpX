@@ -363,6 +363,11 @@ public static partial class SyntaxFactory
         return Block(List<AttributeListSyntax>(), Token(SyntaxKind.OpenBraceToken), statements, Token(SyntaxKind.CloseBraceToken));
     }
 
+    public static BlockSyntax Block(params StatementSyntax[] statements)
+    {
+        return Block(List(statements));
+    }
+
     public static LocalDeclarationStatementSyntax LocalDeclaration(SyntaxList<AttributeListSyntax> attributeLists, SyntaxTokenList modifiers, VariableDeclarationSyntax declaration, SyntaxToken semicolonToken)
     {
         return (LocalDeclarationStatementSyntax)SyntaxFactoryInternal.LocalDeclaration(
