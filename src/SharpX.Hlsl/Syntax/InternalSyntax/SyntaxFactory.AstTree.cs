@@ -616,6 +616,11 @@ internal static partial class SyntaxFactory
         return new NameEqualsSyntaxInternal(SyntaxKind.NameEquals, name, equalsToken);
     }
 
+    public static TopLevelModuleSyntaxInternal TopLevelModule(SyntaxListInternal<MemberDeclarationSyntaxInternal> members)
+    {
+        return new TopLevelModuleSyntaxInternal(SyntaxKind.CompilationUnit, members.Node);
+    }
+
     public static StructDeclarationSyntaxInternal StructDeclaration(SyntaxTokenInternal structKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, SyntaxListInternal<FieldDeclarationSyntaxInternal> members, SyntaxTokenInternal closeBraceToken,
                                                                     SyntaxTokenInternal semicolonToken)
     {

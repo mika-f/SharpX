@@ -21,12 +21,12 @@ namespace SharpX.Hlsl.Syntax
 
         public override SyntaxNode? GetNodeSlot(int index)
         {
-            return index == 1 ? GetRed(ref _identifier, 1) : null;
+            return index == 13 ? GetRed(ref _identifier, 3) : null;
         }
 
         public override SyntaxNode? GetCachedSlot(int index)
         {
-            return index == 1 ? _identifier : null;
+            return index == 3 ? _identifier : null;
         }
 
         public RegisterSyntax Update(SyntaxToken colonToken, SyntaxToken registerKeyword, SyntaxToken openParenToken, IdentifierNameSyntax identifier, SyntaxToken closeParenToken)

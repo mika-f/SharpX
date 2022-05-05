@@ -436,6 +436,11 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitTopLevelModule(TopLevelModuleSyntax node)
+    {
+        return node.Update(VisitList(node.Members));
+    }
+
     public override SyntaxNode? VisitStructDeclaration(StructDeclarationSyntax node)
     {
         return node.Update(

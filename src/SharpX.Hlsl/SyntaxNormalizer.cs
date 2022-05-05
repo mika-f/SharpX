@@ -295,7 +295,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent == null || nextToken.Parent == null)
         {
             if (currentToken.Parent is IdentifierNameSyntax)
-                return currentToken.Parent.Parent is not SemanticSyntax;
+                return currentToken.Parent.Parent is not SemanticSyntax and not RegisterSyntax;
             return false;
         }
 
@@ -348,12 +348,20 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (nextKind == SyntaxKind.EqualsToken)
             return true;
 
-        // semantics [ ]:
+        // [ ]:SEMANTICS
         if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is SemanticSyntax)
             return true;
 
-        // semantics :[ ]SEMANTICS
+        // :[ ]SEMANTICS
         if (currentKind == SyntaxKind.ColonToken && currentToken.Parent is SemanticSyntax && nextToken.Parent is IdentifierNameSyntax)
+            return true;
+
+        // [ ]:register
+        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is RegisterSyntax)
+            return true;
+
+        // :[ ]register
+        if (currentKind == SyntaxKind.ColonToken && currentToken.Parent is RegisterSyntax)
             return true;
 
         // directives
@@ -361,7 +369,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             return true;
 
         // Am I checking next tokens?
-        if (IsKeyword(currentKind))
+        if (IsKeyword(currentKind) && currentKind != SyntaxKind.RegisterKeyword)
             return true;
 
         // (some-word)[ ](some-word)
@@ -520,6 +528,9 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             return 0;
 
         if (currentToken.Parent is StructDeclarationSyntax)
+            return 2;
+
+        if (currentToken.Parent is TopLevelModuleSyntax)
             return 2;
 
         return 1;

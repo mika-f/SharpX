@@ -237,6 +237,11 @@ internal abstract class HlslSyntaxVisitorInternal<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitTopLevelModule(TopLevelModuleSyntaxInternal node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitStructDeclaration(StructDeclarationSyntaxInternal node)
     {
         return DefaultVisit(node);

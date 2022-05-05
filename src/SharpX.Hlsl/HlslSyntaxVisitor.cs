@@ -245,6 +245,11 @@ public abstract class HlslSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitTopLevelModule(TopLevelModuleSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitStructDeclaration(StructDeclarationSyntax node)
     {
         return DefaultVisit(node);

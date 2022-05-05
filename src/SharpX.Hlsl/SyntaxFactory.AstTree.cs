@@ -716,6 +716,11 @@ public static partial class SyntaxFactory
         return NameEquals(name, Token(SyntaxKind.EqualsToken));
     }
 
+    public static TopLevelModuleSyntax TopLevelModule(SyntaxList<MemberDeclarationSyntax> members)
+    {
+        return (TopLevelModuleSyntax)SyntaxFactoryInternal.TopLevelModule(members.Node.ToGreenList<MemberDeclarationSyntaxInternal>()).CreateRed();
+    }
+
     public static StructDeclarationSyntax StructDeclaration(SyntaxToken structKeyword, SyntaxToken identifier, SyntaxToken openBraceToken, SyntaxList<FieldDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
     {
         return (StructDeclarationSyntax)SyntaxFactoryInternal.StructDeclaration(
