@@ -89,7 +89,7 @@ public abstract class SyntaxNode
 
     #region Syntax
 
-    public SyntaxNode? GetRed(ref SyntaxNode? field, int slot)
+    protected SyntaxNode? GetRed(ref SyntaxNode? field, int slot)
     {
         var r = field;
         if (r == null)
@@ -105,12 +105,12 @@ public abstract class SyntaxNode
         return r;
     }
 
-    public SyntaxNode? GetRedAtZero(ref SyntaxNode? field)
+    protected SyntaxNode? GetRedAtZero(ref SyntaxNode? field)
     {
         return GetRed(ref field, 0);
     }
 
-    public T? GetRed<T>(ref T? field, int slot) where T : SyntaxNode
+    protected T? GetRed<T>(ref T? field, int slot) where T : SyntaxNode
     {
         var r = field;
         if (r == null)
@@ -126,9 +126,38 @@ public abstract class SyntaxNode
         return r;
     }
 
-    public T? GetRedAtZero<T>(ref T? field) where T : SyntaxNode
+    protected T? GetRedAtZero<T>(ref T? field) where T : SyntaxNode
     {
         return GetRed(ref field, 0);
+    }
+
+    protected SyntaxNode GetRedElement(ref SyntaxNode? element, int slot)
+    {
+        var r = element;
+        if (r == null)
+        {
+            var green = Green.GetRequiredSlot(slot);
+            Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
+            r = element;
+        }
+
+        return r;
+    }
+
+    protected SyntaxNode GetRedElementIfNotToken(ref SyntaxNode? element)
+    {
+        var r = element;
+        if (r == null)
+        {
+            var green = Green.GetRequiredSlot(1);
+            if (!green.IsToken)
+            {
+                Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(1)), null);
+                r = element;
+            }
+        }
+
+        return r;
     }
 
     protected internal abstract SyntaxNode NormalizeWhitespaceCore(string indentation, string eol, bool elasticTrivia);

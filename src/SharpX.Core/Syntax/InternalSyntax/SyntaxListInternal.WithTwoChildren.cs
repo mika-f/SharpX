@@ -48,7 +48,7 @@ public abstract partial class SyntaxListInternal
 
         public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
         {
-            throw new NotImplementedException();
+            return new SyntaxList.WithTowChildren(this, parent, position);
         }
 
         public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)

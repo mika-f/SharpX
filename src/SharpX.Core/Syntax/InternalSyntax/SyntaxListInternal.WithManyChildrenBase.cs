@@ -42,7 +42,7 @@ public abstract partial class SyntaxListInternal
 
         public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
         {
-            throw new NotImplementedException();
+            return new SyntaxList.WithManyChildren(this, parent, position);
         }
     }
 }
