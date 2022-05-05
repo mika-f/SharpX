@@ -5,6 +5,8 @@
 
 using System.Collections;
 
+using SharpX.Core.Syntax;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -38,14 +40,16 @@ public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
         Index = index;
     }
 
-    public SyntaxTriviaList(params SyntaxTrivia[] trivias) : this(default, CreateNode(trivias), 0, 0) { }
+    public SyntaxTriviaList(params SyntaxTrivia[] trivias) : this(default, CreateNode(trivias), 0) { }
 
     private static GreenNode? CreateNode(SyntaxTrivia[]? trivias)
     {
         if (trivias == null)
             return null;
 
-        return default;
+        var builder = new SyntaxTriviaListBuilder(trivias.Length);
+        builder.AddRange(trivias);
+        return builder.ToList().Node;
     }
 
     public SyntaxToken Token { get; }
@@ -65,7 +69,7 @@ public readonly partial struct SyntaxTriviaList : IReadOnlyList<SyntaxTrivia>
 
     public static GreenNode? GetGreenNodeAt(GreenNode node, int i)
     {
-        Contract.Assert(node.IsList || i == 0 && !node.IsList, null);
+        Contract.Assert(node.IsList || (i == 0 && !node.IsList), null);
         return node.IsList ? node.GetSlot(i) : node;
     }
 
