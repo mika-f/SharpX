@@ -105,12 +105,6 @@ public class CSharpCompiler : IDisposable
     {
         _errors.Clear();
 
-        if (_workspace == null)
-        {
-            _workspace = SharpXWorkspace.Create();
-            _workspace = _workspace.AddMetadataReferences(_options.Libraries.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
-        }
-
         var container = _registry?.GetLanguageContainer(_options.Target);
         if (container == null)
         {
@@ -118,7 +112,14 @@ public class CSharpCompiler : IDisposable
             return true;
         }
 
-        _workspace = _workspace.AddMetadataReferences(container.References.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
+        if (_workspace == null)
+        {
+            _workspace = SharpXWorkspace.Create();
+            _workspace = _workspace.AddMetadataReferences(_options.Libraries.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
+            _workspace = _workspace.AddMetadataReferences(container.References.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
+        }
+
+
         _workspace = EnumerableSources();
 
         var isSuccessful = await PrecompileCSharpSourcesAsync(ct);
