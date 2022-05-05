@@ -60,7 +60,7 @@ internal class MethodDeclarationSyntaxInternal : MemberDeclarationSyntaxInternal
     public MethodDeclarationSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, TypeSyntaxInternal returnType, SyntaxTokenInternal identifier, ParameterListSyntaxInternal parameterList, SemanticSyntaxInternal? returnSemantic, BlockSyntaxInternal body,
                                            DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
-        SlotCount = 5;
+        SlotCount = 6;
 
         if (attributeLists != null)
         {
