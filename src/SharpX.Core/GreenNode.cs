@@ -118,6 +118,8 @@ public abstract class GreenNode
         return GetType().Namespace + " " + KindText + " " + ToString();
     }
 
+    public abstract SyntaxNode? GetStructure(SyntaxTrivia parentTrivia);
+
     public GreenNode AddError(DiagnosticInfo err)
     {
         DiagnosticInfo[] errors;
@@ -276,6 +278,8 @@ public abstract class GreenNode
     public bool IsList => RawKind == ListKind;
 
     public abstract string KindText { get; }
+
+    public virtual bool IsStructuredTrivia => false;
 
     public virtual bool IsDirective => false;
 

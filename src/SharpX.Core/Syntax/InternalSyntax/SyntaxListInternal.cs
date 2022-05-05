@@ -56,4 +56,9 @@ public abstract partial class SyntaxListInternal : GreenNode
             return new WithManyChildren(nodes);
         return new WithLotsOfChildren(nodes);
     }
+
+    public override SyntaxNode? GetStructure(SyntaxTrivia parentTrivia)
+    {
+        throw Exceptions.Unreachable;
+    }
 }

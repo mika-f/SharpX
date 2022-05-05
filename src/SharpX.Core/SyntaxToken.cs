@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis.Text;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -10,6 +12,9 @@ namespace SharpX.Core;
 /// </summary>
 public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 {
+    public static readonly Func<SyntaxToken, bool> NonZeroWidth = t => t.Width > 0;
+    public static readonly Func<SyntaxToken, bool> Any = t => true;
+
     public SyntaxToken(SyntaxNode? parent, GreenNode? token, int position, int index)
     {
         Parent = parent;
@@ -50,9 +55,15 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 
     public int FullWidth => Node?.FullWidth ?? 0;
 
+    public TextSpan Span => Node != null ? new TextSpan(Position + Node.GetLeadingTriviaWidth(), Node.Width) : default;
+
+    public TextSpan FullSpan => new(Position, FullWidth);
+
     #region Trivia
 
     public SyntaxTriviaList LeadingTrivia => Node != null ? new SyntaxTriviaList(this, Node.GetLeadingTrivia(), Position) : default;
+
+    public int LeadingWidth => Node?.GetLeadingTriviaWidth() ?? 0;
 
     public SyntaxTriviaList TrailingTrivia
     {
@@ -74,6 +85,10 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
             return new SyntaxTriviaList(this, trailing, trailingPosition, index);
         }
     }
+
+    public int TrailingWidth => Node?.GetTrailingTriviaWidth() ?? 0;
+
+    public string Text => ToString();
 
     public SyntaxToken WithLeadingTrivia(SyntaxTriviaList trivia)
     {
@@ -113,6 +128,11 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 
     #endregion
 
+    public override string ToString()
+    {
+        return Node != null ? Node.ToString() : string.Empty;
+    }
+
     public static bool operator ==(SyntaxToken left, SyntaxToken right)
     {
         return left.Equals(right);
@@ -131,6 +151,13 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
     public override bool Equals(object? obj)
     {
         return obj is SyntaxToken other && Equals(other);
+    }
+
+    public SyntaxToken GetNextToken(Func<SyntaxToken, bool> predicate, Func<SyntaxTrivia, bool>? stepInto = null)
+    {
+        if (Node == null)
+            return default;
+        return SyntaxNavigator.Instance.GetNextToken(this, predicate, stepInto);
     }
 
     public override int GetHashCode()

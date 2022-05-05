@@ -99,9 +99,6 @@ public readonly partial struct SyntaxTriviaList
 
         object IEnumerator.Current => Current;
 
-        public void Dispose()
-        {
-            throw new NotSupportedException();
-        }
+        public void Dispose() { }
     }
 }

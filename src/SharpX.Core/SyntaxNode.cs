@@ -5,6 +5,8 @@
 
 using System.Diagnostics;
 
+using Microsoft.CodeAnalysis.Text;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -31,13 +33,26 @@ public abstract class SyntaxNode
 
     public int FullWidth => Green.FullWidth;
 
+    public TextSpan FullSpan => new(Position, Green.FullWidth);
+
     protected string KindText => Green.KindText;
 
     public bool ContainsDiagnostics => Green.ContainsDiagnostics;
 
+    public bool IsStructuredTrivia => Green.IsStructuredTrivia;
+
     #region Node Lookup
 
     public SyntaxNode? Parent { get; }
+
+    #endregion
+
+    #region Token Lookup
+
+    public SyntaxToken GetLastToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
+    {
+        return SyntaxNavigator.Instance.GetLastToken(this, includeZeroWidth, includeSkipped, includeDirectives);
+    }
 
     #endregion
 
@@ -117,6 +132,17 @@ public abstract class SyntaxNode
     }
 
     protected internal abstract SyntaxNode NormalizeWhitespaceCore(string indentation, string eol, bool elasticTrivia);
+
+    public ChildSyntaxList ChildNodesAndTokens()
+    {
+        return new ChildSyntaxList(this);
+    }
+
+
+    public SyntaxTriviaList GetTrailingTrivia()
+    {
+        return GetLastToken(true).TrailingTrivia;
+    }
 
     #endregion
 

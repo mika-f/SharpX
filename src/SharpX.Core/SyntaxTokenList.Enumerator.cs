@@ -61,9 +61,6 @@ public readonly partial struct SyntaxTokenList
 
         object IEnumerator.Current => Current;
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        public void Dispose() { }
     }
 }

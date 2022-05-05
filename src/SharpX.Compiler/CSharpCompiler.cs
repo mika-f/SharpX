@@ -191,7 +191,6 @@ public class CSharpCompiler : IDisposable
                 else
                 {
                     var str = source.NormalizeWhitespace().ToFullString();
-                    Debug.WriteLine(str);
                 }
             }
         });

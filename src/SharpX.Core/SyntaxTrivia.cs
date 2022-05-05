@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -45,7 +47,21 @@ public readonly struct SyntaxTrivia : IEquatable<SyntaxTrivia>
 
     public bool ContainsDiagnostics => UnderlyingNode?.ContainsDiagnostics ?? false;
 
+    public bool HasStructure => UnderlyingNode?.IsStructuredTrivia ?? false;
+
     public bool IsDirective => UnderlyingNode?.IsDirective ?? false;
+
+    public SyntaxNode? GetStructure()
+    {
+        return HasStructure ? UnderlyingNode!.GetStructure(this) : null;
+    }
+
+
+    public bool TryGetStructure([NotNullWhen(true)] out SyntaxNode? structure)
+    {
+        structure = GetStructure();
+        return structure != null;
+    }
 
     public override string ToString()
     {

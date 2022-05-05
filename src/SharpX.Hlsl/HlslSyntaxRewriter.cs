@@ -441,7 +441,7 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         return node.Update(
             VisitToken(node.Keyword),
             VisitToken(node.Identifier),
-            VisitToken(node.CloseBraceToken),
+            VisitToken(node.OpenBraceToken),
             VisitList(node.Members),
             VisitToken(node.CloseBraceToken),
             VisitToken(node.SemicolonToken)

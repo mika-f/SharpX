@@ -7,6 +7,64 @@ namespace SharpX.Hlsl.Syntax;
 
 internal static class SyntaxFacts
 {
+    public static bool IsKeywordKind(SyntaxKind kind)
+    {
+        return kind is >= SyntaxKind.AppendStructuredBufferKeyword and <= SyntaxKind.WhileKeyword;
+    }
+
+    public static bool IsPreprocessorKeyword(SyntaxKind kind)
+    {
+        return kind is >= SyntaxKind.DefineKeyword and <= SyntaxKind.UndefKeyword;
+    }
+
+    public static bool IsPunctuation(SyntaxKind kind)
+    {
+        return kind is >= SyntaxKind.TildeToken and <= SyntaxKind.PercentEqualsToken;
+    }
+
+    public static bool IsPreprocessorDirective(SyntaxKind kind)
+    {
+        switch (kind)
+        {
+            case SyntaxKind.IfDirectiveTrivia:
+            case SyntaxKind.IfDefDirectiveTrivia:
+            case SyntaxKind.IfnDefDirectiveTrivia:
+            case SyntaxKind.ElifDirectiveTrivia:
+            case SyntaxKind.ElseDirectiveTrivia:
+            case SyntaxKind.EndIfDirectiveTrivia:
+            case SyntaxKind.DefineDirectiveTrivia:
+            case SyntaxKind.UndefDirectiveTrivia:
+            case SyntaxKind.WarningDirectiveTrivia:
+            case SyntaxKind.ErrorDirectiveTrivia:
+            case SyntaxKind.LineDirectiveTrivia:
+            case SyntaxKind.IncludeDirectiveTrivia:
+            case SyntaxKind.PragmaDefDirectiveTrivia:
+            case SyntaxKind.PragmaMessageDirectiveTrivia:
+            case SyntaxKind.PragmaPackMatrixDirectiveTrivia:
+            case SyntaxKind.PragmaWarningDirectiveTrivia:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public static bool IsLiteral(SyntaxKind currentKind)
+    {
+        switch (currentKind)
+        {
+            case SyntaxKind.IdentifierToken:
+            case SyntaxKind.StringLiteralToken:
+            case SyntaxKind.CharacterLiteralToken:
+            case SyntaxKind.NumericLiteralToken:
+            case SyntaxKind.IncludeReferenceLiteralToken:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
     public static string GetText(SyntaxKind kind)
     {
         return kind switch
@@ -196,6 +254,49 @@ internal static class SyntaxFacts
             SyntaxKind.PragmaKeyword => "pragma",
             SyntaxKind.UndefKeyword => "undef",
             _ => string.Empty
+        };
+    }
+
+    public static SyntaxKind GetAssignmentExpression(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.BarEqualsToken => SyntaxKind.OrAssignmentExpression,
+            SyntaxKind.AmpersandEqualsToken => SyntaxKind.AndAssignmentExpression,
+            SyntaxKind.CaretEqualsToken => SyntaxKind.ExclusiveOrAssignmentExpression,
+            SyntaxKind.LessThanLessThanEqualsToken => SyntaxKind.LeftShiftAssignmentExpression,
+            SyntaxKind.GreaterThanGreaterThanEqualsToken => SyntaxKind.RightShiftAssignmentExpression,
+            SyntaxKind.PlusEqualsToken => SyntaxKind.AddAssignmentExpression,
+            SyntaxKind.MinusEqualsToken => SyntaxKind.SubtractAssignmentExpression,
+            SyntaxKind.AsteriskEqualsToken => SyntaxKind.MultiplyAssignmentExpression,
+            SyntaxKind.SlashEqualsToken => SyntaxKind.DivideAssignmentExpression,
+            SyntaxKind.PercentEqualsToken => SyntaxKind.ModuloAssignmentExpression,
+            SyntaxKind.EqualsToken => SyntaxKind.SimpleAssignmentExpression,
+            _ => SyntaxKind.None
+        };
+    }
+
+    public static SyntaxKind GetBinaryExpression(SyntaxKind kind)
+    {
+        return kind switch
+        {
+            SyntaxKind.BarToken => SyntaxKind.BitwiseOrExpression,
+            SyntaxKind.CaretToken => SyntaxKind.ExclusiveOrExpression,
+            SyntaxKind.AmpersandToken => SyntaxKind.BitwiseAndExpression,
+            SyntaxKind.EqualsEqualsToken => SyntaxKind.EqualsExpression,
+            SyntaxKind.ExclamationEqualsToken => SyntaxKind.NotEqualsExpression,
+            SyntaxKind.LessThanExpression => SyntaxKind.LessThanExpression,
+            SyntaxKind.LessThanEqualsToken => SyntaxKind.LessThanOrEqualExpression,
+            SyntaxKind.GreaterThanToken => SyntaxKind.GreaterThanExpression,
+            SyntaxKind.GreaterThanEqualsToken => SyntaxKind.GreaterThanOrEqualExpression,
+            SyntaxKind.PlusToken => SyntaxKind.AddExpression,
+            SyntaxKind.MinusToken => SyntaxKind.SubtractExpression,
+            SyntaxKind.AsteriskToken => SyntaxKind.MultiplyExpression,
+            SyntaxKind.SlashToken => SyntaxKind.DivideExpression,
+            SyntaxKind.PercentToken => SyntaxKind.ModuloExpression,
+            SyntaxKind.AmpersandAmpersandToken => SyntaxKind.LogicalAndExpression,
+            SyntaxKind.BarBarToken => SyntaxKind.LogicalOrExpression,
+            _ => SyntaxKind.None
         };
     }
 }
