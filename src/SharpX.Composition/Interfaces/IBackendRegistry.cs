@@ -8,4 +8,6 @@ namespace SharpX.Composition.Interfaces;
 public interface IBackendRegistry
 {
     void RegisterBackendVisitor(string language, Type visitor, Type @return, uint priority);
+
+    void RegisterReferences(string language, params string[] references);
 }

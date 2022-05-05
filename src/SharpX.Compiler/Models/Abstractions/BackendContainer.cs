@@ -15,21 +15,30 @@ namespace SharpX.Compiler.Models.Abstractions;
 internal class BackendContainer
 {
     private readonly SortedList<uint, Type> _visitors;
+    private readonly List<string> _references;
 
     public string Language { get; }
 
     public Type ReturnType { get; }
+
+    public IReadOnlyCollection<string> References => _references.AsReadOnly();
 
     public BackendContainer(string language, Type @return)
     {
         Language = language;
         ReturnType = @return;
         _visitors = new SortedList<uint, Type>();
+        _references = new List<string>();
     }
 
     public void Register(uint priority, Type visitor)
     {
         _visitors.Add(priority, visitor);
+    }
+
+    public void AddReferences(string[] references)
+    {
+        _references.AddRange(references);
     }
 
     public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model)

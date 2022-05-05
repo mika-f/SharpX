@@ -111,13 +111,21 @@ public class CSharpCompiler : IDisposable
             _workspace = _workspace.AddMetadataReferences(_options.Libraries.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
         }
 
+        var container = _registry?.GetLanguageContainer(_options.Target);
+        if (container == null)
+        {
+            _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"could not find target runtime: {_options.Target}"));
+            return true;
+        }
+
+        _workspace = _workspace.AddMetadataReferences(container.References.Select(w => MetadataReference.CreateFromFile(w)).Cast<MetadataReference>().ToArray());
         _workspace = EnumerableSources();
 
         var isSuccessful = await PrecompileCSharpSourcesAsync(ct);
         if (!isSuccessful)
             return false;
 
-        isSuccessful &= await CompileCSharpSourcesAsync(ct);
+        isSuccessful &= await CompileCSharpSourcesAsync(container, ct);
         return isSuccessful;
     }
 
@@ -156,15 +164,9 @@ public class CSharpCompiler : IDisposable
         return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
     }
 
-    private async Task<bool> CompileCSharpSourcesAsync(CancellationToken ct)
+    private async Task<bool> CompileCSharpSourcesAsync(BackendContainer container, CancellationToken ct)
     {
         var workspace = _workspace!;
-        var container = _registry?.GetLanguageContainer(_options.Target);
-        if (container == null)
-        {
-            _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"could not find target runtime: {_options.Target}"));
-            return true;
-        }
 
         var lockObj = new object();
 
