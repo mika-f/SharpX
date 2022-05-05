@@ -504,6 +504,9 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent is ForStatementSyntax)
             return 0;
 
+        if (currentToken.Parent is MemberDeclarationSyntax)
+            return 2;
+
         return 1;
     }
 
