@@ -126,7 +126,7 @@ public class SyntaxListBuilder
                 return SyntaxListInternal.List(_nodes[0]!, _nodes[1]!, _nodes[2]!);
 
             default:
-                return SyntaxListInternal.List(_nodes!);
+                return SyntaxListInternal.List(_nodes.Where(w => w != null).Select(w => w!).ToArray());
         }
     }
 
