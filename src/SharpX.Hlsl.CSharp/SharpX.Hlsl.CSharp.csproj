@@ -17,6 +17,7 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
     <ProjectReference Include="..\SharpX.Hlsl\SharpX.Hlsl.csproj" />
   </ItemGroup>
 

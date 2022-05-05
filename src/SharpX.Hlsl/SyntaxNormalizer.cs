@@ -293,7 +293,11 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
     private static bool NeedsSeparator(SyntaxToken currentToken, SyntaxToken nextToken)
     {
         if (currentToken.Parent == null || nextToken.Parent == null)
+        {
+            if (currentToken.Parent is IdentifierNameSyntax)
+                return true;
             return false;
+        }
 
         if (nextToken.RawKind == (int)SyntaxKind.EndOfDirectiveToken)
             return IsKeyword((SyntaxKind)currentToken.RawKind) && nextToken.LeadingWidth > 0;
@@ -354,6 +358,9 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
 
         // (some-word)[ ](some-word)
         if (IsWord(currentKind) && IsWord(nextKind))
+            return true;
+
+        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is null)
             return true;
 
         if (currentToken.Width > 1 && nextToken.Width > 1)
@@ -504,7 +511,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent is ForStatementSyntax)
             return 0;
 
-        if (currentToken.Parent is MemberDeclarationSyntax)
+        if (currentToken.Parent is StructDeclarationSyntax)
             return 2;
 
         return 1;
