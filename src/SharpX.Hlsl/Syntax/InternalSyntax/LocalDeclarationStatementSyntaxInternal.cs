@@ -27,6 +27,8 @@ internal class LocalDeclarationStatementSyntaxInternal : StatementSyntaxInternal
 
     public LocalDeclarationStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, GreenNode? modifiers, VariableDeclarationSyntaxInternal declaration, SyntaxTokenInternal semicolonToken) : base(kind)
     {
+        SlotCount = 4;
+
         if (attributeLists != null)
         {
             AdjustWidth(attributeLists);
@@ -49,6 +51,8 @@ internal class LocalDeclarationStatementSyntaxInternal : StatementSyntaxInternal
     public LocalDeclarationStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, GreenNode? modifiers, VariableDeclarationSyntaxInternal declaration, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) :
         base(kind, diagnostics, annotations)
     {
+        SlotCount = 4;
+
         if (attributeLists != null)
         {
             AdjustWidth(attributeLists);

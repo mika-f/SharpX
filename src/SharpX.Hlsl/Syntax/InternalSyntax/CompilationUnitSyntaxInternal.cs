@@ -22,7 +22,7 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
 
     public CompilationUnitSyntaxInternal(SyntaxKind kind, GreenNode? members, SyntaxTokenInternal endOfFileToken) : base(kind)
     {
-        SlotCount = 1;
+        SlotCount = 2;
 
         if (members != null)
         {
@@ -36,7 +36,7 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
 
     public CompilationUnitSyntaxInternal(SyntaxKind kind, GreenNode? members, SyntaxTokenInternal endOfFileToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
-        SlotCount = 1;
+        SlotCount = 2;
 
         if (members != null)
         {
@@ -63,6 +63,7 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
         return index switch
         {
             0 => _members,
+            1 => EndOfFileToken,
             _ => null
         };
     }
