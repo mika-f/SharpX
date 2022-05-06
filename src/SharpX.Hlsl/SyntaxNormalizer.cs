@@ -301,10 +301,40 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return true;
                 if (currentToken.Parent.Parent is ParameterSyntax)
                     return true;
-                if (currentToken.Parent.Parent is AssignmentExpressionSyntax or BinaryExpressionSyntax)
+                if (currentToken.Parent.Parent is AssignmentExpressionSyntax)
                     return true;
-                // if (currentToken.Parent.Parent is MemberAccessExpressionSyntax)
-                //     return true;
+                if (currentToken.Parent.Parent is BinaryExpressionSyntax b)
+                    return BinaryExpressionNeedsSeparator(currentToken, b);
+                if (currentToken.Parent.Parent is MemberAccessExpressionSyntax memberAccess)
+                {
+                    var parent = memberAccess.Parent;
+                    if (parent is not MemberAccessExpressionSyntax and not InvocationExpressionSyntax)
+                    {
+                        if (parent is AssignmentExpressionSyntax assignment)
+                        {
+                            if (currentToken.Parent.Parent is MemberAccessExpressionSyntax m)
+                            {
+                                if (assignment.Right == currentToken.Parent.Parent)
+                                    return false;
+                                return currentToken.Parent == m.Name;
+                            }
+                        }
+                        else if (parent is BinaryExpressionSyntax binary)
+                        {
+                            if (currentToken.Parent.Parent is MemberAccessExpressionSyntax m)
+                            {
+                                if (binary.Right == currentToken.Parent.Parent)
+                                    return false;
+                                return currentToken.Parent == m.Name;
+                            }
+                        }
+
+                        return false;
+                    }
+
+                    return false;
+                }
+
                 return false;
             }
 
@@ -418,6 +448,13 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             SyntaxKind.DotToken => false,
             _ => SyntaxFacts.GetBinaryExpression(kind) != SyntaxKind.None
         };
+    }
+
+    private static bool BinaryExpressionNeedsSeparator(SyntaxToken currentToken, BinaryExpressionSyntax binary)
+    {
+        if (binary.Parent is ArgumentSyntax { Parent: ArgumentListSyntax list } arguments)
+            return list.Arguments.Last() != arguments;
+        return true;
     }
 
     #endregion
