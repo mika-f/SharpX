@@ -184,6 +184,20 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.InvocationExpression(expression, argumentList);
     }
 
+    public override HlslSyntaxNode? VisitElementAccessExpression(ElementAccessExpressionSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        var arguments = node.ArgumentList.Arguments.Select(w => (Syntax.ArgumentSyntax?)Visit(w))
+                            .Where(w => w != null)
+                            .OfType<Syntax.ArgumentSyntax>()
+                            .ToArray();
+
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.ElementAccessExpression(expression, SyntaxFactory.BracketedArgumentList(SyntaxFactory.SeparatedList(arguments)));
+    }
+
     public override HlslSyntaxNode? VisitArgument(ArgumentSyntax node)
     {
         var expression = (ExpressionSyntax?)Visit(node.Expression);
