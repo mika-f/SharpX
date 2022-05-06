@@ -237,28 +237,38 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     private string GetHlslName(TypeSyntax t)
     {
-        if (t is GenericNameSyntax g)
+        var hasComponentAttribute = HasComponentAttribute(t);
+        if (hasComponentAttribute)
         {
-            var hasComponentAttribute = HasComponentAttribute(g);
-            if (hasComponentAttribute)
+            var symbol = GetCurrentSymbol(t);
+            if (symbol is INamedTypeSymbol s)
             {
-                var template = GetAttributeData(g, typeof(ComponentAttribute))[0];
-                var generics = GetCurrentSymbol(g) as INamedTypeSymbol;
-                var arguments = generics?.TypeArguments.Select(GetHlslName) ?? Array.Empty<string>();
+                var template = GetAttributeData(s, typeof(ComponentAttribute))[0];
+                var arguments = s.TypeArguments.Select(GetHlslName) ?? Array.Empty<string>();
 
                 foreach (var argument in arguments)
                     template = TypeArgumentsRegex.Replace(template, argument);
 
                 return template.Trim();
             }
+        }
 
-            return g.ToFullString().Trim();
-        }
-        else
+        var hasNameAttribute = HasNameAttribute(t);
+        if (hasNameAttribute)
+            return GetAttributeData(t, typeof(NameAttribute))[0];
+
+        if (t is IdentifierNameSyntax i)
         {
-            var hasComponentAttribute = HasComponentAttribute(t);
-            return hasComponentAttribute ? GetAttributeData(t, typeof(ComponentAttribute))[0].Trim() : t.ToFullString().Trim();
+            if (i.IsVar)
+            {
+                var s = GetCurrentSymbol(i);
+                return s.ToDisplayString();
+            }
+
+            return i.Identifier.ToFullString();
         }
+
+        return t.ToFullString();
     }
 
     private string GetHlslName(ITypeSymbol s)
