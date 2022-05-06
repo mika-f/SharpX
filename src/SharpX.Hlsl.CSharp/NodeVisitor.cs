@@ -13,10 +13,8 @@ using SharpX.Composition.Interfaces;
 using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 
-using AttributeListSyntax = SharpX.Hlsl.Syntax.AttributeListSyntax;
 using CSharpSyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 using ExpressionSyntax = SharpX.Hlsl.Syntax.ExpressionSyntax;
-using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using SimpleNameSyntax = SharpX.Hlsl.Syntax.SimpleNameSyntax;
 using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
 
@@ -29,6 +27,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     public NodeVisitor(IBackendVisitorArgs<HlslSyntaxNode> args) : base(args)
     {
         _semanticModel = args.SemanticModel;
+    }
+
+    public override HlslSyntaxNode? DefaultVisit(SyntaxNode node)
+    {
+        return null;
     }
 
     public override HlslSyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
@@ -264,6 +267,12 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             return null;
         return SyntaxFactory.CastExpression(t, SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(0)));
     }
+
+    public override HlslSyntaxNode? VisitArrayCreationExpression(ArrayCreationExpressionSyntax node)
+    {
+        return base.VisitArrayCreationExpression(node);
+    }
+
     public override HlslSyntaxNode? VisitBlock(BlockSyntax node)
     {
         var statements = node.Statements.Select(w => (StatementSyntax?)Visit(w))
@@ -283,7 +292,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         if (declaration == null)
             return null;
 
-        return SyntaxFactory.LocalDeclaration(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), declaration);
+        return SyntaxFactory.LocalDeclaration(SyntaxFactory.List<Syntax.AttributeListSyntax>(), SyntaxFactory.TokenList(), declaration);
     }
 
     public override HlslSyntaxNode? VisitVariableDeclaration(VariableDeclarationSyntax node)
@@ -321,12 +330,40 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
     {
-        var statement = SyntaxFactory.ReturnStatement(SyntaxFactory.List<AttributeListSyntax>());
+        var statement = SyntaxFactory.ReturnStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>());
         if (node.Expression == null)
             return statement;
 
         var expression = (ExpressionSyntax?)Visit(node.Expression);
         return statement.WithExpression(expression);
+    }
+
+
+    public override HlslSyntaxNode? VisitForStatement(ForStatementSyntax node)
+    {
+        var declaration = (Syntax.VariableDeclarationSyntax?)Visit(node.Declaration);
+        var initializers = node.Initializers.Select(w => (ExpressionSyntax?)Visit(w))
+                               .Where(w => w != null)
+                               .OfType<ExpressionSyntax>()
+                               .ToArray();
+        var expression = (ExpressionSyntax?)Visit(node.Condition);
+        var incrementors = node.Incrementors.Select(w => (ExpressionSyntax?)Visit(w))
+                               .Where(w => w != null)
+                               .OfType<ExpressionSyntax>()
+                               .ToArray();
+        var statement = (StatementSyntax?)Visit(node.Statement);
+
+        if (statement == null)
+            return null;
+
+        return SyntaxFactory.ForStatement(
+            SyntaxFactory.List<Syntax.AttributeListSyntax>(),
+            declaration,
+            SyntaxFactory.SeparatedList(initializers),
+            expression,
+            SyntaxFactory.SeparatedList(incrementors),
+            statement
+        );
     }
 
     public override HlslSyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
@@ -335,10 +372,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         if (expression == null)
             return null;
 
-        return SyntaxFactory.ExpressionStatement(SyntaxFactory.List<AttributeListSyntax>(), expression);
+        return SyntaxFactory.ExpressionStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>(), expression);
     }
 
-    public override HlslSyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
+    public override HlslSyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
     {
         var members = node.Members.Select(w => (Syntax.MemberDeclarationSyntax?)Visit(w)).Where(w => w != null).Select(w => w!);
         return SyntaxFactory.CompilationUnit(SyntaxFactory.List(members));
@@ -360,7 +397,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
         var members = node.Members.Select(w => (Syntax.MemberDeclarationSyntax?)Visit(w))
                           .Where(w => w != null)
-                          .OfType<FieldDeclarationSyntax>();
+                          .OfType<Syntax.FieldDeclarationSyntax>();
 
         // if struct has [Inline] attribute, the members extract into global scope.
         if (HasInlineAttribute(node))
@@ -395,7 +432,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                              .OfType<StatementSyntax>()
                              .ToArray();
 
-        var declaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block(statements));
+        var declaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.List<Syntax.AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block(statements));
         if (HasSemanticsAttribute(node, true))
             return declaration.WithReturnSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute), isReturnAttr: true)[0]));
         return declaration;
