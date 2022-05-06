@@ -48,6 +48,15 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.GenericName(SyntaxFactory.Identifier(node.Identifier.ValueText), SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(arguments.ToArray())));
     }
 
+    public override HlslSyntaxNode? VisitParenthesizedExpression(ParenthesizedExpressionSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.ParenthesizedExpression(expression);
+    }
+
     public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
     {
         var hasInlineAttributeOnReceiver = HasInlineAttribute(node.Expression);
