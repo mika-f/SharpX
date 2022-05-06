@@ -273,18 +273,18 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     #region Attributes
 
-    private string[] GetAttributeData(SyntaxNode node, Type t, bool isArray = false)
+    private string[] GetAttributeData(SyntaxNode node, Type t, bool isArray = false, bool isReturnAttr = false)
     {
         var decl = GetDeclarationSymbol(node);
         if (decl == null)
             return Array.Empty<string>();
-        return GetAttributeData(decl, t, isArray);
+        return GetAttributeData(decl, t, isArray, isReturnAttr);
     }
 
-    private string[] GetAttributeData(ISymbol decl, Type t, bool isArray = false)
+    private string[] GetAttributeData(ISymbol decl, Type t, bool isArray = false, bool isReturnAttr = false)
     {
         var s = _semanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
-        var attr = decl.GetAttributes().FirstOrDefault(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
+        var attr = (isReturnAttr && decl is IMethodSymbol m ? m.GetReturnTypeAttributes() : decl.GetAttributes()).FirstOrDefault(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
         if (attr == null)
             return Array.Empty<string>();
 
@@ -301,7 +301,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return HasAttribute(t, typeof(ComponentAttribute));
     }
 
-    private bool HasNameAttribute(IdentifierNameSyntax t)
+    private bool HasNameAttribute(SyntaxNode t)
     {
         return HasAttribute(t, typeof(NameAttribute));
     }
@@ -316,24 +316,24 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return HasAttribute(member, typeof(RegisterAttribute));
     }
 
-    private bool HasSemanticsAttribute(MemberDeclarationSyntax member)
+    private bool HasSemanticsAttribute(MemberDeclarationSyntax member, bool isReturnAttr = false)
     {
-        return HasAttribute(member, typeof(SemanticAttribute));
+        return HasAttribute(member, typeof(SemanticAttribute), isReturnAttr);
     }
 
-    private bool HasAttribute(SyntaxNode node, Type t)
+    private bool HasAttribute(SyntaxNode node, Type t, bool isReturnAttr = false)
     {
         var decl = GetDeclarationSymbol(node);
         if (decl == null)
             return false;
 
-        return HasAttribute(decl, t);
+        return HasAttribute(decl, t, isReturnAttr);
     }
 
-    private bool HasAttribute(ISymbol decl, Type t)
+    private bool HasAttribute(ISymbol decl, Type t, bool isReturnAttr = false)
     {
         var s = _semanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
-        var attrs = decl.GetAttributes();
+        var attrs = isReturnAttr && decl is IMethodSymbol m ? m.GetReturnTypeAttributes() : decl.GetAttributes();
         return attrs.Any(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
     }
 
