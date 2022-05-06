@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
+using SharpX.Hlsl.Extensions;
 using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 
@@ -178,8 +179,8 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     {
         return node.Kind() switch
         {
-            CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(node.Token.ToString())),
-            CSharpSyntaxKind.NumericLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(node.Token.ToString())),
+            CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(node.Token.ToTrimmedString())),
+            CSharpSyntaxKind.NumericLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(node.Token.ToTrimmedString())),
             _ => null
         };
     }
@@ -529,10 +530,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                 return s.ToDisplayString();
             }
 
-            return i.Identifier.ToFullString();
+            return i.Identifier.ToTrimmedString();
         }
 
-        return t.ToFullString();
+        return t.ToTrimmedString();
     }
 
     private string GetHlslName(ITypeSymbol s)
