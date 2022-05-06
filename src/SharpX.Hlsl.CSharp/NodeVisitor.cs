@@ -57,6 +57,39 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.ParenthesizedExpression(expression);
     }
 
+    public override HlslSyntaxNode? VisitPrefixUnaryExpression(PrefixUnaryExpressionSyntax node)
+    {
+        var operand = (ExpressionSyntax?)Visit(node.Operand);
+        if (operand == null)
+            return null;
+
+        return node.Kind() switch
+        {
+            CSharpSyntaxKind.UnaryPlusExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.UnaryPlusExpression, operand),
+            CSharpSyntaxKind.UnaryMinusExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.UnaryMinusExpression, operand),
+            CSharpSyntaxKind.BitwiseNotExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.BitwiseNotExpression, operand),
+            CSharpSyntaxKind.LogicalNotExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.LogicalNotExpression, operand),
+            CSharpSyntaxKind.PreIncrementExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.PreIncrementExpression, operand),
+            CSharpSyntaxKind.PreDecrementExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.PreDecrementExpression, operand),
+            CSharpSyntaxKind.IndexExpression => SyntaxFactory.PrefixUnaryExpression(SyntaxKind.IndexExpression, operand),
+            _ => null
+        };
+    }
+
+    public override HlslSyntaxNode? VisitPostfixUnaryExpression(PostfixUnaryExpressionSyntax node)
+    {
+        var operand = (ExpressionSyntax?)Visit(node.Operand);
+        if (operand == null)
+            return null;
+
+        return node.Kind() switch
+        {
+            CSharpSyntaxKind.PostIncrementExpression => SyntaxFactory.PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, operand),
+            CSharpSyntaxKind.PostDecrementExpression => SyntaxFactory.PostfixUnaryExpression(SyntaxKind.PostDecrementExpression, operand),
+            _ => null
+        };
+    }
+
     public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
     {
         var hasInlineAttributeOnReceiver = HasInlineAttribute(node.Expression);
