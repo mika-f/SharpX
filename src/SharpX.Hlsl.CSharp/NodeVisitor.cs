@@ -202,7 +202,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                              .OfType<StatementSyntax>()
                              .ToArray();
 
-        return SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block(statements));
+        var declaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.List<AttributeListSyntax>(), @return, identifier, parameterList, null, SyntaxFactory.Block(statements));
+        if (HasSemanticsAttribute(node, true))
+            return declaration.WithReturnSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute), isReturnAttr: true)[0]));
+        return declaration;
     }
 
     public override HlslSyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
