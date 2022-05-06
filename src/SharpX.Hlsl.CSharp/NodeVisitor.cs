@@ -159,6 +159,18 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         };
     }
 
+    public override HlslSyntaxNode? VisitConditionalExpression(ConditionalExpressionSyntax node)
+    {
+        var condition = (ExpressionSyntax?)Visit(node.Condition);
+        var whenTrue = (ExpressionSyntax?)Visit(node.WhenTrue);
+        var whenFalse = (ExpressionSyntax?)Visit(node.WhenFalse);
+
+        if (condition == null || whenTrue == null || whenFalse == null)
+            return null;
+
+        return SyntaxFactory.ConditionalExpression(condition, whenTrue, whenFalse);
+    }
+
     public override HlslSyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
     {
         return node.Kind() switch
