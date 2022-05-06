@@ -325,7 +325,8 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitEmptyStatement(EmptyStatementSyntax node)
     {
-        return SyntaxFactory.EmptyStatement(SyntaxFactory.List<AttributeListSyntax>());
+        return SyntaxFactory.EmptyStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>());
+    }
     }
 
     public override HlslSyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
@@ -622,6 +623,8 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             return baseDecl.ConstructedFrom;
         if (info.Symbol is IMethodSymbol methodDecl)
             return methodDecl;
+        if (info.Symbol is IPropertySymbol propertyDecl)
+            return propertyDecl;
 
         return null;
     }
