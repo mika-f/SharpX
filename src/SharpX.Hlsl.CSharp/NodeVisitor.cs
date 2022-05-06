@@ -97,7 +97,21 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         if (left == null || right == null)
             return null;
 
-        return SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right);
+        return node.Kind() switch
+        {
+            CSharpSyntaxKind.SimpleAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, left, right),
+            CSharpSyntaxKind.AddAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.AddAssignmentExpression, left, right),
+            CSharpSyntaxKind.SubtractAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.SubtractAssignmentExpression, left, right),
+            CSharpSyntaxKind.MultiplyAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.MultiplyAssignmentExpression, left, right),
+            CSharpSyntaxKind.DivideAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.DivideAssignmentExpression, left, right),
+            CSharpSyntaxKind.ModuloAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.ModuloAssignmentExpression, left, right),
+            CSharpSyntaxKind.AndAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.AndAssignmentExpression, left, right),
+            CSharpSyntaxKind.ExclusiveOrAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.ExclusiveOrAssignmentExpression, left, right),
+            CSharpSyntaxKind.OrAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.OrAssignmentExpression, left, right),
+            CSharpSyntaxKind.LeftShiftAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.LeftShiftAssignmentExpression, left, right),
+            CSharpSyntaxKind.RightShiftAssignmentExpression => SyntaxFactory.AssignmentExpression(SyntaxKind.RightShiftAssignmentExpression, left, right),
+            _ => null
+        };
     }
 
     public override HlslSyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
