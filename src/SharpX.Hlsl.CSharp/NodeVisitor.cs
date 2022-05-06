@@ -156,6 +156,16 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.EmptyStatement(SyntaxFactory.List<AttributeListSyntax>());
     }
 
+    public override HlslSyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
+    {
+        var statement = SyntaxFactory.ReturnStatement(SyntaxFactory.List<AttributeListSyntax>());
+        if (node.Expression == null)
+            return statement;
+
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        return statement.WithExpression(expression);
+    }
+
     public override HlslSyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
     {
         var expression = (ExpressionSyntax?)Visit(node.Expression);
