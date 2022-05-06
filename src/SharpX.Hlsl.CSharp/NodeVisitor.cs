@@ -209,6 +209,23 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.Argument(expression);
     }
 
+    public override HlslSyntaxNode? VisitCastExpression(CastExpressionSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (expression == null)
+            return null;
+
+        var hasImplicitCastAttribute = HasImplicitCastInCompilerAttribute(node.Type);
+        if (hasImplicitCastAttribute)
+            return expression;
+
+        var type = (Syntax.TypeSyntax?)Visit(node.Type);
+        if (type == null)
+            return null;
+
+        return SyntaxFactory.CastExpression(type, expression);
+    }
+
     public override HlslSyntaxNode? VisitBlock(BlockSyntax node)
     {
         var statements = node.Statements.Select(w => (StatementSyntax?)Visit(w))
@@ -367,7 +384,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var type = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
 
-        var parameter = SyntaxFactory.Parameter(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
+        var parameter = SyntaxFactory.Parameter(SyntaxFactory.List<Syntax.AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
         if (HasSemanticsAttribute(node))
             return parameter.WithSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute))[0]));
         return parameter;
