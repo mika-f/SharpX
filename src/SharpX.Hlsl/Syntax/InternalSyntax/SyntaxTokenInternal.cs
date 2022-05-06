@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.CodeAnalysis;
 
 using SharpX.Core;
@@ -83,6 +85,12 @@ internal class SyntaxTokenInternal : HlslSyntaxNodeInternal
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
         throw Exceptions.Unreachable;
+    }
+
+    public override bool TryCreateRed(SyntaxNode? parent, int position, [NotNullWhen(true)] out SyntaxNode? node)
+    {
+        node = null;
+        return false;
     }
 
     public override object? GetValue()

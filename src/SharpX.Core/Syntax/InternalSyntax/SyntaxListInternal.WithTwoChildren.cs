@@ -51,6 +51,12 @@ public abstract partial class SyntaxListInternal
             return new SyntaxList.WithTowChildren(this, parent, position);
         }
 
+        public override bool TryCreateRed(SyntaxNode? parent, int position, out SyntaxNode node)
+        {
+            node = CreateRed(parent, position);
+            return true;
+        }
+
         public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
         {
             return new WithTwoChildren(_node1, _node2, GetDiagnostics(), annotations);

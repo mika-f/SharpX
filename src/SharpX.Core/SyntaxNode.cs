@@ -131,23 +131,17 @@ public abstract class SyntaxNode
         return GetRed(ref field, 0);
     }
 
-    protected SyntaxNode GetRedElement(ref SyntaxNode? element, int slot)
+    protected SyntaxNode? GetRedElement(ref SyntaxNode? element, int slot)
     {
         var r = element;
         if (r == null)
         {
             var green = Green.GetRequiredSlot(slot);
-
-            try
-            {
-                Interlocked.CompareExchange(ref element, green.CreateRed(Parent, GetChildPosition(slot)), null);
-                r = element;
-            }
-            catch
+            if (green.TryCreateRed(Parent, GetChildPosition(slot), out var red))
             {
                 // NOTE: I want to know the reason why get invalid green slot that has unreachable red????
-                Debug.WriteLine(green.ToFullString());
-                Debug.WriteLine(Parent?.ToFullString());
+                Interlocked.CompareExchange(ref element, red, null);
+                r = element;
             }
         }
 

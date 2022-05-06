@@ -44,5 +44,11 @@ public abstract partial class SyntaxListInternal
         {
             return new SyntaxList.WithManyChildren(this, parent, position);
         }
+
+        public override bool TryCreateRed(SyntaxNode? parent, int position, out SyntaxNode node)
+        {
+            node = CreateRed(parent, position);
+            return true;
+        }
     }
 }

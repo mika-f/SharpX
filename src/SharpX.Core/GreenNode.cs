@@ -467,6 +467,8 @@ public abstract class GreenNode
 
     public abstract SyntaxNode CreateRed(SyntaxNode? parent, int position);
 
+    public abstract bool TryCreateRed(SyntaxNode? parent, int position, [NotNullWhen(true)] out SyntaxNode? node);
+
     #endregion
 
     #region Tokens

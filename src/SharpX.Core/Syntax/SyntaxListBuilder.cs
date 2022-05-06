@@ -111,7 +111,7 @@ public class SyntaxListBuilder
 
     public GreenNode? ToListNode()
     {
-        switch (Count)
+        switch (_nodes.Count(w => w != null))
         {
             case 0:
                 return null;

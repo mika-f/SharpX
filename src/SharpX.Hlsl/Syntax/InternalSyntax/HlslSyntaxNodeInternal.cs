@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 using Microsoft.CodeAnalysis;
@@ -88,4 +89,10 @@ internal abstract class HlslSyntaxNodeInternal : GreenNode
     }
 
     public abstract TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor);
+
+    public override bool TryCreateRed(SyntaxNode? parent, int position, [NotNullWhen(true)] out SyntaxNode? node)
+    {
+        node = CreateRed(parent, position);
+        return true;
+    }
 }
