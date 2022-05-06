@@ -63,20 +63,27 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (token.RawKind == (int)SyntaxKind.None || token.FullWidth == 0)
             return token;
 
-        var t = token;
-        var depth = GetDeclarationDepth(t);
+        try
+        {
+            var t = token;
+            var depth = GetDeclarationDepth(t);
 
-        t = t.WithLeadingTrivia(RewriteTrivia(token.LeadingTrivia, depth, false, NeedsIndentAfterLineBreak(token), false, 0));
+            t = t.WithLeadingTrivia(RewriteTrivia(token.LeadingTrivia, depth, false, NeedsIndentAfterLineBreak(token), false, 0));
 
-        var nextToken = GetNextRelevantToken(token);
+            var nextToken = GetNextRelevantToken(token);
 
-        _afterLineBreak = false;
-        _afterIndentation = false;
+            _afterLineBreak = false;
+            _afterIndentation = false;
 
 
-        t = t.WithTrailingTrivia(RewriteTrivia(token.TrailingTrivia, depth, true, false, NeedsSeparator(token, nextToken), LineBreaksAfter(token, nextToken)));
+            t = t.WithTrailingTrivia(RewriteTrivia(token.TrailingTrivia, depth, true, false, NeedsSeparator(token, nextToken), LineBreaksAfter(token, nextToken)));
 
-        return t;
+            return t;
+        }
+        finally
+        {
+            _previousToken = token;
+        }
     }
 
     private SyntaxToken GetNextRelevantToken(SyntaxToken token)
@@ -504,7 +511,9 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             {
                 if ((currentToken.Parent is StatementSyntax && nextToken.Parent != currentToken.Parent) || nextKind == SyntaxKind.OpenBraceToken)
                     return 1;
-                if (currentToken.Parent is ParameterListSyntax)
+                if (currentToken.Parent is ParameterListSyntax && currentToken.Parent.Parent is MethodDeclarationSyntax { ReturnSemantics: null })
+                    return 1;
+                if (currentToken.Parent is SemanticSyntax && currentToken.Parent.Parent is MethodDeclarationSyntax)
                     return 1;
 
                 return 0;
