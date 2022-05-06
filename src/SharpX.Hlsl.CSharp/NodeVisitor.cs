@@ -19,7 +19,6 @@ using ExpressionSyntax = SharpX.Hlsl.Syntax.ExpressionSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using SimpleNameSyntax = SharpX.Hlsl.Syntax.SimpleNameSyntax;
 using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
-using VariableDeclaratorSyntax = SharpX.Hlsl.Syntax.VariableDeclaratorSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
@@ -154,6 +153,45 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.Argument(expression);
     }
 
+    public override HlslSyntaxNode? VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
+    {
+        if (node.AwaitKeyword != default || node.UsingKeyword != default)
+            return null;
+
+        var declaration = (Syntax.VariableDeclarationSyntax?)Visit(node.Declaration);
+        if (declaration == null)
+            return null;
+
+        return SyntaxFactory.LocalDeclaration(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), declaration);
+    }
+
+    public override HlslSyntaxNode? VisitVariableDeclaration(VariableDeclarationSyntax node)
+    {
+        var t = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
+        var variables = node.Variables.Select(w => (Syntax.VariableDeclaratorSyntax?)Visit(w))
+                            .Where(w => w != null)
+                            .OfType<Syntax.VariableDeclaratorSyntax>()
+                            .ToArray();
+
+        return SyntaxFactory.VariableDeclaration(t, SyntaxFactory.SeparatedList(variables));
+    }
+
+    public override HlslSyntaxNode? VisitVariableDeclarator(VariableDeclaratorSyntax node)
+    {
+        var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
+        var initializer = (Syntax.EqualsValueClauseSyntax?)Visit(node.Initializer);
+
+        return SyntaxFactory.VariableDeclarator(identifier, initializer);
+    }
+
+    public override HlslSyntaxNode? VisitEqualsValueClause(EqualsValueClauseSyntax node)
+    {
+        var expression = (ExpressionSyntax?)Visit(node.Value);
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.EqualsValueClause(expression);
+    }
 
     public override HlslSyntaxNode? VisitEmptyStatement(EmptyStatementSyntax node)
     {

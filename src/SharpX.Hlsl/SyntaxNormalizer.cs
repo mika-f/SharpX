@@ -301,10 +301,12 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return true;
                 if (currentToken.Parent.Parent is ParameterSyntax)
                     return true;
-                if (currentToken.Parent.Parent is AssignmentExpressionSyntax)
-                    return true;
+                if (currentToken.Parent.Parent is AssignmentExpressionSyntax a)
+                    return AssignmentExpressionNeedsSeparator(currentToken, a);
                 if (currentToken.Parent.Parent is BinaryExpressionSyntax b)
                     return BinaryExpressionNeedsSeparator(currentToken, b);
+                if (currentToken.Parent.Parent is VariableDeclarationSyntax c)
+                    return VariableDeclarationNeedsSeparator(currentToken, c);
                 if (currentToken.Parent.Parent is MemberAccessExpressionSyntax memberAccess)
                 {
                     var parent = memberAccess.Parent;
@@ -450,10 +452,22 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         };
     }
 
+    private static bool AssignmentExpressionNeedsSeparator(SyntaxToken currentToken, AssignmentExpressionSyntax assignment)
+    {
+        if (assignment.Right == currentToken.Parent)
+            return false;
+        return true;
+    }
+
     private static bool BinaryExpressionNeedsSeparator(SyntaxToken currentToken, BinaryExpressionSyntax binary)
     {
         if (binary.Parent is ArgumentSyntax { Parent: ArgumentListSyntax list } arguments)
             return list.Arguments.Last() != arguments;
+        return true;
+    }
+
+    private static bool VariableDeclarationNeedsSeparator(SyntaxToken currentToken, VariableDeclarationSyntax declaration)
+    {
         return true;
     }
 
