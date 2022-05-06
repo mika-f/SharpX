@@ -19,6 +19,7 @@ using ExpressionSyntax = SharpX.Hlsl.Syntax.ExpressionSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using SimpleNameSyntax = SharpX.Hlsl.Syntax.SimpleNameSyntax;
 using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
+using VariableDeclaratorSyntax = SharpX.Hlsl.Syntax.VariableDeclaratorSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
@@ -33,9 +34,19 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
     {
+        return SyntaxFactory.IdentifierName(GetHlslName(node));
+    }
+
+    public override HlslSyntaxNode? VisitGenericName(GenericNameSyntax node)
+    {
         if (HasNameAttribute(node))
-            return SyntaxFactory.IdentifierName(GetAttributeData(node, typeof(NameAttribute))[0]);
-        return SyntaxFactory.IdentifierName(node.Identifier.ValueText);
+            return SyntaxFactory.IdentifierName(GetHlslName(node));
+
+        var arguments = node.TypeArgumentList.Arguments.Select(w => (Syntax.TypeSyntax?)Visit(node))
+                            .Where(w => w != null)
+                            .OfType<Syntax.TypeSyntax>();
+
+        return SyntaxFactory.GenericName(SyntaxFactory.Identifier(node.Identifier.ValueText), SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList(arguments.ToArray())));
     }
 
     public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
