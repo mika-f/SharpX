@@ -38,7 +38,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitGenericName(GenericNameSyntax node)
     {
-        if (HasNameAttribute(node))
+        if (HasAlternativeName(node))
             return SyntaxFactory.IdentifierName(GetHlslName(node));
 
         var arguments = node.TypeArgumentList.Arguments.Select(w => (Syntax.TypeSyntax?)Visit(node))
@@ -323,6 +323,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     private static readonly Regex TypeArgumentsRegex = new(@"&[A-Z]+?", RegexOptions.Compiled);
 
+    private bool HasAlternativeName(SyntaxNode node)
+    {
+        return HasNameAttribute(node) || HasComponentAttribute(node);
+    }
+
     private string GetHlslName(TypeSyntax t)
     {
         var hasComponentAttribute = HasComponentAttribute(t);
@@ -394,9 +399,14 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return HasAttribute(member, typeof(CBufferAttribute));
     }
 
-    private bool HasComponentAttribute(TypeSyntax t)
+    private bool HasComponentAttribute(SyntaxNode node)
     {
-        return HasAttribute(t, typeof(ComponentAttribute));
+        return HasAttribute(node, typeof(ComponentAttribute));
+    }
+
+    private bool HasImplicitCastInCompilerAttribute(SyntaxNode node)
+    {
+        return HasAttribute(node, typeof(ImplicitCastInCompilerAttribute));
     }
 
     private bool HasNameAttribute(SyntaxNode t)
