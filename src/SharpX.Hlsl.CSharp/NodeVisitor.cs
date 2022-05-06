@@ -153,6 +153,16 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.Argument(expression);
     }
 
+    public override HlslSyntaxNode? VisitBlock(BlockSyntax node)
+    {
+        var statements = node.Statements.Select(w => (StatementSyntax?)Visit(w))
+                             .Where(w => w != null)
+                             .OfType<StatementSyntax>()
+                             .ToArray();
+
+        return SyntaxFactory.Block(statements);
+    }
+
     public override HlslSyntaxNode? VisitLocalDeclarationStatement(LocalDeclarationStatementSyntax node)
     {
         if (node.AwaitKeyword != default || node.UsingKeyword != default)
