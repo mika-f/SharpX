@@ -513,9 +513,6 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return 1;
                 if (currentToken.Parent is ParameterListSyntax && currentToken.Parent.Parent is MethodDeclarationSyntax { ReturnSemantics: null })
                     return 1;
-                if (currentToken.Parent is SemanticSyntax && currentToken.Parent.Parent is MethodDeclarationSyntax)
-                    return 1;
-
                 return 0;
             }
 
@@ -541,6 +538,11 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return 1;
                 break;
             }
+
+            case SyntaxKind.IdentifierToken:
+                if (currentToken.Parent?.Parent is SemanticSyntax && currentToken.Parent.Parent.Parent is MethodDeclarationSyntax)
+                    return 1;
+                break;
         }
 
         switch (nextKind)
