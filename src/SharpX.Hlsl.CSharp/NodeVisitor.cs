@@ -226,6 +226,32 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.CastExpression(type, expression);
     }
 
+    public override HlslSyntaxNode? VisitObjectCreationExpression(ObjectCreationExpressionSyntax node)
+    {
+        // if object creation called with not external component, convert to cast expression like this -> var some = (Struct) 0;
+        var hasExternalAttribute = HasExternalComponentAttribute(node.Type);
+        if (hasExternalAttribute)
+        {
+            // C# object creation is called constructor with new keyword, but HLSL called constructor same as method invocation
+            var expression = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
+            var invocation = SyntaxFactory.InvocationExpression(expression);
+
+            if (node.ArgumentList == null)
+                return invocation;
+
+            var arguments = node.ArgumentList.Arguments.Select(w => (Syntax.ArgumentSyntax?)Visit(w))
+                                .Where(w => w != null)
+                                .OfType<Syntax.ArgumentSyntax>()
+                                .ToArray();
+
+            return invocation.WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(arguments)));
+        }
+
+        var t = (Syntax.TypeSyntax?)Visit(node.Type);
+        if (t == null)
+            return null;
+        return SyntaxFactory.CastExpression(t, SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(0)));
+    }
     public override HlslSyntaxNode? VisitBlock(BlockSyntax node)
     {
         var statements = node.Statements.Select(w => (StatementSyntax?)Visit(w))
@@ -475,6 +501,11 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     private bool HasComponentAttribute(SyntaxNode node)
     {
         return HasAttribute(node, typeof(ComponentAttribute));
+    }
+
+    private bool HasExternalComponentAttribute(SyntaxNode node)
+    {
+        return HasAttribute(node, typeof(ExternalComponentAttribute));
     }
 
     private bool HasImplicitCastInCompilerAttribute(SyntaxNode node)
