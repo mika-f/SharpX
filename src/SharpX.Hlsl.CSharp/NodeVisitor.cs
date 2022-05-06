@@ -243,7 +243,10 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var type = SyntaxFactory.IdentifierName(GetHlslName(node.Type));
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
 
-        return SyntaxFactory.Parameter(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
+        var parameter = SyntaxFactory.Parameter(SyntaxFactory.List<AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
+        if (HasSemanticsAttribute(node))
+            return parameter.WithSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute))[0]));
+        return parameter;
     }
 
     #region Helpers
@@ -343,7 +346,7 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return HasAttribute(member, typeof(RegisterAttribute));
     }
 
-    private bool HasSemanticsAttribute(MemberDeclarationSyntax member, bool isReturnAttr = false)
+    private bool HasSemanticsAttribute(SyntaxNode member, bool isReturnAttr = false)
     {
         return HasAttribute(member, typeof(SemanticAttribute), isReturnAttr);
     }
