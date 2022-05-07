@@ -1,4 +1,4 @@
-# ShaderLab Transpiler
+# ShaderLab Compiler
 
 C# to ShaderLab (`*.shader` and `*.cginc`).  
 CommandLine:
