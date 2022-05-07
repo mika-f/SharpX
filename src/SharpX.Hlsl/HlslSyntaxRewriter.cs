@@ -475,6 +475,19 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitConstantBufferDeclaration(ConstantBufferDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.Identifier),
+            (RegisterSyntax?)Visit(node.Register),
+            VisitToken(node.OpenBraceToken),
+            VisitList(node.Members),
+            VisitToken(node.CloseBraceToken),
+            VisitToken(node.SemicolonToken)
+        );
+    }
+
     public override SyntaxNode? VisitFieldDeclaration(FieldDeclarationSyntax node)
     {
         return node.Update(

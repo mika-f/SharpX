@@ -513,6 +513,8 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return 1;
                 if (currentToken.Parent is ParameterListSyntax && currentToken.Parent.Parent is MethodDeclarationSyntax { ReturnSemantics: null })
                     return 1;
+                if (currentToken.Parent is RegisterSyntax && currentToken.Parent.Parent is ConstantBufferDeclarationSyntax)
+                    return 1;
                 return 0;
             }
 
@@ -612,7 +614,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentToken.Parent is ForStatementSyntax)
             return 0;
 
-        if (currentToken.Parent is StructDeclarationSyntax)
+        if (currentToken.Parent is TypeDeclarationSyntax)
             return 2;
 
         return 1;

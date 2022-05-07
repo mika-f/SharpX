@@ -265,6 +265,11 @@ public abstract class HlslSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitConstantBufferDeclaration(ConstantBufferDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFieldDeclaration(FieldDeclarationSyntax node)
     {
         return DefaultVisit(node);

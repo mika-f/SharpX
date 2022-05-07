@@ -675,6 +675,24 @@ internal static partial class SyntaxFactory
         return new PassDeclarationSyntaxInternal(SyntaxKind.PassDeclaration, passKeyword, identifier, openBraceToken, members.Node, closeBraceToken);
     }
 
+    public static ConstantBufferDeclarationSyntaxInternal ConstantBuffer(SyntaxTokenInternal cbufferKeyword, SyntaxTokenInternal identifier, RegisterSyntaxInternal? register, SyntaxTokenInternal openBraceToken, SyntaxListInternal<FieldDeclarationSyntaxInternal> members,
+                                                                         SyntaxTokenInternal closeBraceToken,
+                                                                         SyntaxTokenInternal semicolonToken)
+    {
+        if (cbufferKeyword.Kind != SyntaxKind.CBufferKeyword)
+            throw new ArgumentException(nameof(cbufferKeyword));
+        if (identifier.Kind != SyntaxKind.IdentifierToken)
+            throw new ArgumentException(nameof(identifier));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+        if (semicolonToken.Kind != SyntaxKind.SemicolonToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new ConstantBufferDeclarationSyntaxInternal(SyntaxKind.CBufferDeclaration, cbufferKeyword, identifier, register, openBraceToken, members.Node, closeBraceToken, semicolonToken);
+    }
+
     public static FieldDeclarationSyntaxInternal FieldDeclaration(TypeSyntaxInternal type, SyntaxTokenInternal identifier, BracketedArgumentListSyntaxInternal? arguments, RegisterSyntaxInternal? register, SemanticSyntaxInternal? semantics, EqualsValueClauseSyntaxInternal? initializer,
                                                                   SyntaxTokenInternal semicolonToken)
     {

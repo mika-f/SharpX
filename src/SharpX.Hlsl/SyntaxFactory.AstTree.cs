@@ -814,6 +814,37 @@ public static partial class SyntaxFactory
         return PassDeclaration(Identifier(identifier), members);
     }
 
+    public static ConstantBufferDeclarationSyntax ConstantBufferDeclaration(SyntaxToken keyword, SyntaxToken identifier, RegisterSyntax? register, SyntaxToken openBraceToken, SyntaxList<FieldDeclarationSyntax> members, SyntaxToken closeBraceToken, SyntaxToken semicolonToken)
+    {
+        return (ConstantBufferDeclarationSyntax)SyntaxFactoryInternal.ConstantBuffer(
+            (SyntaxTokenInternal)keyword.Node!,
+            (SyntaxTokenInternal)identifier.Node!,
+            (RegisterSyntaxInternal?)register?.Green,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            members.Node.ToGreenList<FieldDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!,
+            (SyntaxTokenInternal)semicolonToken.Node!
+        ).CreateRed();
+    }
+
+    public static ConstantBufferDeclarationSyntax ConstantBufferDeclaration(SyntaxToken identifier, RegisterSyntax? register, SyntaxList<FieldDeclarationSyntax> members)
+    {
+        return ConstantBufferDeclaration(
+            Token(SyntaxKind.CBufferKeyword),
+            identifier,
+            register,
+            Token(SyntaxKind.OpenBraceToken),
+            members,
+            Token(SyntaxKind.CloseBraceToken),
+            Token(SyntaxKind.SemicolonToken)
+        );
+    }
+
+    public static ConstantBufferDeclarationSyntax ConstantBufferDeclaration(string identifier, RegisterSyntax? register, SyntaxList<FieldDeclarationSyntax> members)
+    {
+        return ConstantBufferDeclaration(Identifier(identifier), register, members);
+    }
+
     public static FieldDeclarationSyntax FieldDeclaration(TypeSyntax type, SyntaxToken identifier, BracketedArgumentListSyntax? arguments, RegisterSyntax? register, SemanticSyntax? semantic, EqualsValueClauseSyntax? initializer, SyntaxToken semicolonToken)
     {
         return (FieldDeclarationSyntax)SyntaxFactoryInternal.FieldDeclaration(

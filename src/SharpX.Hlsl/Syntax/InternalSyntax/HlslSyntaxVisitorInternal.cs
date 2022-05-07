@@ -257,6 +257,11 @@ internal abstract class HlslSyntaxVisitorInternal<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitConstantBufferDeclaration(ConstantBufferDeclarationSyntaxInternal node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFieldDeclaration(FieldDeclarationSyntaxInternal node)
     {
         return DefaultVisit(node);

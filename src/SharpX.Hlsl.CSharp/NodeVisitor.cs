@@ -429,7 +429,12 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
         // if struct has [CBuffer] attribute, it compiles into cbuffer declaration
         if (HasCBufferAttribute(node))
-            return null;
+        {
+            var cbuffer = SyntaxFactory.ConstantBufferDeclaration(identifier, null, SyntaxFactory.List(members));
+            if (HasRegisterAttribute(node))
+                return cbuffer.WithRegister(SyntaxFactory.Register(GetAttributeData(node, typeof(RegisterAttribute))[0]));
+            return cbuffer;
+        }
 
         // normal struct, compiles into struct simply.
         return SyntaxFactory.StructDeclaration(identifier, SyntaxFactory.List(members));

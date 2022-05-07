@@ -738,6 +738,8 @@ public enum SyntaxKind
 
     PassDeclaration,
 
+    CBufferDeclaration,
+
     FieldDeclaration,
 
     MethodDeclaration,
