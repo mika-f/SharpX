@@ -21,6 +21,8 @@ internal class BackendContainer
 
     public Type ReturnType { get; }
 
+    public Func<SyntaxNode, string> ExtensionCallback { get; private set; }
+
     public IReadOnlyCollection<string> References => _references.AsReadOnly();
 
     public BackendContainer(string language, Type @return)
@@ -39,6 +41,11 @@ internal class BackendContainer
     public void AddReferences(string[] references)
     {
         _references.AddRange(references);
+    }
+
+    public void AddExtensionCallback(Func<SyntaxNode, string> callback)
+    {
+        ExtensionCallback = callback;
     }
 
     public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model)

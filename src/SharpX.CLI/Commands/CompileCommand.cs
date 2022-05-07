@@ -111,6 +111,6 @@ internal class CompileCommand
     {
         if (config == null)
             return CSharpCompilerOptions.Default;
-        return new CSharpCompilerOptions(config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
+        return new CSharpCompilerOptions(config.CompilerOptions.BaseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
     }
 }

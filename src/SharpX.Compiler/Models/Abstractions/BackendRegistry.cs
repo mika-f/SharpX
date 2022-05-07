@@ -52,6 +52,15 @@ internal class BackendRegistry : IBackendRegistry
         container.AddReferences(references);
     }
 
+    public void RegisterExtensions(string language, Func<SyntaxNode, string> callback)
+    {
+        var container = _containers.FirstOrDefault(w => w.Language == language);
+        if (container == null)
+            throw new InvalidOperationException();
+
+        container.AddExtensionCallback(callback);
+    }
+
     public BackendContainer? GetLanguageContainer(string language)
     {
         return _containers.FirstOrDefault(w => string.Equals(w.Language, language, StringComparison.InvariantCultureIgnoreCase));

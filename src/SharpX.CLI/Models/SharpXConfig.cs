@@ -32,6 +32,7 @@ public class SharpXConfig
         {
             Libraries = new List<string>(),
             OutDir = "./out/",
+            BaseUrl = "./src/",
             Target = "none"
         },
         Files = new List<string>(),

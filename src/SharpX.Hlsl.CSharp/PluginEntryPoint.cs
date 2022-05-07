@@ -15,5 +15,6 @@ public class PluginEntryPoint : IBackend
     {
         registry.RegisterBackendVisitor("HLSL", typeof(NodeVisitor), typeof(HlslSyntaxNode), 0);
         registry.RegisterReferences("HLSL", "./SharpX.Hlsl.Primitives.dll");
+        registry.RegisterExtensions("HLSL", _ => "hlsl");
     }
 }

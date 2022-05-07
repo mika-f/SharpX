@@ -3,7 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
 using System.Text;
 
 using Microsoft.CodeAnalysis.Text;
@@ -41,21 +40,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
     internal static TNode Normalize<TNode>(TNode node, string indentWhitespace, string eolWhitespace, bool useElasticTrivia = false) where TNode : HlslSyntaxNode
     {
         var normalizer = new SyntaxNormalizer(node.FullSpan, GetDeclarationDepth(node), indentWhitespace, eolWhitespace, useElasticTrivia);
-        var result = (TNode)normalizer.Visit(node)!;
-
-        try
-        {
-            return result;
-        }
-        finally
-        {
-            // for debugging
-            if (Debugger.IsAttached)
-            {
-                var _ = result.ToFullString();
-                Debugger.Break();
-            }
-        }
+        return (TNode)normalizer.Visit(node)!;
     }
 
     public override SyntaxToken VisitToken(SyntaxToken token)

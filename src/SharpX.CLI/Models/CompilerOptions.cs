@@ -19,4 +19,7 @@ public class CompilerOptions
 
     [JsonPropertyName("outDir")]
     public string OutDir { get; set; }
+
+    [JsonPropertyName("baseUrl")]
+    public string BaseUrl { get; set; }
 }

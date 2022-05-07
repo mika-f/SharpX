@@ -194,6 +194,17 @@ public class CSharpCompiler : IDisposable
                 else
                 {
                     var str = source.NormalizeWhitespace().ToFullString();
+                    var fileUri = new Uri(Path.GetFullPath(w.FilePath!), UriKind.Absolute);
+                    var baseUri = new Uri(Path.GetFullPath(_options.BaseUrl), UriKind.Absolute);
+
+                    var relative = baseUri.MakeRelativeUri(fileUri);
+                    var extension = container.ExtensionCallback.Invoke(source);
+                    var @out = Path.GetFullPath(Path.Combine(_options.Output, Path.GetFileNameWithoutExtension(relative.ToString()) + "." + extension));
+                    var dir = Path.GetDirectoryName(@out) ?? throw new ArgumentNullException();
+                    if (!Directory.Exists(dir))
+                        Directory.CreateDirectory(dir);
+
+                    File.WriteAllText(@out, str);
                 }
             }
         });
