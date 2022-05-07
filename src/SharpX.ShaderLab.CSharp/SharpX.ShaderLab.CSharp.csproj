@@ -17,7 +17,6 @@
     </ProjectReference>
     <ProjectReference Include="..\SharpX.Hlsl.CSharp\SharpX.Hlsl.CSharp.csproj" />
     <ProjectReference Include="..\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
-    <ProjectReference Include="..\SharpX.Hlsl.SourceGenerator\SharpX.Hlsl.SourceGenerator.csproj" />
     <ProjectReference Include="..\SharpX.Hlsl\SharpX.Hlsl.csproj" />
     <ProjectReference Include="..\SharpX.ShaderLab.Primitives\SharpX.ShaderLab.Primitives.csproj" />
     <ProjectReference Include="..\SharpX.ShaderLab\SharpX.ShaderLab.csproj" />
