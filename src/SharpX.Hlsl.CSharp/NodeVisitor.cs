@@ -96,14 +96,14 @@ internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
     {
-        var hasInlineAttributeOnReceiver = HasInlineAttribute(node.Expression);
+        var isInlineOnReceiver = HasInlineAttribute(node.Expression) || HasCBufferAttribute(node.Expression);
         var expression = (ExpressionSyntax?)Visit(node.Expression);
         var name = (SimpleNameSyntax?)Visit(node.Name);
 
         if (expression == null || name == null)
             return null;
 
-        if (hasInlineAttributeOnReceiver)
+        if (isInlineOnReceiver)
             return name;
 
         return SyntaxFactory.MemberAccessExpression(expression, name);
