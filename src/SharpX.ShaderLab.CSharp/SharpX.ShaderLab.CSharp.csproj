@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpX.Composition\SharpX.Composition.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpX.Core\SharpX.Core.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpX.Hlsl.CSharp\SharpX.Hlsl.CSharp.csproj" />
+    <ProjectReference Include="..\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
+    <ProjectReference Include="..\SharpX.Hlsl.SourceGenerator\SharpX.Hlsl.SourceGenerator.csproj" />
+    <ProjectReference Include="..\SharpX.Hlsl\SharpX.Hlsl.csproj" />
+    <ProjectReference Include="..\SharpX.ShaderLab.Primitives\SharpX.ShaderLab.Primitives.csproj" />
+    <ProjectReference Include="..\SharpX.ShaderLab\SharpX.ShaderLab.csproj" />
+  </ItemGroup>
+
+</Project>

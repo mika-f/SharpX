@@ -21,7 +21,7 @@ using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
-internal class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
+public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 {
     private readonly SemanticModel _semanticModel;
 
