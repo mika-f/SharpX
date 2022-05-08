@@ -17,7 +17,7 @@ For more information, see the core implementation `SharpX.Core` or `SharpX.Hlsl`
 
 ## Objective
 
-The goals of SharpX is to output shader code for each platform (Unity, WebGL, ShaderTos, others) from a single C# source code.  
+The goals of SharpX is to output shader code for each platform (Unity, WebGL, ShaderToy, others) from a single C# source code.  
 We should also like to use a new C# features, like Babel, a JavaScript Compiler, to reduce the amount of code in the shader itself.
 
 ## License
