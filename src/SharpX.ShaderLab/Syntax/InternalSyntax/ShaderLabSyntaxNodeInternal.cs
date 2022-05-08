@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.CodeAnalysis;
@@ -15,6 +16,7 @@ using SyntaxTrivia = SharpX.Core.SyntaxTrivia;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
+[DebuggerDisplay("{GetDebuggerDisplay(), nq}")]
 internal abstract class ShaderLabSyntaxNodeInternal : GreenNode
 {
     public override string Language => "ShaderLab";
