@@ -1,10 +1,18 @@
 # ShaderLab Compiler
 
 C# to ShaderLab (`*.shader` and `*.cginc`).  
-CommandLine:
+
+## Requirements
+
+* SharpX.ShaderLab.dll
+* (internal-reference) SharpX.Hlsl.dll
+* (auto-reference) SharpX.ShaderLab.Primitives.dll
+* (auto-reference) SharpX.Hlsl.Primitives.dll
+
+## Example
 
 ```bash
-$ sharpx.exe --solution=/path/to/solution.sln --target=shaderlab --output=/path/to/output/dir
+$ sharpx.exe --target=shaderlab
 ```
 
 Input Source Code (C#):
