@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharpX.Core\SharpX.Core.csproj" />
+  </ItemGroup>
+
 </Project>
