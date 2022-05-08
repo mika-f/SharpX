@@ -59,6 +59,8 @@ public enum SyntaxKind
 
     FallbackKeyword,
 
+    OffKeyword,
+
     PassKeyword,
 
     PropertiesKeyword,

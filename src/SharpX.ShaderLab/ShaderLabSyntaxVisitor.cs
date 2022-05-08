@@ -10,6 +10,11 @@ namespace SharpX.ShaderLab;
 
 public abstract class ShaderLabSyntaxVisitor<TResult>
 {
+    public virtual TResult? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitCustomEditorDeclaration(CustomEditorDeclarationSyntax node)
     {
         return DefaultVisit(node);

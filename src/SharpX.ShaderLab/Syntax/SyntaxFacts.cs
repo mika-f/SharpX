@@ -25,6 +25,7 @@ internal static class SyntaxFacts
             SyntaxKind.DotToken => ".",
             SyntaxKind.CustomEditorKeyword => "CustomEditor",
             SyntaxKind.FallbackKeyword => "Fallback",
+            SyntaxKind.OffKeyword => "Off",
             SyntaxKind.PassKeyword => "Pass",
             SyntaxKind.PropertiesKeyword => "Properties",
             SyntaxKind.ShaderKeyword => "Shader",
