@@ -21,4 +21,6 @@ public abstract class ShaderLabSyntaxNode : SyntaxNode
     {
         throw new NotImplementedException();
     }
+
+    public abstract TResult? Accept<TResult>(ShaderLabSyntaxVisitor<TResult> visitor);
 }
