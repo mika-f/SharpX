@@ -81,6 +81,14 @@ public enum SyntaxKind
 
     #endregion
 
+    #region trivia
+
+    EndOfLineTrivia,
+
+    WhitespaceTrivia,
+
+    #endregion
+
     #region name & type-names
 
     IdentifierName,
