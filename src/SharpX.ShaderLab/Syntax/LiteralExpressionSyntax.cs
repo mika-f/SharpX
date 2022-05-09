@@ -26,7 +26,7 @@ public class LiteralExpressionSyntax : ExpressionSyntax
     public LiteralExpressionSyntax Update(SyntaxToken token)
     {
         if (token != Token)
-            return SyntaxFactory.LiteralExpression(token);
+            return SyntaxFactory.LiteralExpression(Kind, token);
         return this;
     }
 
