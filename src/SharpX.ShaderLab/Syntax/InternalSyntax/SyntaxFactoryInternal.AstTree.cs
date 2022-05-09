@@ -25,6 +25,12 @@ internal partial class SyntaxFactoryInternal
         return new QualifiedNameSyntaxInternal(SyntaxKind.QualifiedName, left, dotToken, right);
     }
 
+
+    public static ArgumentSyntaxInternal Argument(ExpressionSyntaxInternal expression)
+    {
+        return new ArgumentSyntaxInternal(SyntaxKind.Argument, expression);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)

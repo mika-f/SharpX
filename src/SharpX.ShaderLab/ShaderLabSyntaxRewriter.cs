@@ -25,6 +25,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitArgumentList(ArgumentListSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.OpenParenToken),
+            VisitList(node.Arguments),
+            VisitToken(node.CloseParenToken)
+        );
+    }
+
     public override SyntaxNode? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return node.Update(

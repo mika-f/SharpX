@@ -34,6 +34,13 @@ public partial class SyntaxFactory
         return IdentifierName(Identifier(identifier));
     }
 
+    public static ArgumentSyntax Argument(ExpressionSyntax expression)
+    {
+        return (ArgumentSyntax)SyntaxFactoryInternal.Argument(
+            (ExpressionSyntaxInternal)expression.Green
+        ).CreateRed();
+    }
+
 
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
     {
