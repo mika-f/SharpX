@@ -28,6 +28,11 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static QualifiedNameSyntax QualifiedName(NameSyntax left, SimpleNameSyntax right)
+    {
+        return QualifiedName(left, Token(SyntaxKind.DotToken), right);
+    }
+
 
     public static IdentifierNameSyntax IdentifierName(string identifier)
     {
