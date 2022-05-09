@@ -17,6 +17,14 @@ internal partial class SyntaxFactoryInternal
         return new IdentifierNameSyntaxInternal(SyntaxKind.IdentifierName, identifier);
     }
 
+    public static QualifiedNameSyntaxInternal QualifiedName(NameSyntaxInternal left, SyntaxTokenInternal dotToken, SimpleNameSyntaxInternal right)
+    {
+        if (dotToken.Kind != SyntaxKind.DotToken)
+            throw new ArgumentException(nameof(dotToken));
+
+        return new QualifiedNameSyntaxInternal(SyntaxKind.QualifiedName, left, dotToken, right);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)

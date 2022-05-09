@@ -16,6 +16,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         return node.Update(VisitToken(node.Identifier));
     }
 
+    public override SyntaxNode? VisitQualifiedName(QualifiedNameSyntax node)
+    {
+        return node.Update(
+            (NameSyntax?)Visit(node.Left) ?? throw new ArgumentNullException(),
+            VisitToken(node.DotToken),
+            (SimpleNameSyntax?)Visit(node.Right) ?? throw new ArgumentNullException()
+        );
+    }
+
     public override SyntaxNode? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return node.Update(

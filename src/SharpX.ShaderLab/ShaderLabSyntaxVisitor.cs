@@ -16,6 +16,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitQualifiedName(QualifiedNameSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return DefaultVisit(node);

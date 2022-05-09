@@ -19,6 +19,16 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static QualifiedNameSyntax QualifiedName(NameSyntax left, SyntaxToken dotToken, SimpleNameSyntax right)
+    {
+        return (QualifiedNameSyntax)SyntaxFactoryInternal.QualifiedName(
+            (NameSyntaxInternal)left.Green,
+            (SyntaxTokenInternal)dotToken.Node!,
+            (SimpleNameSyntaxInternal)right.Green
+        ).CreateRed();
+    }
+
+
     public static IdentifierNameSyntax IdentifierName(string identifier)
     {
         return IdentifierName(Identifier(identifier));

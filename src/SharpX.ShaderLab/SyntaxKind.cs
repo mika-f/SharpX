@@ -95,6 +95,7 @@ public enum SyntaxKind
 
     IdentifierName,
 
+
     #endregion
 
     #region expressions
