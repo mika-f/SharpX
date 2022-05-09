@@ -60,6 +60,14 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static LiteralExpressionSyntax LiteralExpression(SyntaxKind kind, SyntaxToken token)
+    {
+        return (LiteralExpressionSyntax)SyntaxFactoryInternal.LiteralExpression(
+            kind,
+            (SyntaxTokenInternal)token.Node!
+        ).CreateRed();
+    }
+
 
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
     {

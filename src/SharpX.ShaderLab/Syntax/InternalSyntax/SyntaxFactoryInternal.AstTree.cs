@@ -40,6 +40,31 @@ internal partial class SyntaxFactoryInternal
         return new ArgumentSyntaxInternal(SyntaxKind.Argument, expression);
     }
 
+    public static LiteralExpressionSyntaxInternal LiteralExpression(SyntaxKind kind, SyntaxTokenInternal value)
+    {
+        switch (kind)
+        {
+            case SyntaxKind.NumericLiteralExpression:
+            case SyntaxKind.StringLiteralExpression:
+                break;
+
+            default:
+                throw new ArgumentException(nameof(kind));
+        }
+
+        switch (value.Kind)
+        {
+            case SyntaxKind.NumericLiteralToken:
+            case SyntaxKind.StringLiteralToken:
+                break;
+
+            default:
+                throw new ArgumentException(nameof(value));
+        }
+
+        return new LiteralExpressionSyntaxInternal(kind, value);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)
