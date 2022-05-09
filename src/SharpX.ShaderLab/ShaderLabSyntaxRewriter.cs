@@ -42,6 +42,27 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitArgument(ArgumentSyntax node)
+    {
+        return node.Update(
+            (ExpressionSyntax?)Visit(node.Expression) ?? throw new ArgumentNullException()
+        );
+    }
+
+    public override SyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
+    {
+        return node.Update(VisitToken(node.Token));
+    }
+
+    public override SyntaxNode? VisitTextureLiteralExpression(TextureLiteralExpressionSyntax node)
+    {
+        return node.Update(
+            (LiteralExpressionSyntax?)Visit(node.Value) ?? throw new ArgumentNullException(),
+            VisitToken(node.OpenBraceToken),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
+
     public override SyntaxNode? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return node.Update(

@@ -65,6 +65,16 @@ internal partial class SyntaxFactoryInternal
         return new LiteralExpressionSyntaxInternal(kind, value);
     }
 
+    public static TextureLiteralExpressionSyntaxInternal TextureLiteralExpression(LiteralExpressionSyntaxInternal value, SyntaxTokenInternal openBraceToken, SyntaxTokenInternal closeBraceToken)
+    {
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new TextureLiteralExpressionSyntaxInternal(SyntaxKind.TextureLiteralExpression, value, openBraceToken, closeBraceToken);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)

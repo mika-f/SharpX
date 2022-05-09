@@ -23,6 +23,7 @@ internal static class SyntaxFacts
             SyntaxKind.CommaToken => ",",
             SyntaxKind.DoubleQuoteToken => "\"",
             SyntaxKind.DotToken => ".",
+            SyntaxKind.ColorKeyword => "Color",
             SyntaxKind.CustomEditorKeyword => "CustomEditor",
             SyntaxKind.FallbackKeyword => "Fallback",
             SyntaxKind.OffKeyword => "Off",

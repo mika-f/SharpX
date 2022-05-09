@@ -68,6 +68,18 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static TextureLiteralExpressionSyntax TextureLiteralExpression(LiteralExpressionSyntax value, SyntaxToken openBraceToken, SyntaxToken closeBraceToken)
+    {
+        return (TextureLiteralExpressionSyntax)SyntaxFactoryInternal.TextureLiteralExpression(
+            (LiteralExpressionSyntaxInternal)value.Green,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static TextureLiteralExpressionSyntax TextureLiteralExpression(LiteralExpressionSyntax value)
+    {
+        return TextureLiteralExpression(value, Token(SyntaxKind.OpenBraceToken), Token(SyntaxKind.CloseBraceToken));
 
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
     {

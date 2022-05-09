@@ -31,6 +31,21 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitArgument(ArgumentSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
+    public virtual TResult? VisitLiteralExpression(LiteralExpressionSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
+    public virtual TResult? VisitTextureLiteralExpression(TextureLiteralExpressionSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return DefaultVisit(node);
