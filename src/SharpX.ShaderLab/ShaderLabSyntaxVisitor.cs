@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+
 using SharpX.Core;
 using SharpX.ShaderLab.Syntax;
 
@@ -10,6 +11,11 @@ namespace SharpX.ShaderLab;
 
 public abstract class ShaderLabSyntaxVisitor<TResult>
 {
+    public virtual TResult? VisitIdentifierName(IdentifierNameSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return DefaultVisit(node);

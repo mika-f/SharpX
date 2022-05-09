@@ -11,6 +11,11 @@ namespace SharpX.ShaderLab;
 
 public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
 {
+    public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
+    {
+        return node.Update(VisitToken(node.Identifier));
+    }
+
     public override SyntaxNode? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return node.Update(

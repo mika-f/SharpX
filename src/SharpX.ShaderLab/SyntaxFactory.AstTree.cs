@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------
 
 using SharpX.Core;
+using SharpX.Core.Extensions;
 using SharpX.ShaderLab.Syntax;
 using SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -11,6 +12,19 @@ namespace SharpX.ShaderLab;
 
 public partial class SyntaxFactory
 {
+    public static IdentifierNameSyntax IdentifierName(SyntaxToken identifier)
+    {
+        return (IdentifierNameSyntax)SyntaxFactoryInternal.IdentifierName(
+            (SyntaxTokenInternal)identifier.Node!
+        ).CreateRed();
+    }
+
+    public static IdentifierNameSyntax IdentifierName(string identifier)
+    {
+        return IdentifierName(Identifier(identifier));
+    }
+
+
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
     {
         return (FallbackDeclarationSyntax)SyntaxFactoryInternal.FallbackDeclaration(

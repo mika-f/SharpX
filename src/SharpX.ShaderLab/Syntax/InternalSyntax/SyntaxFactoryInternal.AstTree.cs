@@ -3,10 +3,20 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Core.Syntax.InternalSyntax;
+
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal partial class SyntaxFactoryInternal
 {
+    public static IdentifierNameSyntaxInternal IdentifierName(SyntaxTokenInternal identifier)
+    {
+        if (identifier.Kind != SyntaxKind.IdentifierName)
+            throw new ArgumentException(nameof(identifier));
+
+        return new IdentifierNameSyntaxInternal(SyntaxKind.IdentifierName, identifier);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)
