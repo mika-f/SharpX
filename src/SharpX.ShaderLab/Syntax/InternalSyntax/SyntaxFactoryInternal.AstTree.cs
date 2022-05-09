@@ -25,6 +25,15 @@ internal partial class SyntaxFactoryInternal
         return new QualifiedNameSyntaxInternal(SyntaxKind.QualifiedName, left, dotToken, right);
     }
 
+    public static ArgumentListSyntaxInternal ArgumentList(SyntaxTokenInternal openParenToken, SeparatedSyntaxListInternal<ArgumentSyntaxInternal> arguments, SyntaxTokenInternal closeParenToken)
+    {
+        if (openParenToken.Kind != SyntaxKind.OpenParenToken)
+            throw new ArgumentException(nameof(openParenToken));
+        if (closeParenToken.Kind != SyntaxKind.CloseParenToken)
+            throw new ArgumentException(nameof(closeParenToken));
+
+        return new ArgumentListSyntaxInternal(SyntaxKind.ArgumentList, openParenToken, arguments.Node!, closeParenToken);
+    }
 
     public static ArgumentSyntaxInternal Argument(ExpressionSyntaxInternal expression)
     {

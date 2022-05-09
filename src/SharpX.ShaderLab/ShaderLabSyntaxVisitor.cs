@@ -21,6 +21,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitEqualsValueClause(EqualsValueClauseSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitArgumentList(ArgumentListSyntax node)
     {
         return DefaultVisit(node);

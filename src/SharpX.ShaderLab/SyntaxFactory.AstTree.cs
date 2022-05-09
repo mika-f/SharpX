@@ -34,6 +34,20 @@ public partial class SyntaxFactory
         return IdentifierName(Identifier(identifier));
     }
 
+    public static ArgumentListSyntax ArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeParenToken)
+    {
+        return (ArgumentListSyntax)SyntaxFactoryInternal.ArgumentList(
+            (SyntaxTokenInternal)openParenToken.Node!,
+            arguments.Node.ToGreenSeparatedList<ArgumentSyntaxInternal>(),
+            (SyntaxTokenInternal)closeParenToken.Node!
+        ).CreateRed();
+    }
+
+    public static ArgumentListSyntax ArgumentList(params ArgumentSyntax[] arguments)
+    {
+        return ArgumentList(Token(SyntaxKind.OpenParenToken), SeparatedList(arguments), Token(SyntaxKind.CloseParenToken));
+    }
+
     public static ArgumentSyntax Argument(ExpressionSyntax expression)
     {
         return (ArgumentSyntax)SyntaxFactoryInternal.Argument(

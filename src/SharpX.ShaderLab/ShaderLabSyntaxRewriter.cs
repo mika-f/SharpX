@@ -25,6 +25,14 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitEqualsValueClause(EqualsValueClauseSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.EqualsToken),
+            (ExpressionSyntax?)Visit(node.Value) ?? throw new ArgumentException()
+        );
+    }
+
     public override SyntaxNode? VisitArgumentList(ArgumentListSyntax node)
     {
         return node.Update(
