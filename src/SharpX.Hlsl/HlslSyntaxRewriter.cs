@@ -165,7 +165,7 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
     public override SyntaxNode? VisitArgument(ArgumentSyntax node)
     {
         return node.Update(
-            VisitToken(node.RedKindKeyword),
+            VisitToken(node.RefKindKeyword),
             (ExpressionSyntax?)Visit(node.Expression) ?? throw new ArgumentNullException()
         );
     }

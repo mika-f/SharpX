@@ -12,7 +12,7 @@ public class ArgumentSyntax : HlslSyntaxNode
 {
     private ExpressionSyntax? _expression;
 
-    public SyntaxToken RedKindKeyword
+    public SyntaxToken RefKindKeyword
     {
         get
         {
@@ -37,7 +37,7 @@ public class ArgumentSyntax : HlslSyntaxNode
 
     public ArgumentSyntax Update(SyntaxToken refKindKeyword, ExpressionSyntax expression)
     {
-        if (refKindKeyword != RedKindKeyword || expression != Expression)
+        if (refKindKeyword != RefKindKeyword || expression != Expression)
             return SyntaxFactory.Argument(refKindKeyword, expression);
         return this;
     }
@@ -49,7 +49,7 @@ public class ArgumentSyntax : HlslSyntaxNode
 
     public ArgumentSyntax WithExpression(ExpressionSyntax expression)
     {
-        return Update(RedKindKeyword, expression);
+        return Update(RefKindKeyword, expression);
     }
 
     public override TResult? Accept<TResult>(HlslSyntaxVisitor<TResult> visitor) where TResult : default
