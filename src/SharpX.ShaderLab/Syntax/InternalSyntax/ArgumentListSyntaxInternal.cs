@@ -24,6 +24,8 @@ internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode arguments, SyntaxTokenInternal closeParenToken) : base(kind)
     {
+        SlotCount = 3;
+
         AdjustWidth(openParenToken);
         OpenParenToken = openParenToken;
 
@@ -36,6 +38,8 @@ internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode arguments, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
+        SlotCount = 3;
+
         AdjustWidth(openParenToken);
         OpenParenToken = openParenToken;
 
