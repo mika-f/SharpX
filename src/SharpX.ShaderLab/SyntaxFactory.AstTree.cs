@@ -60,6 +60,20 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static AttributeListSyntax AttributeList(SyntaxToken openBracketToken, SeparatedSyntaxList<AttributeSyntax> attributes, SyntaxToken closeBracketToken)
+    {
+        return (AttributeListSyntax)SyntaxFactoryInternal.AttributeList(
+            (SyntaxTokenInternal)openBracketToken.Node!,
+            attributes.Node.ToGreenSeparatedList<AttributeSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBracketToken.Node!
+        ).CreateRed();
+    }
+
+    public static AttributeListSyntax AttributeList(params AttributeSyntax[] attributes)
+    {
+        return AttributeList(Token(SyntaxKind.OpenBracketToken), SeparatedList(attributes), Token(SyntaxKind.CloseBracketToken));
+    }
+
     public static LiteralExpressionSyntax LiteralExpression(SyntaxKind kind, SyntaxToken token)
     {
         return (LiteralExpressionSyntax)SyntaxFactoryInternal.LiteralExpression(

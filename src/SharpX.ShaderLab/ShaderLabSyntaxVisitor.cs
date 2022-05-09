@@ -36,6 +36,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitAttributeList(AttributeListSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitLiteralExpression(LiteralExpressionSyntax node)
     {
         return DefaultVisit(node);

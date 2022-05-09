@@ -49,6 +49,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitAttributeList(AttributeListSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.OpenBracketToken),
+            VisitList(node.Attributes),
+            VisitToken(node.CloseBracketToken)
+        );
+    }
+
     public override SyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
     {
         return node.Update(VisitToken(node.Token));

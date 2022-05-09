@@ -40,6 +40,16 @@ internal partial class SyntaxFactoryInternal
         return new ArgumentSyntaxInternal(SyntaxKind.Argument, expression);
     }
 
+    public static AttributeListSyntaxInternal AttributeList(SyntaxTokenInternal openBracketToken, SeparatedSyntaxListInternal<AttributeSyntaxInternal> attributes, SyntaxTokenInternal closeBracketToken)
+    {
+        if (openBracketToken.Kind != SyntaxKind.OpenBracketToken)
+            throw new ArgumentException(nameof(openBracketToken));
+        if (closeBracketToken.Kind != SyntaxKind.CloseBracketToken)
+            throw new ArgumentException(nameof(closeBracketToken));
+
+        return new AttributeListSyntaxInternal(SyntaxKind.AttributeList, openBracketToken, attributes.Node!, closeBracketToken);
+    }
+
     public static LiteralExpressionSyntaxInternal LiteralExpression(SyntaxKind kind, SyntaxTokenInternal value)
     {
         switch (kind)
