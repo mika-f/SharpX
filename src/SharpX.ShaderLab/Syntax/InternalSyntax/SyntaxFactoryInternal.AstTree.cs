@@ -25,6 +25,14 @@ internal partial class SyntaxFactoryInternal
         return new QualifiedNameSyntaxInternal(SyntaxKind.QualifiedName, left, dotToken, right);
     }
 
+    public static EqualsValueClauseSyntaxInternal EqualsValueClause(SyntaxTokenInternal equalsToken, ExpressionSyntaxInternal value)
+    {
+        if (equalsToken.Kind != SyntaxKind.EqualsToken)
+            throw new ArgumentException(nameof(equalsToken));
+
+        return new EqualsValueClauseSyntaxInternal(SyntaxKind.EqualsValueClause, equalsToken, value);
+    }
+
     public static ArgumentListSyntaxInternal ArgumentList(SyntaxTokenInternal openParenToken, SeparatedSyntaxListInternal<ArgumentSyntaxInternal> arguments, SyntaxTokenInternal closeParenToken)
     {
         if (openParenToken.Kind != SyntaxKind.OpenParenToken)
@@ -48,6 +56,11 @@ internal partial class SyntaxFactoryInternal
             throw new ArgumentException(nameof(closeBracketToken));
 
         return new AttributeListSyntaxInternal(SyntaxKind.AttributeList, openBracketToken, attributes.Node!, closeBracketToken);
+    }
+
+    public static AttributeSyntaxInternal Attribute(NameSyntaxInternal name, ArgumentListSyntaxInternal argumentList)
+    {
+        return new AttributeSyntaxInternal(SyntaxKind.Attribute, name, argumentList);
     }
 
     public static LiteralExpressionSyntaxInternal LiteralExpression(SyntaxKind kind, SyntaxTokenInternal value)

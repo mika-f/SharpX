@@ -39,6 +39,19 @@ public partial class SyntaxFactory
         return IdentifierName(Identifier(identifier));
     }
 
+    public static EqualsValueClauseSyntax EqualsValueClause(SyntaxToken equalsToken, ExpressionSyntax value)
+    {
+        return (EqualsValueClauseSyntax)SyntaxFactoryInternal.EqualsValueClause(
+            (SyntaxTokenInternal)equalsToken.Node!,
+            (ExpressionSyntaxInternal)value.Green
+        ).CreateRed();
+    }
+
+    public static EqualsValueClauseSyntax EqualsValueClause(ExpressionSyntax value)
+    {
+        return EqualsValueClause(Token(SyntaxKind.EqualsToken), value);
+    }
+
     public static ArgumentListSyntax ArgumentList(SyntaxToken openParenToken, SeparatedSyntaxList<ArgumentSyntax> arguments, SyntaxToken closeParenToken)
     {
         return (ArgumentListSyntax)SyntaxFactoryInternal.ArgumentList(
@@ -74,6 +87,14 @@ public partial class SyntaxFactory
         return AttributeList(Token(SyntaxKind.OpenBracketToken), SeparatedList(attributes), Token(SyntaxKind.CloseBracketToken));
     }
 
+    public static AttributeSyntax Attribute(NameSyntax name, ArgumentListSyntax argumentList)
+    {
+        return (AttributeSyntax)SyntaxFactoryInternal.Attribute(
+            (NameSyntaxInternal)name.Green,
+            (ArgumentListSyntaxInternal)argumentList.Green
+        ).CreateRed();
+    }
+
     public static LiteralExpressionSyntax LiteralExpression(SyntaxKind kind, SyntaxToken token)
     {
         return (LiteralExpressionSyntax)SyntaxFactoryInternal.LiteralExpression(
@@ -94,6 +115,7 @@ public partial class SyntaxFactory
     public static TextureLiteralExpressionSyntax TextureLiteralExpression(LiteralExpressionSyntax value)
     {
         return TextureLiteralExpression(value, Token(SyntaxKind.OpenBraceToken), Token(SyntaxKind.CloseBraceToken));
+    }
 
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
     {
