@@ -81,6 +81,20 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
     }
 
 
+    public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Identifier),
+            VisitToken(node.OpenParenToken),
+            VisitToken(node.DisplayName),
+            VisitToken(node.CommaToken),
+            (SimpleNameSyntax?)Visit(node.Type) ?? throw new ArgumentNullException(),
+            (ArgumentListSyntax?)Visit(node.ArgumentList),
+            VisitToken(node.CloseParenToken),
+            (EqualsValueClauseSyntax?)Visit(node.Default) ?? throw new ArgumentNullException()
+        );
+    }
+
     public override SyntaxNode? VisitTagsDeclaration(TagsDeclarationSyntax node)
     {
         return node.Update(

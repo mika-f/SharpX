@@ -98,6 +98,22 @@ internal partial class SyntaxFactoryInternal
         return new TextureLiteralExpressionSyntaxInternal(SyntaxKind.TextureLiteralExpression, value, openBraceToken, closeBraceToken);
     }
 
+    public static PropertyDeclarationSyntaxInternal PropertyDeclaration(SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type, ArgumentListSyntaxInternal? argumentList,
+                                                                        SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default)
+    {
+        if (identifier.Kind != SyntaxKind.IdentifierToken)
+            throw new ArgumentException(nameof(identifier));
+        if (openParenToken.Kind != SyntaxKind.OpenParenToken)
+            throw new ArgumentException(nameof(openParenToken));
+        if (displayName.Kind != SyntaxKind.StringLiteralToken)
+            throw new ArgumentException(nameof(displayName));
+        if (commaToken.Kind != SyntaxKind.CommaToken)
+            throw new ArgumentException(nameof(commaToken));
+        if (closeParenToken.Kind != SyntaxKind.CloseParenToken)
+            throw new ArgumentException(nameof(closeParenToken));
+
+        return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
+    }
 
     public static TagsDeclarationSyntaxInternal TagsDeclaration(SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<TagDeclarationSyntaxInternal> tags, SyntaxTokenInternal closeBraceToken)
     {
