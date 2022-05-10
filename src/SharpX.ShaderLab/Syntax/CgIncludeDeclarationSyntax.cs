@@ -54,6 +54,6 @@ public class CgIncludeDeclarationSyntax : ShaderLabSyntaxNode
 
     public override TResult? Accept<TResult>(ShaderLabSyntaxVisitor<TResult> visitor) where TResult : default
     {
-        return visitor.CgIncludeDeclaration(this);
+        return visitor.VisitCgIncludeDeclaration(this);
     }
 }
