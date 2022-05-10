@@ -99,6 +99,18 @@ internal partial class SyntaxFactoryInternal
     }
 
 
+    public static TagsDeclarationSyntaxInternal TagsDeclaration(SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<TagDeclarationSyntaxInternal> tags, SyntaxTokenInternal closeBraceToken)
+    {
+        if (tagsKeyword.Kind != SyntaxKind.TagsKeyword)
+            throw new ArgumentException(nameof(tagsKeyword));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new TagsDeclarationSyntaxInternal(SyntaxKind.TagsDeclaration, tagsKeyword, openBraceToken, tags.Node!, closeBraceToken);
+    }
+
     public static TagDeclarationSyntaxInternal TagDeclaration(SyntaxTokenInternal key, SyntaxTokenInternal equalsToken, SyntaxTokenInternal value)
     {
         if (key.Kind != SyntaxKind.StringLiteralToken)

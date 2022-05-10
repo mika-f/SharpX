@@ -117,6 +117,20 @@ public partial class SyntaxFactory
         return TextureLiteralExpression(value, Token(SyntaxKind.OpenBraceToken), Token(SyntaxKind.CloseBraceToken));
     }
 
+    public static TagsDeclarationSyntax TagsDeclaration(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)
+    {
+        return (TagsDeclarationSyntax)SyntaxFactoryInternal.TagsDeclaration(
+            (SyntaxTokenInternal)tagsKeyword.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            tags.Node.ToGreenList<TagDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static TagsDeclarationSyntax TagsDeclaration(params TagDeclarationSyntax[] tags)
+    {
+        return TagsDeclaration(Token(SyntaxKind.TagsKeyword), Token(SyntaxKind.OpenBraceToken), List(tags), Token(SyntaxKind.CloseBraceToken));
+    }
 
     public static TagDeclarationSyntax TagDeclaration(SyntaxToken key, SyntaxToken equalsToken, SyntaxToken value)
     {

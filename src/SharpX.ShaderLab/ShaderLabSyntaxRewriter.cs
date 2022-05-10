@@ -81,6 +81,16 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
     }
 
 
+    public override SyntaxNode? VisitTagsDeclaration(TagsDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.TagsKeyword),
+            VisitToken(node.OpenBraceToken),
+            VisitList(node.Tags),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
+
     public override SyntaxNode? VisitTagDeclaration(TagDeclarationSyntax node)
     {
         return node.Update(
