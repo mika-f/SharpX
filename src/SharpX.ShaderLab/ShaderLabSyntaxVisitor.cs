@@ -66,6 +66,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitCommandDeclaration(CommandDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitTagsDeclaration(TagsDeclarationSyntax node)
     {
         return DefaultVisit(node);

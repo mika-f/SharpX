@@ -153,6 +153,14 @@ internal partial class SyntaxFactoryInternal
         return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
     }
 
+    public static CommandDeclarationSyntaxInternal CommandDeclaration(SyntaxTokenInternal keyword, SeparatedSyntaxListInternal<IdentifierNameSyntaxInternal> arguments)
+    {
+        if (keyword.Kind != SyntaxKind.IdentifierToken)
+            throw new ArgumentException(nameof(keyword));
+
+        return new CommandDeclarationSyntaxInternal(SyntaxKind.CommandDeclaration, keyword, arguments.Node!);
+    }
+
     public static TagsDeclarationSyntaxInternal TagsDeclaration(SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<TagDeclarationSyntaxInternal> tags, SyntaxTokenInternal closeBraceToken)
     {
         if (tagsKeyword.Kind != SyntaxKind.TagsKeyword)

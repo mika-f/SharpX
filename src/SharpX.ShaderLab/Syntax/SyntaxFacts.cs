@@ -23,14 +23,25 @@ internal static class SyntaxFacts
             SyntaxKind.CommaToken => ",",
             SyntaxKind.DoubleQuoteToken => "\"",
             SyntaxKind.DotToken => ".",
+            SyntaxKind.CgIncludeKeyword => "CGINCLUDE",
+            SyntaxKind.CgProgramKeyword => "CGPROGRAM",
             SyntaxKind.ColorKeyword => "Color",
             SyntaxKind.CustomEditorKeyword => "CustomEditor",
+            SyntaxKind.EndCgKeyword => "ENDCG",
             SyntaxKind.FallbackKeyword => "Fallback",
+            SyntaxKind.FloatKeyword => "Float",
+            SyntaxKind.IntKeyword => "Int",
             SyntaxKind.OffKeyword => "Off",
             SyntaxKind.PassKeyword => "Pass",
             SyntaxKind.PropertiesKeyword => "Properties",
             SyntaxKind.ShaderKeyword => "Shader",
-            SyntaxKind.SubShaderKeyword => "SubShader"
+            SyntaxKind.SubShaderKeyword => "SubShader",
+            SyntaxKind.TagsKeyword => "Tags",
+            SyntaxKind.Texture2DKeyword => "2D",
+            SyntaxKind.Texture3DKeyword => "3D",
+            SyntaxKind.TextureCubeKeyword => "Cube",
+            SyntaxKind.RangeKeyword => "Range",
+            SyntaxKind.VectorKeyword => "Vector"
         };
     }
 }

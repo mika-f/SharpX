@@ -55,9 +55,15 @@ public enum SyntaxKind
 
     #region keywords
 
+    CgIncludeKeyword,
+
+    CgProgramKeyword,
+
     ColorKeyword,
 
     CustomEditorKeyword,
+
+    EndCgKeyword,
 
     FallbackKeyword,
 

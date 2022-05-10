@@ -152,6 +152,14 @@ public partial class SyntaxFactory
         return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), Literal(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
+    public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
+    {
+        return (CommandDeclarationSyntax)SyntaxFactoryInternal.CommandDeclaration(
+            (SyntaxTokenInternal)keyword.Node!,
+            arguments.Node.ToGreenSeparatedList<IdentifierNameSyntaxInternal>()
+        ).CreateRed();
+    }
+
     public static TagsDeclarationSyntax TagsDeclaration(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)
     {
         return (TagsDeclarationSyntax)SyntaxFactoryInternal.TagsDeclaration(
