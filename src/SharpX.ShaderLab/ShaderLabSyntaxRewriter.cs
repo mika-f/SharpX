@@ -114,6 +114,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitCgProgramDeclaration(CgProgramDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.CgProgramKeyword),
+            node.Source, // skipped because this node is already normalized, rewritten, and visited (visited by other visitor)
+            VisitToken(node.EndCgKeyword)
+        );
+    }
+
     public override SyntaxNode? VisitCommandDeclaration(CommandDeclarationSyntax node)
     {
         return node.Update(

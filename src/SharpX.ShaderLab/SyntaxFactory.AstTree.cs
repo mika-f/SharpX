@@ -166,6 +166,20 @@ public partial class SyntaxFactory
         return CgIncludeDeclaration(Token(SyntaxKind.CgIncludeKeyword), source, Token(SyntaxKind.EndCgKeyword));
     }
 
+    public static CgProgramDeclarationSyntax CgProgramDeclaration(SyntaxToken cgProgramKeyword, SyntaxNode source, SyntaxToken endCgKeyword)
+    {
+        return (CgProgramDeclarationSyntax)SyntaxFactoryInternal.CgProgramDeclaration(
+            (SyntaxTokenInternal)cgProgramKeyword.Node!,
+            source.Green,
+            (SyntaxTokenInternal)endCgKeyword.Node!
+        ).CreateRed();
+    }
+
+    public static CgProgramDeclarationSyntax CgProgramDeclaration(SyntaxNode source)
+    {
+        return CgProgramDeclaration(Token(SyntaxKind.CgProgramKeyword), source, Token(SyntaxKind.EndCgKeyword));
+    }
+
     public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
     {
         return (CommandDeclarationSyntax)SyntaxFactoryInternal.CommandDeclaration(

@@ -164,6 +164,16 @@ internal partial class SyntaxFactoryInternal
         return new CgIncludeDeclarationSyntaxInternal(SyntaxKind.CgIncludeDeclaration, cgIncludeKeyword, source, endCgKeyword);
     }
 
+    public static CgProgramDeclarationSyntaxInternal CgProgramDeclaration(SyntaxTokenInternal cgProgramKeyword, GreenNode source, SyntaxTokenInternal endCgKeyword)
+    {
+        if (cgProgramKeyword.Kind != SyntaxKind.CgProgramKeyword)
+            throw new ArgumentException(nameof(cgProgramKeyword));
+        if (endCgKeyword.Kind != SyntaxKind.EndCgKeyword)
+            throw new ArgumentException(nameof(endCgKeyword));
+
+        return new CgProgramDeclarationSyntaxInternal(SyntaxKind.CgProgramDeclaration, cgProgramKeyword, source, endCgKeyword);
+    }
+
     public static CommandDeclarationSyntaxInternal CommandDeclaration(SyntaxTokenInternal keyword, SeparatedSyntaxListInternal<IdentifierNameSyntaxInternal> arguments)
     {
         if (keyword.Kind != SyntaxKind.IdentifierToken)
