@@ -56,6 +56,12 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+
+    public virtual TResult? VisitTagDeclaration(TagDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return DefaultVisit(node);

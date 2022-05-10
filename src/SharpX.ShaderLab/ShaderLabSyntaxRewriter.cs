@@ -80,6 +80,16 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+
+    public override SyntaxNode? VisitTagDeclaration(TagDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Key),
+            VisitToken(node.EqualsToken),
+            VisitToken(node.Value)
+        );
+    }
+
     public override SyntaxNode? VisitFallbackDeclaration(FallbackDeclarationSyntax node)
     {
         return node.Update(

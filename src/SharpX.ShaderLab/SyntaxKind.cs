@@ -55,9 +55,15 @@ public enum SyntaxKind
 
     #region keywords
 
+    ColorKeyword,
+
     CustomEditorKeyword,
 
     FallbackKeyword,
+
+    FloatKeyword,
+
+    IntKeyword,
 
     OffKeyword,
 
@@ -68,6 +74,18 @@ public enum SyntaxKind
     ShaderKeyword,
 
     SubShaderKeyword,
+
+    TagsKeyword,
+
+    Texture2DKeyword,
+
+    Texture3DKeyword,
+
+    TextureCubeKeyword,
+
+    RangeKeyword,
+
+    VectorKeyword,
 
     #endregion
 
@@ -95,10 +113,13 @@ public enum SyntaxKind
 
     IdentifierName,
 
+    QualifiedName,
 
     #endregion
 
     #region expressions
+
+    EqualsValueClause,
 
     ArgumentList,
 
@@ -111,6 +132,8 @@ public enum SyntaxKind
     #endregion
 
     #region literal expressions
+
+    TextureLiteralExpression,
 
     NumericLiteralExpression,
 
@@ -128,15 +151,19 @@ public enum SyntaxKind
 
     FallbackDeclaration,
 
-    FieldDeclaration,
-
-    PassDeclaration,
+    PropertiesDeclaration,
 
     PropertyDeclaration,
+
+    PassDeclaration,
 
     ShaderDeclaration,
 
     SubShaderDeclaration,
+
+    TagsDeclaration,
+
+    TagDeclaration,
 
     #endregion
 
@@ -145,10 +172,6 @@ public enum SyntaxKind
     AttributeList,
 
     Attribute,
-
-    AttributeArgumentList,
-
-    AttributeArgument,
 
     #endregion
 }

@@ -98,6 +98,19 @@ internal partial class SyntaxFactoryInternal
         return new TextureLiteralExpressionSyntaxInternal(SyntaxKind.TextureLiteralExpression, value, openBraceToken, closeBraceToken);
     }
 
+
+    public static TagDeclarationSyntaxInternal TagDeclaration(SyntaxTokenInternal key, SyntaxTokenInternal equalsToken, SyntaxTokenInternal value)
+    {
+        if (key.Kind != SyntaxKind.StringLiteralToken)
+            throw new ArgumentException(nameof(key));
+        if (equalsToken.Kind != SyntaxKind.EqualsToken)
+            throw new ArgumentException(nameof(equalsToken));
+        if (value.Kind != SyntaxKind.StringLiteralToken)
+            throw new ArgumentException(nameof(value));
+
+        return new TagDeclarationSyntaxInternal(SyntaxKind.TagDeclaration, key, equalsToken, value);
+    }
+
     public static FallbackDeclarationSyntaxInternal FallbackDeclaration(SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword)
     {
         if (fallbackKeyword.Kind != SyntaxKind.FallbackKeyword)
