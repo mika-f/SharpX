@@ -123,7 +123,7 @@ public static partial class SyntaxFactory
 
     public static SyntaxToken Literal(string value)
     {
-        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, $"\"{value}\"", ElasticMarker.UnderlyingNode));
     }
 
     public static SyntaxList<TNode> List<TNode>() where TNode : SyntaxNode
