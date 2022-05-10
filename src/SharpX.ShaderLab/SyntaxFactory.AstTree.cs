@@ -118,6 +118,21 @@ public partial class SyntaxFactory
     }
 
 
+    public static PropertiesDeclarationSyntax PropertiesDeclaration(SyntaxToken propertiesKeyword, SyntaxToken openBraceToken, SyntaxList<PropertyDeclarationSyntax> properties, SyntaxToken closeBraceToken)
+    {
+        return (PropertiesDeclarationSyntax)SyntaxFactoryInternal.PropertiesDeclaration(
+            (SyntaxTokenInternal)propertiesKeyword.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            properties.Node.ToGreenList<PropertyDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static PropertiesDeclarationSyntax PropertiesDeclaration(params PropertyDeclarationSyntax[] properties)
+    {
+        return PropertiesDeclaration(Token(SyntaxKind.PropertiesKeyword), Token(SyntaxKind.OpenBraceToken), List(properties), Token(SyntaxKind.CloseBraceToken));
+    }
+
     public static PropertyDeclarationSyntax PropertyDeclaration(SyntaxToken identifier, SyntaxToken openParenToken, SyntaxToken displayName, SyntaxToken commaToken, SimpleNameSyntax type, ArgumentListSyntax? argumentList, SyntaxToken closeParenToken, EqualsValueClauseSyntax @default)
     {
         return (PropertyDeclarationSyntax)SyntaxFactoryInternal.PropertyDeclaration(
@@ -130,6 +145,11 @@ public partial class SyntaxFactory
             (SyntaxTokenInternal)closeParenToken.Node!,
             (EqualsValueClauseSyntaxInternal)@default.Green
         ).CreateRed();
+    }
+
+    public static PropertyDeclarationSyntax PropertyDeclaration(string identifier, string displayName, SimpleNameSyntax type, ArgumentListSyntax? argumentList, EqualsValueClauseSyntax? @default)
+    {
+        return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), Literal(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
     public static TagsDeclarationSyntax TagsDeclaration(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)

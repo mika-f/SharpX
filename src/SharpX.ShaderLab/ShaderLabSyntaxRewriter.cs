@@ -80,6 +80,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitPropertiesDeclaration(PropertiesDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.PropertiesKeyword),
+            VisitToken(node.OpenBraceToken),
+            VisitList(node.Properties),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
 
     public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {

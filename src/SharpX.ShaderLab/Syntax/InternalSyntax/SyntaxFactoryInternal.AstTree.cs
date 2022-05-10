@@ -98,6 +98,44 @@ internal partial class SyntaxFactoryInternal
         return new TextureLiteralExpressionSyntaxInternal(SyntaxKind.TextureLiteralExpression, value, openBraceToken, closeBraceToken);
     }
 
+    public static ShaderDeclarationSyntaxInternal ShaderDeclaration(SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude,
+                                                                    SyntaxListInternal<SubShaderDeclarationSyntaxInternal> subShaders, FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken)
+    {
+        if (shaderKeyword.Kind != SyntaxKind.ShaderKeyword)
+            throw new ArgumentException(nameof(shaderKeyword));
+        if (identifier.Kind != SyntaxKind.StringLiteralExpression)
+            throw new ArgumentException(nameof(identifier));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new ShaderDeclarationSyntaxInternal(
+            SyntaxKind.ShaderDeclaration,
+            shaderKeyword,
+            identifier,
+            openBraceToken,
+            properties,
+            cgInclude,
+            subShaders.Node!,
+            fallback,
+            customEditor,
+            closeBraceToken
+        );
+    }
+
+    public static PropertiesDeclarationSyntaxInternal PropertiesDeclaration(SyntaxTokenInternal propertiesKeyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<PropertyDeclarationSyntaxInternal> properties, SyntaxTokenInternal closeBraceToken)
+    {
+        if (propertiesKeyword.Kind != SyntaxKind.PropertiesKeyword)
+            throw new ArgumentException(nameof(propertiesKeyword));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new PropertiesDeclarationSyntaxInternal(SyntaxKind.PropertiesDeclaration, propertiesKeyword, openBraceToken, properties.Node!, closeBraceToken);
+    }
+
     public static PropertyDeclarationSyntaxInternal PropertyDeclaration(SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type, ArgumentListSyntaxInternal? argumentList,
                                                                         SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default)
     {
