@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
@@ -151,6 +152,16 @@ internal partial class SyntaxFactoryInternal
             throw new ArgumentException(nameof(closeParenToken));
 
         return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
+    }
+
+    public static CgIncludeDeclarationSyntaxInternal CgIncludeDeclaration(SyntaxTokenInternal cgIncludeKeyword, GreenNode source, SyntaxTokenInternal endCgKeyword)
+    {
+        if (cgIncludeKeyword.Kind != SyntaxKind.CgIncludeKeyword)
+            throw new ArgumentException(nameof(cgIncludeKeyword));
+        if (endCgKeyword.Kind != SyntaxKind.EndCgKeyword)
+            throw new ArgumentException(nameof(endCgKeyword));
+
+        return new CgIncludeDeclarationSyntaxInternal(SyntaxKind.CgIncludeDeclaration, cgIncludeKeyword, source, endCgKeyword);
     }
 
     public static CommandDeclarationSyntaxInternal CommandDeclaration(SyntaxTokenInternal keyword, SeparatedSyntaxListInternal<IdentifierNameSyntaxInternal> arguments)

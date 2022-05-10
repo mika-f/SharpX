@@ -152,6 +152,20 @@ public partial class SyntaxFactory
         return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), Literal(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
+    public static CgIncludeDeclarationSyntax CgIncludeDeclaration(SyntaxToken cgIncludeKeyword, SyntaxNode source, SyntaxToken endCgKeyword)
+    {
+        return (CgIncludeDeclarationSyntax)SyntaxFactoryInternal.CgIncludeDeclaration(
+            (SyntaxTokenInternal)cgIncludeKeyword.Node!,
+            source.Green,
+            (SyntaxTokenInternal)endCgKeyword.Node!
+        ).CreateRed();
+    }
+
+    public static CgIncludeDeclarationSyntax CgIncludeDeclaration(SyntaxNode source)
+    {
+        return CgIncludeDeclaration(Token(SyntaxKind.CgIncludeKeyword), source, Token(SyntaxKind.EndCgKeyword));
+    }
+
     public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
     {
         return (CommandDeclarationSyntax)SyntaxFactoryInternal.CommandDeclaration(

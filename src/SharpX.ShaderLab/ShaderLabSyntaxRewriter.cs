@@ -105,11 +105,12 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
-    public override SyntaxNode? VisitNameDeclaration(NameDeclarationSyntax node)
+    public override SyntaxNode? VisitCgIncludeDeclaration(CgIncludeDeclarationSyntax node)
     {
         return node.Update(
-            VisitToken(node.Keyword),
-            VisitToken(node.Name)
+            VisitToken(node.CgIncludeKeyword),
+            node.Source, // skipped because this node is already normalized, rewritten, and visited (visited by other visitor)
+            VisitToken(node.EndCgKeyword)
         );
     }
 
@@ -120,6 +121,15 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
             VisitList(node.Arguments)
         );
     }
+
+    public override SyntaxNode? VisitNameDeclaration(NameDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.Name)
+        );
+    }
+
 
     public override SyntaxNode? VisitTagsDeclaration(TagsDeclarationSyntax node)
     {

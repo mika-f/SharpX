@@ -67,6 +67,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitCgIncludeDeclaration(CgIncludeDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitCommandDeclaration(CommandDeclarationSyntax node)
     {
         return DefaultVisit(node);

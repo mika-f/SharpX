@@ -151,6 +151,10 @@ public enum SyntaxKind
 
     #region declarations
 
+    CgIncludeDeclaration,
+
+    CgProgramDeclaration,
+
     CommandDeclaration,
 
     CompilationUnit,
