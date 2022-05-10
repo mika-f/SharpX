@@ -71,6 +71,8 @@ public enum SyntaxKind
 
     IntKeyword,
 
+    NameKeyword,
+
     OffKeyword,
 
     PassKeyword,
@@ -156,6 +158,8 @@ public enum SyntaxKind
     CustomEditorDeclaration,
 
     FallbackDeclaration,
+
+    NameDeclaration,
 
     PropertiesDeclaration,
 

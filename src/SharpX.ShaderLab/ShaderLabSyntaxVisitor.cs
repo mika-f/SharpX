@@ -6,6 +6,7 @@
 
 using SharpX.Core;
 using SharpX.ShaderLab.Syntax;
+using SharpX.ShaderLab.Syntax.InternalSyntax;
 
 namespace SharpX.ShaderLab;
 
@@ -67,6 +68,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
     }
 
     public virtual TResult? VisitCommandDeclaration(CommandDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
+    public virtual TResult? VisitNameDeclaration(NameDeclarationSyntax node)
     {
         return DefaultVisit(node);
     }

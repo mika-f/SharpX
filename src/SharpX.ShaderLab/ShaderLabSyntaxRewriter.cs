@@ -6,6 +6,7 @@
 using SharpX.Core;
 using SharpX.Core.Syntax;
 using SharpX.ShaderLab.Syntax;
+using SharpX.ShaderLab.Syntax.InternalSyntax;
 
 namespace SharpX.ShaderLab;
 
@@ -101,6 +102,14 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
             (ArgumentListSyntax?)Visit(node.ArgumentList),
             VisitToken(node.CloseParenToken),
             (EqualsValueClauseSyntax?)Visit(node.Default) ?? throw new ArgumentNullException()
+        );
+    }
+
+    public override SyntaxNode? VisitNameDeclaration(NameDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.Name)
         );
     }
 

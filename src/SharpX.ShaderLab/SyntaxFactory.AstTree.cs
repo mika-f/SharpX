@@ -160,6 +160,19 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static NameDeclarationSyntax NameDeclaration(SyntaxToken keyword, SyntaxToken name)
+    {
+        return (NameDeclarationSyntax)SyntaxFactoryInternal.NameDeclaration(
+            (SyntaxTokenInternal)keyword.Node!,
+            (SyntaxTokenInternal)name.Node!
+        ).CreateRed();
+    }
+
+    public static NameDeclarationSyntax NameDeclaration(string name)
+    {
+        return NameDeclaration(Token(SyntaxKind.NameKeyword), Literal(name));
+    }
+
     public static TagsDeclarationSyntax TagsDeclaration(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)
     {
         return (TagsDeclarationSyntax)SyntaxFactoryInternal.TagsDeclaration(

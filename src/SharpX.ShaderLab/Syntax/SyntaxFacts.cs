@@ -31,6 +31,7 @@ internal static class SyntaxFacts
             SyntaxKind.FallbackKeyword => "Fallback",
             SyntaxKind.FloatKeyword => "Float",
             SyntaxKind.IntKeyword => "Int",
+            SyntaxKind.NameKeyword => "Name",
             SyntaxKind.OffKeyword => "Off",
             SyntaxKind.PassKeyword => "Pass",
             SyntaxKind.PropertiesKeyword => "Properties",

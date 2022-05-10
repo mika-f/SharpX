@@ -161,6 +161,16 @@ internal partial class SyntaxFactoryInternal
         return new CommandDeclarationSyntaxInternal(SyntaxKind.CommandDeclaration, keyword, arguments.Node!);
     }
 
+    public static NameDeclarationSyntaxInternal NameDeclaration(SyntaxTokenInternal keyword, SyntaxTokenInternal name)
+    {
+        if (keyword.Kind != SyntaxKind.NameKeyword)
+            throw new ArgumentException(nameof(keyword));
+        if (name.Kind != SyntaxKind.StringLiteralToken)
+            throw new ArgumentException(nameof(name));
+
+        return new NameDeclarationSyntaxInternal(SyntaxKind.NameDeclaration, keyword, name);
+    }
+
     public static TagsDeclarationSyntaxInternal TagsDeclaration(SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<TagDeclarationSyntaxInternal> tags, SyntaxTokenInternal closeBraceToken)
     {
         if (tagsKeyword.Kind != SyntaxKind.TagsKeyword)
