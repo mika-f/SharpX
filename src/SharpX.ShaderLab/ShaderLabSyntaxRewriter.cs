@@ -81,6 +81,21 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitShaderDeclaration(ShaderDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.ShaderKeyword),
+            VisitToken(node.Identifier),
+            VisitToken(node.OpenBraceToken),
+            (PropertiesDeclarationSyntax?)Visit(node.Properties),
+            (CgIncludeDeclarationSyntax?)Visit(node.CgInclude),
+            VisitList(node.SubShaders),
+            (FallbackDeclarationSyntax?)Visit(node.Fallback),
+            (CustomEditorDeclarationSyntax?)Visit(node.CustomEditor),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
+
     public override SyntaxNode? VisitPropertiesDeclaration(PropertiesDeclarationSyntax node)
     {
         return node.Update(

@@ -117,6 +117,26 @@ public partial class SyntaxFactory
         return TextureLiteralExpression(value, Token(SyntaxKind.OpenBraceToken), Token(SyntaxKind.CloseBraceToken));
     }
 
+    public static ShaderDeclarationSyntax ShaderDeclaration(SyntaxToken shaderKeyword, SyntaxToken identifier, SyntaxToken openBraceToken, PropertiesDeclarationSyntax? properties, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<SubShaderDeclarationSyntax> subShaders,
+                                                            FallbackDeclarationSyntax? fallback, CustomEditorDeclarationSyntax? customEditor, SyntaxToken closeBraceToken)
+    {
+        return (ShaderDeclarationSyntax)SyntaxFactoryInternal.ShaderDeclaration(
+            (SyntaxTokenInternal)shaderKeyword.Node!,
+            (SyntaxTokenInternal)identifier.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            (PropertiesDeclarationSyntaxInternal?)properties?.Green,
+            (CgIncludeDeclarationSyntaxInternal?)cgInclude?.Green,
+            subShaders.Node.ToGreenList<SubShaderDeclarationSyntaxInternal>(),
+            (FallbackDeclarationSyntaxInternal?)fallback?.Green,
+            (CustomEditorDeclarationSyntaxInternal?)customEditor?.Green,
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static ShaderDeclarationSyntax ShaderDeclaration(string identifier, PropertiesDeclarationSyntax? properties, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<SubShaderDeclarationSyntax> subShaders, FallbackDeclarationSyntax? fallback, CustomEditorDeclarationSyntax? customEditor)
+    {
+        return ShaderDeclaration(Token(SyntaxKind.ShaderKeyword), Literal(identifier), Token(SyntaxKind.OpenBraceToken), properties, cgInclude, subShaders, fallback, customEditor, Token(SyntaxKind.CloseBraceToken));
+    }
 
     public static PropertiesDeclarationSyntax PropertiesDeclaration(SyntaxToken propertiesKeyword, SyntaxToken openBraceToken, SyntaxList<PropertyDeclarationSyntax> properties, SyntaxToken closeBraceToken)
     {
