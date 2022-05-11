@@ -69,6 +69,8 @@ public enum SyntaxKind
 
     FloatKeyword,
 
+    GrabPassKeyword,
+
     IntKeyword,
 
     NameKeyword,
@@ -81,6 +83,8 @@ public enum SyntaxKind
 
     ShaderKeyword,
 
+    StencilKeyword,
+
     SubShaderKeyword,
 
     TagsKeyword,
@@ -90,6 +94,8 @@ public enum SyntaxKind
     Texture3DKeyword,
 
     TextureCubeKeyword,
+
+    UsePassKeyword,
 
     RangeKeyword,
 
@@ -163,6 +169,8 @@ public enum SyntaxKind
 
     FallbackDeclaration,
 
+    GrabPassDeclaration,
+
     NameDeclaration,
 
     PropertiesDeclaration,
@@ -173,11 +181,15 @@ public enum SyntaxKind
 
     ShaderDeclaration,
 
+    StencilDeclaration,
+
     SubShaderDeclaration,
 
     TagsDeclaration,
 
     TagDeclaration,
+
+    UsePassDeclaration,
 
     #endregion
 

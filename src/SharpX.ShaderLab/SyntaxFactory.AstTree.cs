@@ -180,6 +180,30 @@ public partial class SyntaxFactory
         return CgProgramDeclaration(Token(SyntaxKind.CgProgramKeyword), source, Token(SyntaxKind.EndCgKeyword));
     }
 
+    public static GrabPassDeclarationSyntax GrabPassDeclaration(SyntaxToken keyword, SyntaxToken openBraceToken, SyntaxToken? identifier, TagsDeclarationSyntax? tags, NameDeclarationSyntax? name, SyntaxToken closeBraceToken)
+    {
+        return (GrabPassDeclarationSyntax)SyntaxFactoryInternal.GrabPassDeclaration(
+            (SyntaxTokenInternal)keyword.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            (SyntaxTokenInternal?)identifier?.Node,
+            (TagsDeclarationSyntaxInternal?)tags?.Green,
+            (NameDeclarationSyntaxInternal?)name?.Green,
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static GrabPassDeclarationSyntax GrabPassDeclaration(string? identifier = null, TagsDeclarationSyntax? tags = null, NameDeclarationSyntax? name = null)
+    {
+        return GrabPassDeclaration(
+            Token(SyntaxKind.GrabPassKeyword),
+            Token(SyntaxKind.OpenBracketToken),
+            identifier != null ? Identifier(identifier) : null,
+            tags,
+            name,
+            Token(SyntaxKind.CloseBraceToken)
+        );
+    }
+
     public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
     {
         return (CommandDeclarationSyntax)SyntaxFactoryInternal.CommandDeclaration(

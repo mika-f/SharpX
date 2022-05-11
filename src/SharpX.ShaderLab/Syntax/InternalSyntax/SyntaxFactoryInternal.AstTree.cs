@@ -174,6 +174,20 @@ internal partial class SyntaxFactoryInternal
         return new CgProgramDeclarationSyntaxInternal(SyntaxKind.CgProgramDeclaration, cgProgramKeyword, source, endCgKeyword);
     }
 
+    public static GrabPassDeclarationSyntaxInternal GrabPassDeclaration(SyntaxTokenInternal keyword, SyntaxTokenInternal openBraceToken, SyntaxTokenInternal? identifier, TagsDeclarationSyntaxInternal? tags, NameDeclarationSyntaxInternal? name, SyntaxTokenInternal closeBraceToken)
+    {
+        if (keyword.Kind != SyntaxKind.GrabPassKeyword)
+            throw new ArgumentException(nameof(keyword));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (identifier != null && identifier.Kind != SyntaxKind.IdentifierToken)
+            throw new ArgumentException(nameof(identifier));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new GrabPassDeclarationSyntaxInternal(SyntaxKind.GrabPassDeclaration, keyword, openBraceToken, identifier, tags, name, closeBraceToken);
+    }
+
     public static CommandDeclarationSyntaxInternal CommandDeclaration(SyntaxTokenInternal keyword, SeparatedSyntaxListInternal<IdentifierNameSyntaxInternal> arguments)
     {
         if (keyword.Kind != SyntaxKind.IdentifierToken)
