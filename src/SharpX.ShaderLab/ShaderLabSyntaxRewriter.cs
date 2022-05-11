@@ -81,6 +81,14 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
+    {
+        return node.Update(
+            (ShaderDeclarationSyntax?)Visit(node.Shader) ?? throw new ArgumentException(),
+            VisitToken(node.EndOfFileToken)
+        );
+    }
+
     public override SyntaxNode? VisitShaderDeclaration(ShaderDeclarationSyntax node)
     {
         return node.Update(

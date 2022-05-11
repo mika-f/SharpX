@@ -99,6 +99,14 @@ internal partial class SyntaxFactoryInternal
         return new TextureLiteralExpressionSyntaxInternal(SyntaxKind.TextureLiteralExpression, value, openBraceToken, closeBraceToken);
     }
 
+    public static CompilationUnitSyntaxInternal CompilationUnit(ShaderDeclarationSyntaxInternal shader, SyntaxTokenInternal endOfFileToken)
+    {
+        if (endOfFileToken.Kind != SyntaxKind.EndOfFileToken)
+            throw new ArgumentException(nameof(endOfFileToken));
+
+        return new CompilationUnitSyntaxInternal(SyntaxKind.CompilationUnit, shader, endOfFileToken);
+    }
+
     public static ShaderDeclarationSyntaxInternal ShaderDeclaration(SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude,
                                                                     SyntaxListInternal<SubShaderDeclarationSyntaxInternal> subShaders, FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken)
     {

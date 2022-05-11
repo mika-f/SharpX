@@ -117,6 +117,19 @@ public partial class SyntaxFactory
         return TextureLiteralExpression(value, Token(SyntaxKind.OpenBraceToken), Token(SyntaxKind.CloseBraceToken));
     }
 
+    public static CompilationUnitSyntax CompilationUnit(ShaderDeclarationSyntax shader, SyntaxToken endOfFileToken)
+    {
+        return (CompilationUnitSyntax)SyntaxFactoryInternal.CompilationUnit(
+            (ShaderDeclarationSyntaxInternal)shader.Green,
+            (SyntaxTokenInternal)endOfFileToken.Node!
+        ).CreateRed();
+    }
+
+    public static CompilationUnitSyntax CompilationUnit(ShaderDeclarationSyntax shader)
+    {
+        return CompilationUnit(shader, Token(SyntaxKind.EndOfFileToken));
+    }
+
     public static ShaderDeclarationSyntax ShaderDeclaration(SyntaxToken shaderKeyword, SyntaxToken identifier, SyntaxToken openBraceToken, PropertiesDeclarationSyntax? properties, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<SubShaderDeclarationSyntax> subShaders,
                                                             FallbackDeclarationSyntax? fallback, CustomEditorDeclarationSyntax? customEditor, SyntaxToken closeBraceToken)
     {
