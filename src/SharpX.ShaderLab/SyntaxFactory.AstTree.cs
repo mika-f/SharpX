@@ -152,6 +152,33 @@ public partial class SyntaxFactory
         return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), Literal(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
+    public static SubShaderDeclarationSyntax SubShaderDeclaration(SyntaxToken subShaderKeyword, SyntaxToken openBraceToken, TagsDeclarationSyntax? tags, SyntaxList<CommandDeclarationSyntax> commands, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<BasePassDeclarationSyntax> passes,
+                                                                  SyntaxToken closeBraceToken)
+    {
+        return (SubShaderDeclarationSyntax)SyntaxFactoryInternal.SubShaderDeclaration(
+            (SyntaxTokenInternal)subShaderKeyword.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            (TagsDeclarationSyntaxInternal?)tags?.Green,
+            commands.Node.ToGreenList<CommandDeclarationSyntaxInternal>(),
+            (CgIncludeDeclarationSyntaxInternal?)cgInclude?.Green,
+            passes.Node.ToGreenList<BasePassDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static SubShaderDeclarationSyntax SubShaderDeclaration(TagsDeclarationSyntax? tags, SyntaxList<CommandDeclarationSyntax> commands, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<BasePassDeclarationSyntax> passes)
+    {
+        return SubShaderDeclaration(
+            Token(SyntaxKind.SubShaderKeyword),
+            Token(SyntaxKind.OpenBraceToken),
+            tags,
+            commands,
+            cgInclude,
+            passes,
+            Token(SyntaxKind.CloseBraceToken)
+        );
+    }
+
     public static CgIncludeDeclarationSyntax CgIncludeDeclaration(SyntaxToken cgIncludeKeyword, SyntaxNode source, SyntaxToken endCgKeyword)
     {
         return (CgIncludeDeclarationSyntax)SyntaxFactoryInternal.CgIncludeDeclaration(

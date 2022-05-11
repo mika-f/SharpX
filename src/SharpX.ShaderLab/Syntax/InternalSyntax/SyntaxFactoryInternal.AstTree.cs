@@ -154,6 +154,19 @@ internal partial class SyntaxFactoryInternal
         return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
     }
 
+    public static SubShaderDeclarationSyntaxInternal SubShaderDeclaration(SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, SyntaxListInternal<CommandDeclarationSyntaxInternal> commands, CgIncludeDeclarationSyntaxInternal? cgInclude,
+                                                                          SyntaxListInternal<BasePassDeclarationSyntaxInternal> passes, SyntaxTokenInternal closeBraceToken)
+    {
+        if (subShaderKeyword.Kind != SyntaxKind.SubShaderKeyword)
+            throw new ArgumentException(nameof(subShaderKeyword));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new SubShaderDeclarationSyntaxInternal(SyntaxKind.SubShaderDeclaration, subShaderKeyword, openBraceToken, tags, commands.Node!, cgInclude, passes.Node!, closeBraceToken);
+    }
+
     public static CgIncludeDeclarationSyntaxInternal CgIncludeDeclaration(SyntaxTokenInternal cgIncludeKeyword, GreenNode source, SyntaxTokenInternal endCgKeyword)
     {
         if (cgIncludeKeyword.Kind != SyntaxKind.CgIncludeKeyword)

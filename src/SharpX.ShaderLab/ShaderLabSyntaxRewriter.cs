@@ -105,6 +105,19 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitSubShaderDeclaration(SubShaderDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.SubShaderKeyword),
+            VisitToken(node.OpenBraceToken),
+            (TagsDeclarationSyntax?)Visit(node.Tags),
+            VisitList(node.Commands),
+            (CgIncludeDeclarationSyntax?)Visit(node.CgInclude),
+            VisitList(node.Passes),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
+
     public override SyntaxNode? VisitCgIncludeDeclaration(CgIncludeDeclarationSyntax node)
     {
         return node.Update(
