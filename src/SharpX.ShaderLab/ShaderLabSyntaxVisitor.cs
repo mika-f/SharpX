@@ -83,6 +83,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitUsePassDeclaration(UsePassDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitCommandDeclaration(CommandDeclarationSyntax node)
     {
         return DefaultVisit(node);

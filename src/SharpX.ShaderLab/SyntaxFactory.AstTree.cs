@@ -204,6 +204,19 @@ public partial class SyntaxFactory
         );
     }
 
+    public static UsePassDeclarationSyntax UsePassDeclaration(SyntaxToken keyword, SyntaxToken passReference)
+    {
+        return (UsePassDeclarationSyntax)SyntaxFactoryInternal.UsePassDeclaration(
+            (SyntaxTokenInternal)keyword.Node!,
+            (SyntaxTokenInternal)passReference.Node!
+        ).CreateRed();
+    }
+
+    public static UsePassDeclarationSyntax UsePassDeclaration(string passReference)
+    {
+        return UsePassDeclaration(Token(SyntaxKind.UsePassKeyword), Literal(passReference));
+    }
+
     public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
     {
         return (CommandDeclarationSyntax)SyntaxFactoryInternal.CommandDeclaration(

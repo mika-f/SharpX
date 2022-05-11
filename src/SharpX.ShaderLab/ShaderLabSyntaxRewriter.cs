@@ -136,6 +136,14 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitUsePassDeclaration(UsePassDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.PassReference)
+        );
+    }
+
     public override SyntaxNode? VisitCommandDeclaration(CommandDeclarationSyntax node)
     {
         return node.Update(

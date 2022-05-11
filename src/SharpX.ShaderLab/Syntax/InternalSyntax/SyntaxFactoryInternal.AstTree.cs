@@ -188,6 +188,16 @@ internal partial class SyntaxFactoryInternal
         return new GrabPassDeclarationSyntaxInternal(SyntaxKind.GrabPassDeclaration, keyword, openBraceToken, identifier, tags, name, closeBraceToken);
     }
 
+    public static UsePassDeclarationSyntaxInternal UsePassDeclaration(SyntaxTokenInternal keyword, SyntaxTokenInternal passReference)
+    {
+        if (keyword.Kind != SyntaxKind.UsePassKeyword)
+            throw new ArgumentException(nameof(keyword));
+        if (passReference.Kind != SyntaxKind.StringLiteralToken)
+            throw new ArgumentException(nameof(passReference));
+
+        return new UsePassDeclarationSyntaxInternal(SyntaxKind.UsePassDeclaration, keyword, passReference);
+    }
+
     public static CommandDeclarationSyntaxInternal CommandDeclaration(SyntaxTokenInternal keyword, SeparatedSyntaxListInternal<IdentifierNameSyntaxInternal> arguments)
     {
         if (keyword.Kind != SyntaxKind.IdentifierToken)
