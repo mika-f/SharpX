@@ -152,6 +152,16 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitStencilDeclaration(StencilDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.OpenBraceToken),
+            VisitList(node.Commands),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
+
     public override SyntaxNode? VisitNameDeclaration(NameDeclarationSyntax node)
     {
         return node.Update(
@@ -194,6 +204,13 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
             VisitToken(node.CustomEditorKeyword),
             VisitToken(node.FullyQualifiedInspectorName)
         );
+    }
+
+    public virtual SyntaxToken? VisitToken(SyntaxToken? token)
+    {
+        if (token == null)
+            return null;
+        return VisitToken(token.Value);
     }
 
     public virtual SyntaxToken VisitToken(SyntaxToken token)

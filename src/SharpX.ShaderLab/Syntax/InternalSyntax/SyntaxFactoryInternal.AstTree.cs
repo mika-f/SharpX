@@ -206,6 +206,18 @@ internal partial class SyntaxFactoryInternal
         return new CommandDeclarationSyntaxInternal(SyntaxKind.CommandDeclaration, keyword, arguments.Node!);
     }
 
+    public static StencilDeclarationSyntaxInternal StencilDeclaration(SyntaxTokenInternal keyword, SyntaxTokenInternal openBraceToken, SyntaxListInternal<CommandDeclarationSyntaxInternal> commands, SyntaxTokenInternal closeBraceToken)
+    {
+        if (keyword.Kind != SyntaxKind.StencilKeyword)
+            throw new ArgumentException(nameof(keyword));
+        if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
+            throw new ArgumentException(nameof(openBraceToken));
+        if (closeBraceToken.Kind != SyntaxKind.CloseBraceToken)
+            throw new ArgumentException(nameof(closeBraceToken));
+
+        return new StencilDeclarationSyntaxInternal(SyntaxKind.StencilDeclaration, keyword, openBraceToken, commands.Node!, closeBraceToken);
+    }
+
     public static NameDeclarationSyntaxInternal NameDeclaration(SyntaxTokenInternal keyword, SyntaxTokenInternal name)
     {
         if (keyword.Kind != SyntaxKind.NameKeyword)

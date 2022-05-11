@@ -93,6 +93,12 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+
+    public virtual TResult? VisitStencilDeclaration(StencilDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     public virtual TResult? VisitNameDeclaration(NameDeclarationSyntax node)
     {
         return DefaultVisit(node);

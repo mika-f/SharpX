@@ -225,6 +225,21 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static StencilDeclarationSyntax StencilDeclaration(SyntaxToken keyword, SyntaxToken openBraceToken, SyntaxList<CommandDeclarationSyntax> commands, SyntaxToken closeBraceToken)
+    {
+        return (StencilDeclarationSyntax)SyntaxFactoryInternal.StencilDeclaration(
+            (SyntaxTokenInternal)keyword.Node!,
+            (SyntaxTokenInternal)openBraceToken.Node!,
+            commands.Node.ToGreenList<CommandDeclarationSyntaxInternal>(),
+            (SyntaxTokenInternal)closeBraceToken.Node!
+        ).CreateRed();
+    }
+
+    public static StencilDeclarationSyntax StencilDeclaration(params CommandDeclarationSyntax[] commands)
+    {
+        return StencilDeclaration(Token(SyntaxKind.StencilKeyword), Token(SyntaxKind.OpenBraceToken), List(commands), Token(SyntaxKind.CloseBraceToken));
+    }
+
     public static NameDeclarationSyntax NameDeclaration(SyntaxToken keyword, SyntaxToken name)
     {
         return (NameDeclarationSyntax)SyntaxFactoryInternal.NameDeclaration(
