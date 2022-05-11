@@ -123,6 +123,17 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitPassDeclaration(PassDeclarationSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.Keyword),
+            VisitToken(node.OpenBraceToken),
+            (TagsDeclarationSyntax?)Visit(node.Tags),
+            VisitList(node.Commands),
+            (CgProgramDeclarationSyntax?)Visit(node.CgProgram) ?? throw new ArgumentNullException(),
+            VisitToken(node.CloseBraceToken)
+        );
+    }
 
     public override SyntaxNode? VisitGrabPassDeclaration(GrabPassDeclarationSyntax node)
     {
