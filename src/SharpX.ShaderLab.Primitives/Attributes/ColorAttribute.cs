@@ -5,8 +5,5 @@
 
 namespace SharpX.ShaderLab.Primitives.Attributes;
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public sealed class RangeAttribute : Attribute
-{
-    public RangeAttribute(float min, float max) { }
-}
+[AttributeUsage(AttributeTargets.Property)]
+public class ColorAttribute : Attribute { }

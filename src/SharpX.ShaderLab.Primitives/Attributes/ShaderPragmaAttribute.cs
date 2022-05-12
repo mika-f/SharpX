@@ -3,13 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using System;
+namespace SharpX.ShaderLab.Primitives.Attributes;
 
-namespace SharpX.ShaderLab.Library.Attributes
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+public class ShaderPragmaAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-    public class ShaderPragmaAttribute : Attribute
-    {
-        public ShaderPragmaAttribute(string key, string value) { }
-    }
+    public ShaderPragmaAttribute(string key, string value) { }
 }

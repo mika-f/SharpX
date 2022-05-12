@@ -3,51 +3,48 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using System;
+namespace SharpX.ShaderLab.Primitives.Enum;
 
-namespace SharpX.ShaderLab.Library.Enum
+[Flags]
+public enum ShaderFeatures
 {
-    [Flags]
-    public enum ShaderFeatures
-    {
-        Derivatives,
+    Derivatives,
 
-        Interpolators10,
+    Interpolators10,
 
-        Interpolators15,
+    Interpolators15,
 
-        Interpolators32,
+    Interpolators32,
 
-        SampleLod,
+    SampleLod,
 
-        FragCoord,
+    FragCoord,
 
-        MultipleRenderTarget4,
+    MultipleRenderTarget4,
 
-        MultipleRenderTarget8,
+    MultipleRenderTarget8,
 
-        Integers,
+    Integers,
 
-        Array2D,
+    Array2D,
 
-        ArrayCube,
+    ArrayCube,
 
-        Instancing,
+    Instancing,
 
-        Geometry,
+    Geometry,
 
-        Compute,
+    Compute,
 
-        RandomWrite,
+    RandomWrite,
 
-        TessellationHardware,
+    TessellationHardware,
 
-        Tessellation,
+    Tessellation,
 
-        MultiSamplingTextureAccess,
+    MultiSamplingTextureAccess,
 
-        SparseTexture,
+    SparseTexture,
 
-        FrameBufferFetch
-    }
+    FrameBufferFetch
 }

@@ -1,25 +1,29 @@
-﻿namespace SharpX.ShaderLab.Library.Enum
+﻿// ------------------------------------------------------------------------------------------
+//  Copyright (c) Natsuneko. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
+// ------------------------------------------------------------------------------------------
+
+namespace SharpX.ShaderLab.Primitives.Enum;
+
+public enum ShaderTags
 {
-    public enum ShaderTags
-    {
-        Queue,
+    Queue,
 
-        RenderType,
+    RenderType,
 
-        DisableBatching,
+    DisableBatching,
 
-        ForceNoShadowCasting,
+    ForceNoShadowCasting,
 
-        IgnoreProjector,
+    IgnoreProjector,
 
-        CanUseSpriteAtlas,
+    CanUseSpriteAtlas,
 
-        PreviewType,
+    PreviewType,
 
-        LightMode,
+    LightMode,
 
-        PassFlags,
+    PassFlags,
 
-        RequireOptions
-    }
+    RequireOptions
 }
