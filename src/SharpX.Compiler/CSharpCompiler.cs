@@ -23,24 +23,24 @@ public class CSharpCompiler : IDisposable
 {
     private readonly List<IErrorMessage> _errors;
     private readonly CSharpCompilerOptions _options;
-    private SharpXPluginHost? _host;
+    private List<SharpXPluginHost> _hosts;
     private BackendRegistry? _registry;
     private SharpXWorkspace? _workspace;
 
     public IReadOnlyCollection<IErrorMessage> Errors => _errors.AsReadOnly();
 
-    private CSharpCompiler(CSharpCompilerOptions options, SharpXWorkspace? workspace = null, SharpXPluginHost? host = null, BackendRegistry? registry = null)
+    private CSharpCompiler(CSharpCompilerOptions options, List<SharpXPluginHost> hosts, SharpXWorkspace? workspace = null, BackendRegistry? registry = null)
     {
         _options = options;
         _workspace = workspace;
-        _host = host;
+        _hosts = hosts;
         _registry = registry;
         _errors = new List<IErrorMessage>();
     }
 
     public CSharpCompiler() : this(CSharpCompilerOptions.Default) { }
 
-    public CSharpCompiler(CSharpCompilerOptions options) : this(options, null) { }
+    public CSharpCompiler(CSharpCompilerOptions options) : this(options, new List<SharpXPluginHost>()) { }
 
     public void Dispose()
     {
@@ -49,7 +49,7 @@ public class CSharpCompiler : IDisposable
 
     public CSharpCompiler WithSources(List<string>? sources)
     {
-        return new CSharpCompiler(_options with { Sources = sources }, _workspace, _host, _registry);
+        return new CSharpCompiler(_options with { Sources = sources }, _hosts, _workspace, _registry);
     }
 
     public async Task<bool> LoadPluginsAsync(CancellationToken ct)
@@ -66,14 +66,12 @@ public class CSharpCompiler : IDisposable
 
     private async Task<bool> LoadPluginAtPath(string path)
     {
-        if (_host != null)
-            return true;
-
-        _host = new SharpXPluginHost(path);
+        var host = new SharpXPluginHost(path);
+        _hosts.Add(host);
 
         try
         {
-            var assembly = _host.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(path)));
+            var assembly = host.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(path)));
             foreach (var type in assembly.GetTypes())
                 switch (type)
                 {

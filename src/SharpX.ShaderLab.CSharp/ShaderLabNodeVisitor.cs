@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
+using SharpX.Core.Extensions;
 using SharpX.ShaderLab.Primitives.Attributes;
 using SharpX.ShaderLab.Primitives.Enum;
 using SharpX.ShaderLab.Syntax;
@@ -194,6 +195,9 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                     return null;
             }
         }
+
+        var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
+        var str = source?.ToFullString();
 
         return null;
     }

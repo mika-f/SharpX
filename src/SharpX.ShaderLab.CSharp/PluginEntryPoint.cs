@@ -14,7 +14,7 @@ public class PluginEntryPoint : IBackend
     public void EntryPoint(IBackendRegistry registry)
     {
         registry.RegisterBackendVisitor("ShaderLab", typeof(ShaderLabNodeVisitor), typeof(ShaderLabSyntaxNode), 0);
-        registry.RegisterReferences("ShaderLab", "./SharpX.ShaderLab.Primitives.dll");
+        registry.RegisterReferences("ShaderLab", "./SharpX.ShaderLab.Primitives.dll", "./SharpX.Hlsl.Primitives.dll");
         registry.RegisterExtensions("ShaderLab", _ => "shader");
     }
 }

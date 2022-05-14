@@ -34,4 +34,46 @@ public static class UnityInjection
 
     [Name("UNITY_MATRIX_IT_MV")]
     public static Matrix4x4<float> MatrixITMV { get; }
+
+    [Name("unity_ObjectToWorld")]
+    public static Matrix4x4<float> ObjectToWorld { get; }
+
+    [Name("unity_WorldToObject")]
+    public static Matrix4x4<float> WorldToObject { get; }
+
+    [Name("_WorldSpaceCameraPos")]
+    public static Vector3<float> WorldSpaceCameraPos { get; }
+
+    [Name("_ProjectionParams")]
+    public static Vector4<float> ProjectionParams { get; }
+
+    [Name("_ScreenParams")]
+    public static Vector4<float> ScreenParams { get; }
+
+    [Name("_ZBufferParams")]
+    public static Vector4<float> ZBufferParams { get; }
+
+    [Name("unity_OrthoParams")]
+    public static Vector4<float> OrthtoParams { get; }
+
+    [Name("unity_CameraProjection")]
+    public static Matrix4x4<float> CameraProjection { get; }
+
+    [Name("unity_CameraInvProjection")]
+    public static Matrix4x4<float> CameraInvProjection { get; }
+
+    [Name("unity_CameraWorldClipPlanes")]
+    public static Vector4<float> CameraWorldClipPanes { get; }
+
+    [Name("_Time")]
+    public static Vector4<float> Time { get; }
+
+    [Name("_SinTime")]
+    public static Vector4<float> SinTime { get; }
+
+    [Name("_CosTime")]
+    public static Vector4<float> CosTime { get; }
+
+    [Name("unity_DeltaTime")]
+    public static Vector4<float> DeltaTime { get; }
 }
