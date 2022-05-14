@@ -8,43 +8,43 @@ namespace SharpX.ShaderLab.Primitives.Enum;
 [Flags]
 public enum ShaderFeatures
 {
-    Derivatives,
+    Derivatives = 1,
 
-    Interpolators10,
+    Interpolators10 = 1 << 1,
 
-    Interpolators15,
+    Interpolators15 = 1 << 2,
 
-    Interpolators32,
+    Interpolators32 = 1 << 3,
 
-    SampleLod,
+    SampleLod = 1 << 4,
 
-    FragCoord,
+    FragCoord = 1 << 5,
 
-    MultipleRenderTarget4,
+    MultipleRenderTarget4 = 1 << 6,
 
-    MultipleRenderTarget8,
+    MultipleRenderTarget8 = 1 << 7,
 
-    Integers,
+    Integers = 1 << 8,
 
-    Array2D,
+    Array2D = 1 << 9,
 
-    ArrayCube,
+    ArrayCube = 1 << 10,
 
-    Instancing,
+    Instancing = 1 << 11,
 
-    Geometry,
+    Geometry = 1 << 12,
 
-    Compute,
+    Compute = 1 << 13,
 
-    RandomWrite,
+    RandomWrite = 1 << 14,
 
-    TessellationHardware,
+    TessellationHardware = 1 << 15,
 
-    Tessellation,
+    Tessellation = 1 << 16,
 
-    MultiSamplingTextureAccess,
+    MultiSamplingTextureAccess = 1 << 17,
 
-    SparseTexture,
+    SparseTexture = 1 << 18,
 
-    FrameBufferFetch
+    FrameBufferFetch = 1 << 19
 }
