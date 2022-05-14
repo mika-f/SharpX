@@ -7,6 +7,12 @@ namespace SharpX.ShaderLab.Syntax;
 
 internal static class SyntaxFacts
 {
+    public static bool IsKeywordKind(SyntaxKind kind)
+    {
+        return kind is >= SyntaxKind.CgIncludeKeyword and <= SyntaxKind.VectorKeyword;
+    }
+
+
     public static string GetText(SyntaxKind kind)
     {
         return kind switch
@@ -28,6 +34,7 @@ internal static class SyntaxFacts
             SyntaxKind.ColorKeyword => "Color",
             SyntaxKind.CustomEditorKeyword => "CustomEditor",
             SyntaxKind.EndCgKeyword => "ENDCG",
+            SyntaxKind.EndOfFileToken => "\r\n",
             SyntaxKind.FallbackKeyword => "Fallback",
             SyntaxKind.FloatKeyword => "Float",
             SyntaxKind.GrabPassKeyword => "GrabPass",
