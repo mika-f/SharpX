@@ -4,8 +4,9 @@
 // ------------------------------------------------------------------------------------------
 
 using SharpX.Core;
+using SharpX.ShaderLab.Syntax.InternalSyntax;
 
-namespace SharpX.ShaderLab.Syntax.InternalSyntax;
+namespace SharpX.ShaderLab.Syntax;
 
 public class NameDeclarationSyntax : BaseCommandDeclarationSyntax
 {
