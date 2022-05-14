@@ -134,7 +134,74 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             return null;
 
         // commands
+        var commands = ExtractCommands(node);
+
+        if (_subShaders.Contains(symbol))
+        {
+            _subShaders.Remove(symbol);
+
+            var passes = new List<BasePassDeclarationSyntax>();
+
+            if (HasShaderPassAttribute(node))
+                foreach (var t in GetAttributeData(node, typeof(ShaderPassAttribute))[0].Where(w => w != null).OfType<INamedTypeSymbol>())
+                    _passes.Add(t);
+
+            var members = node.Members.Select(Visit)
+                              .Where(w => w != null)
+                              .ToList();
+
+            if (members.OfType<BasePassDeclarationSyntax>().Any())
+                passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
+
+            CgIncludeDeclarationSyntax? cgInclude = null;
+
+
+            return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
+        }
+
+        if (_passes.Contains(symbol))
+        {
+            _passes.Remove(symbol);
+
+            var stencil = ExtractStencil(node);
+            if (stencil != null)
+                commands.Add(stencil);
+
+            switch (true)
+            {
+                case { } when HasGrabPassAttribute(node):
+                {
+                    var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
+                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                    if (identifier.Length == 1)
+                        return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                    return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                }
+
+                case { } when HasRenderPassAttribute(node):
+                {
+                    var members = node.Members.Select(Visit)
+                                      .Where(w => w != null)
+                                      .ToList();
+
+
+                    var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a"));
+                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                    return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
+                }
+
+                default:
+                    return null;
+            }
+        }
+
+        return null;
+    }
+
+    private List<BaseCommandDeclarationSyntax> ExtractCommands(ClassDeclarationSyntax node)
+    {
         var commands = new List<BaseCommandDeclarationSyntax>();
+
         if (HasAttribute(node, typeof(BlendAttribute)))
         {
             var args = GetAttributeData(node, typeof(BlendAttribute));
@@ -167,63 +234,70 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             commands.Add(SyntaxFactory.CommandDeclaration("ZWrite", parameter!));
         }
 
+        return commands;
+    }
 
-        if (_subShaders.Contains(symbol))
+    private StencilDeclarationSyntax? ExtractStencil(ClassDeclarationSyntax node)
+    {
+        var commands = new List<CommandDeclarationSyntax>();
+
+        if (HasAttribute(node, typeof(StencilRefAttribute)))
         {
-            _subShaders.Remove(symbol);
+            var args = GetAttributeData(node, typeof(StencilRefAttribute));
+            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
 
-            var passes = new List<BasePassDeclarationSyntax>();
-
-            if (HasShaderPassAttribute(node))
-                foreach (var t in GetAttributeData(node, typeof(ShaderPassAttribute))[0].Where(w => w != null).OfType<INamedTypeSymbol>())
-                    _passes.Add(t);
-
-            var members = node.Members.Select(Visit)
-                              .Where(w => w != null)
-                              .ToList();
-
-            if (members.OfType<BasePassDeclarationSyntax>().Any())
-                passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
-
-            CgIncludeDeclarationSyntax? cgInclude = null;
-
-
-            return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
+            commands.Add(SyntaxFactory.CommandDeclaration("Ref", parameter!));
         }
 
-        if (_passes.Contains(symbol))
+        if (HasAttribute(node, typeof(StencilReadMaskAttribute)))
         {
-            _passes.Remove(symbol);
+            var args = GetAttributeData(node, typeof(StencilReadMaskAttribute));
+            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
 
-            switch (true)
-            {
-                case { } when HasGrabPassAttribute(node):
-                {
-                    var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
-                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                    if (identifier.Length == 1)
-                        return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
-                    return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
-                }
-
-                case { } when HasRenderPassAttribute(node):
-                {
-                    var members = node.Members.Select(Visit)
-                                      .Where(w => w != null)
-                                      .ToList();
-
-
-                    var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a"));
-                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                    return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
-                }
-
-                default:
-                    return null;
-            }
+            commands.Add(SyntaxFactory.CommandDeclaration("ReadMask", parameter!));
         }
 
-        return null;
+        if (HasAttribute(node, typeof(StencilWriteMaskAttribute)))
+        {
+            var args = GetAttributeData(node, typeof(StencilWriteMaskAttribute));
+            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
+
+            commands.Add(SyntaxFactory.CommandDeclaration("WriteMask", parameter!));
+        }
+
+        if (HasAttribute(node, typeof(StencilCompareAttribute)))
+        {
+            var args = GetAttributeData(node, typeof(StencilCompareAttribute));
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(CompareFunction), i) : args[0][0]!.ToString();
+
+            commands.Add(SyntaxFactory.CommandDeclaration("Comp", parameter!));
+        }
+
+        if (HasAttribute(node, typeof(StencilPassAttribute)))
+        {
+            var args = GetAttributeData(node, typeof(StencilPassAttribute));
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+
+            commands.Add(SyntaxFactory.CommandDeclaration("Pass", parameter!));
+        }
+
+        if (HasAttribute(node, typeof(StencilFailAttribute)))
+        {
+            var args = GetAttributeData(node, typeof(StencilFailAttribute));
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+
+            commands.Add(SyntaxFactory.CommandDeclaration("Fail", parameter!));
+        }
+
+        if (HasAttribute(node, typeof(StencilZFailAttribute)))
+        {
+            var args = GetAttributeData(node, typeof(StencilZFailAttribute));
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+
+            commands.Add(SyntaxFactory.CommandDeclaration("ZFail", parameter!));
+        }
+
+        return commands.Any() ? SyntaxFactory.StencilDeclaration(commands.ToArray()) : null;
     }
 
     #region Helpers
