@@ -252,6 +252,11 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
+    public static PassDeclarationSyntax PassDeclaration(TagsDeclarationSyntax? tags, SyntaxList<BaseCommandDeclarationSyntax> commands, CgProgramDeclarationSyntax cgProgram)
+    {
+        return PassDeclaration(Token(SyntaxKind.PassKeyword), Token(SyntaxKind.OpenBraceToken), tags, commands, cgProgram, Token(SyntaxKind.CloseBraceToken));
+    }
+
     public static GrabPassDeclarationSyntax GrabPassDeclaration(SyntaxToken keyword, SyntaxToken openBraceToken, SyntaxToken? identifier, TagsDeclarationSyntax? tags, NameDeclarationSyntax? name, SyntaxToken closeBraceToken)
     {
         return (GrabPassDeclarationSyntax)SyntaxFactoryInternal.GrabPassDeclaration(
@@ -268,7 +273,7 @@ public partial class SyntaxFactory
     {
         return GrabPassDeclaration(
             Token(SyntaxKind.GrabPassKeyword),
-            Token(SyntaxKind.OpenBracketToken),
+            Token(SyntaxKind.OpenBraceToken),
             identifier != null ? Identifier(identifier) : null,
             tags,
             name,
@@ -295,6 +300,11 @@ public partial class SyntaxFactory
             (SyntaxTokenInternal)keyword.Node!,
             arguments.Node.ToGreenSeparatedList<IdentifierNameSyntaxInternal>()
         ).CreateRed();
+    }
+
+    public static CommandDeclarationSyntax CommandDeclaration(string keyword, params string[] identifiers)
+    {
+        return CommandDeclaration(Identifier(keyword), SeparatedList(identifiers.Select(IdentifierName)));
     }
 
     public static StencilDeclarationSyntax StencilDeclaration(SyntaxToken keyword, SyntaxToken openBraceToken, SyntaxList<CommandDeclarationSyntax> commands, SyntaxToken closeBraceToken)

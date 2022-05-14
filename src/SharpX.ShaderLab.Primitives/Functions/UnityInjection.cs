@@ -3,12 +3,14 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
 
 namespace SharpX.ShaderLab.Primitives.Functions;
 
 [ExternalComponent]
+[Inline]
 public static class UnityInjection
 {
     [Name("UNITY_NEAR_CLIP_VALUE")]

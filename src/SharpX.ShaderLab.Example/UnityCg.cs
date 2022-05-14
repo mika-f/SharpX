@@ -3,12 +3,14 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
 
 namespace SharpX.ShaderLab.Example;
 
 [ExternalComponent]
+[Inline]
 internal static class UnityCg
 {
     public static extern Vector4<float> UnityObjectToClipPos(Vector4<float> a);

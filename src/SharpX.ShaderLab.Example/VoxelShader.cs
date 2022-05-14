@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
 using SharpX.ShaderLab.Primitives.Attributes;
@@ -10,9 +11,9 @@ using SharpX.ShaderLab.Primitives.Enum;
 
 namespace SharpX.ShaderLab.Example;
 
-[ExternalComponent]
 [ShaderName("NatsunekoLaboratory/SakuraShader/Avatars/Effects")]
 [SubShader(typeof(SubShader0))]
+[Inline]
 public class VoxelShader
 {
     [ShaderTag(ShaderTags.RenderType, RenderType.Opaque)]
