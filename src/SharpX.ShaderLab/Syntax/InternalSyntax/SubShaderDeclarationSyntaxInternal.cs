@@ -14,8 +14,8 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
-    private readonly GreenNode _commands;
-    private readonly GreenNode _passes;
+    private readonly GreenNode? _commands;
+    private readonly GreenNode? _passes;
 
     public SyntaxTokenInternal SubShaderKeyword { get; }
 
@@ -31,7 +31,7 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public SyntaxTokenInternal CloseBraceToken { get; }
 
-    public SubShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode commands, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode passes,
+    public SubShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode? commands, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? passes,
                                               SyntaxTokenInternal closeBraceToken) : base(kind)
     {
         SlotCount = 7;
@@ -48,8 +48,11 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             Tags = tags;
         }
 
-        AdjustWidth(commands);
-        _commands = commands;
+        if (commands != null)
+        {
+            AdjustWidth(commands);
+            _commands = commands;
+        }
 
         if (cgInclude != null)
         {
@@ -57,14 +60,17 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             CgInclude = cgInclude;
         }
 
-        AdjustWidth(passes);
-        _passes = passes;
+        if (passes != null)
+        {
+            AdjustWidth(passes);
+            _passes = passes;
+        }
 
         AdjustWidth(closeBraceToken);
         CloseBraceToken = closeBraceToken;
     }
 
-    public SubShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode commands, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode passes,
+    public SubShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode? commands, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? passes,
                                               SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 7;
@@ -81,8 +87,11 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             Tags = tags;
         }
 
-        AdjustWidth(commands);
-        _commands = commands;
+        if (commands != null)
+        {
+            AdjustWidth(commands);
+            _commands = commands;
+        }
 
         if (cgInclude != null)
         {
@@ -90,8 +99,12 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             CgInclude = cgInclude;
         }
 
-        AdjustWidth(passes);
-        _passes = passes;
+        if (passes != null)
+        {
+            AdjustWidth(passes);
+            _passes = passes;
+        }
+
 
         AdjustWidth(closeBraceToken);
         CloseBraceToken = closeBraceToken;

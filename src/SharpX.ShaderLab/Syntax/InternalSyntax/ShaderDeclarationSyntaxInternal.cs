@@ -14,7 +14,7 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
-    private readonly GreenNode _subShaders;
+    private readonly GreenNode? _subShaders;
 
     public SyntaxTokenInternal ShaderKeyword { get; }
 
@@ -34,9 +34,8 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public SyntaxTokenInternal CloseBraceToken { get; }
 
-    public ShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode subShaders,
-                                           FallbackDeclarationSyntaxInternal? fallback,
-                                           CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken) : base(kind)
+    public ShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? subShaders,
+                                           FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken) : base(kind)
     {
         SlotCount = 9;
 
@@ -61,8 +60,11 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             CgInclude = cgInclude;
         }
 
-        AdjustWidth(subShaders);
-        _subShaders = subShaders;
+        if (subShaders != null)
+        {
+            AdjustWidth(subShaders);
+            _subShaders = subShaders;
+        }
 
         if (fallback != null)
         {
@@ -80,7 +82,7 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public ShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode subShaders,
+    public ShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? subShaders,
                                            FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 9;
@@ -106,8 +108,11 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
             CgInclude = cgInclude;
         }
 
-        AdjustWidth(subShaders);
-        _subShaders = subShaders;
+        if (subShaders != null)
+        {
+            AdjustWidth(subShaders);
+            _subShaders = subShaders;
+        }
 
         if (fallback != null)
         {
