@@ -4,7 +4,7 @@ C# to **any language** Transpiler written in C#, powered by Roslyn.
 
 ## Supports
 
-- ShaderLab [planned]
+- ShaderLab [working]
 - HLSL [working]
 - GLSL [planned]
 - WebGL [planned]

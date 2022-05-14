@@ -40,7 +40,7 @@ public class SomeShader
     public class SubShader
     {
         [GrabPass("SomeGrabPass")]
-        [ShaderTags(ShaderTag.LightMode, LightNode.ForwardBase)]
+        [ShaderTags(ShaderTag.LightMode, LightMode.ForwardBase)]
         public class Pass1
         {
 
