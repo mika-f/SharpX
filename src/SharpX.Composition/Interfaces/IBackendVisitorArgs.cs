@@ -14,4 +14,6 @@ public interface IBackendVisitorArgs<out TResult> where TResult : SyntaxNode
     protected internal Func<Microsoft.CodeAnalysis.SyntaxNode?, TResult> Delegate { get; }
 
     SemanticModel SemanticModel { get; }
+
+    SyntaxNode? Invoke(string language, Microsoft.CodeAnalysis.SyntaxNode? syntaxNode);
 }

@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -21,7 +23,7 @@ internal class BackendContainer
 
     public Type ReturnType { get; }
 
-    public Func<SyntaxNode, string> ExtensionCallback { get; private set; }
+    public Func<SyntaxNode, string>? ExtensionCallback { get; private set; }
 
     public IReadOnlyCollection<string> References => _references.AsReadOnly();
 
@@ -43,6 +45,7 @@ internal class BackendContainer
         _references.AddRange(references);
     }
 
+    [MemberNotNull(nameof(ExtensionCallback))]
     public void AddExtensionCallback(Func<SyntaxNode, string> callback)
     {
         ExtensionCallback = callback;
@@ -50,17 +53,52 @@ internal class BackendContainer
 
     public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model)
     {
-        var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
-        var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }));
-
-        foreach (var visitor in _visitors)
+        try
         {
-            var visitorInstance = Activator.CreateInstance(visitor.Value, args);
-            register.Invoke(instance, new[] { visitorInstance });
+            var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
+            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }));
+
+            foreach (var visitor in _visitors)
+            {
+                var visitorInstance = Activator.CreateInstance(visitor.Value, args);
+                register.Invoke(instance, new[] { visitorInstance });
+            }
+
+
+            return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+        }
+        catch (Exception e)
+        {
+            if (Debugger.IsAttached)
+                Debugger.Break();
         }
 
+        return null;
+    }
 
-        return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model, Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?> invoker)
+    {
+        try
+        {
+            var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
+            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }), (language, node) => invoker.Invoke(language, node));
+
+            foreach (var visitor in _visitors)
+            {
+                var visitorInstance = Activator.CreateInstance(visitor.Value, args);
+                register.Invoke(instance, new[] { visitorInstance });
+            }
+
+
+            return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+        }
+        catch (Exception e)
+        {
+            if (Debugger.IsAttached)
+                Debugger.Break();
+        }
+
+        return null;
     }
 
     private (object, MethodInfo, MethodInfo) CreateRootSyntaxVisitorInstance()
@@ -82,7 +120,18 @@ internal class BackendContainer
         return (instance, register, visit);
     }
 
-    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit)
+    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit, Expression<Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?>>? invoker = default)
+    {
+        var activator = typeof(BackendVisitorArgs<>).MakeGenericType(ReturnType);
+        var instance = Activator.CreateInstance(activator, semanticModel, CreateDelegateLambda(visit), CreateInvokerLambda(invoker));
+
+        if (instance == null)
+            throw new InvalidOperationException($"failed to create the instance of BackendVisitorArgs<{ReturnType.FullName}>.");
+
+        return instance;
+    }
+
+    private Delegate CreateDelegateLambda(Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit)
     {
         var parameter = Expression.Parameter(typeof(Microsoft.CodeAnalysis.SyntaxNode));
         var invocation = Expression.Invoke(visit, parameter);
@@ -90,12 +139,20 @@ internal class BackendContainer
         var lambda = Expression.Lambda(cast, parameter);
         var @delegate = lambda.Compile();
 
-        var activator = typeof(BackendVisitorArgs<>).MakeGenericType(ReturnType);
-        var instance = Activator.CreateInstance(activator, semanticModel, @delegate);
+        return @delegate;
+    }
 
-        if (instance == null)
-            throw new InvalidOperationException($"failed to create the instance of BackendVisitorArgs<{ReturnType.FullName}>.");
+    private Delegate? CreateInvokerLambda(Expression<Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?>>? invoker)
+    {
+        if (invoker == null)
+            return null;
 
-        return instance;
+        var parameter1 = Expression.Parameter(typeof(string));
+        var parameter2 = Expression.Parameter(typeof(Microsoft.CodeAnalysis.SyntaxNode));
+        var invocation = Expression.Invoke(invoker, parameter1, parameter2);
+        var lambda = Expression.Lambda(invocation, parameter1, parameter2);
+        var @delegate = lambda.Compile();
+
+        return @delegate;
     }
 }

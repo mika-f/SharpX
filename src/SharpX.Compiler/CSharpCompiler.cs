@@ -124,7 +124,12 @@ public class CSharpCompiler : IDisposable
         if (!isSuccessful)
             return false;
 
-        isSuccessful &= await CompileCSharpSourcesAsync(container, ct);
+        isSuccessful &= await CompileCSharpSourcesAsync(container, (language, node, model) =>
+        {
+            if (node == null)
+                return default;
+            return _registry?.GetLanguageContainer(language)?.RunAsync(node, model);
+        }, ct);
         return isSuccessful;
     }
 
@@ -163,7 +168,7 @@ public class CSharpCompiler : IDisposable
         return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
     }
 
-    private async Task<bool> CompileCSharpSourcesAsync(BackendContainer container, CancellationToken ct)
+    private async Task<bool> CompileCSharpSourcesAsync(BackendContainer container, Func<string, SyntaxNode?, SemanticModel, Core.SyntaxNode?> invoker, CancellationToken ct)
     {
         var workspace = _workspace!;
 
@@ -181,13 +186,13 @@ public class CSharpCompiler : IDisposable
                     return;
                 }
 
-            var source = container.RunAsync(syntax, model);
+            var source = container.RunAsync(syntax, model, (language, node) => invoker.Invoke(language, node, model));
 
             lock (lockObj)
             {
                 if (source == null)
                 {
-                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, "root visitor returns null"));
+                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"root visitor returns null: {w.FilePath}"));
                 }
                 else
                 {
