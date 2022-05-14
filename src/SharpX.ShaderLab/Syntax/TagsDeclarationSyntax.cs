@@ -31,12 +31,12 @@ public class TagsDeclarationSyntax : ShaderLabSyntaxNode
 
     public override SyntaxNode? GetNodeSlot(int index)
     {
-        return index == 1 ? GetRed(ref _tags, 2) : null;
+        return index == 2 ? GetRed(ref _tags, 2) : null;
     }
 
     public override SyntaxNode? GetCachedSlot(int index)
     {
-        return index == 1 ? _tags : null;
+        return index == 2 ? _tags : null;
     }
 
     public TagsDeclarationSyntax Update(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)
