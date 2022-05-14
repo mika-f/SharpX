@@ -49,4 +49,27 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         return null; // returns HLSL source code that wrapped by ShaderLabSyntaxNode
     }
 
+    public override ShaderLabSyntaxNode? VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+    {
+        var members = node.Members.Select(Visit)
+                          .Where(w => w != null)
+                          .ToArray();
+
+        if (members.Length != 1)
+            return null;
+
+        return members[0];
+    }
+
+    public override ShaderLabSyntaxNode? VisitFileScopedNamespaceDeclaration(FileScopedNamespaceDeclarationSyntax node)
+    {
+        var members = node.Members.Select(Visit)
+                          .Where(w => w != null)
+                          .ToArray();
+
+        if (members.Length != 1)
+            return null;
+
+        return members[0];
+    }
 }
