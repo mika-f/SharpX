@@ -19,7 +19,7 @@ public abstract class ShaderLabSyntaxNode : SyntaxNode
 
     protected override SyntaxNode NormalizeWhitespaceCore(string indentation, string eol, bool elasticTrivia)
     {
-        throw new NotImplementedException();
+        return SyntaxNormalizer.Normalize(this, indentation, eol, elasticTrivia);
     }
 
     public abstract TResult? Accept<TResult>(ShaderLabSyntaxVisitor<TResult> visitor);
