@@ -12,7 +12,7 @@ internal partial class SyntaxFactoryInternal
 {
     public static IdentifierNameSyntaxInternal IdentifierName(SyntaxTokenInternal identifier)
     {
-        if (identifier.Kind != SyntaxKind.IdentifierName)
+        if (identifier.Kind != SyntaxKind.IdentifierToken)
             throw new ArgumentException(nameof(identifier));
 
         return new IdentifierNameSyntaxInternal(SyntaxKind.IdentifierName, identifier);
@@ -112,7 +112,7 @@ internal partial class SyntaxFactoryInternal
     {
         if (shaderKeyword.Kind != SyntaxKind.ShaderKeyword)
             throw new ArgumentException(nameof(shaderKeyword));
-        if (identifier.Kind != SyntaxKind.StringLiteralExpression)
+        if (identifier.Kind != SyntaxKind.StringLiteralToken)
             throw new ArgumentException(nameof(identifier));
         if (openBraceToken.Kind != SyntaxKind.OpenBraceToken)
             throw new ArgumentException(nameof(openBraceToken));
