@@ -532,6 +532,7 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             if (i.IsVar)
             {
                 var s = GetCurrentSymbol(i);
+                if (s is INamedTypeSymbol n)
                     return n.Name;
                 return s.ToDisplayString();
             }
