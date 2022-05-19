@@ -7,6 +7,7 @@ using SharpX.Hlsl.Primitives.Attributes;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
 using SharpX.ShaderLab.Primitives.Attributes;
+using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 using SharpX.ShaderLab.Primitives.Enum;
 
 namespace SharpX.ShaderLab.Example;
@@ -25,13 +26,7 @@ public class VoxelShader
         [RenderPass]
         [Culling(Culling.Off)]
         [ZWrite(ZWrite.On)]
-        [StencilRef($"[{nameof(StencilRef)}]")]
-        [StencilCompare($"[{nameof(StencilCmp)}]")]
-        [StencilPass($"[{nameof(StencilPass)}]")]
-        [StencilFail($"[{nameof(StencilFail)}]")]
-        [StencilZFail($"[{nameof(StencilZFail)}]")]
-        [StencilReadMask($"[{nameof(StencilReadMask)}]")]
-        [StencilWriteMask($"[{nameof(StencilWriteMask)}]")]
+        [Stencil(RefS = nameof(StencilRef), CompS = nameof(StencilCmp), PassS = nameof(StencilPass), FailS = nameof(StencilFail), ZFailS = nameof(StencilZFail), ReadMaskS = nameof(StencilReadMask), WriteMaskS = nameof(StencilWriteMask))]
         [ShaderFeature(ShaderFeatures.Geometry)]
         [ShaderVertex("")]
         [ShaderFragment("")]
@@ -40,13 +35,7 @@ public class VoxelShader
         [RenderPass]
         [Blend(BlendFunc.SrcAlpha, BlendFunc.OneMinusSrcAlpha)]
         [ZWrite(ZWrite.On)]
-        [StencilRef($"[{nameof(StencilRef)}]")]
-        [StencilCompare($"[{nameof(StencilCmp)}]")]
-        [StencilPass($"[{nameof(StencilPass)}]")]
-        [StencilFail($"[{nameof(StencilFail)}]")]
-        [StencilZFail($"[{nameof(StencilZFail)}]")]
-        [StencilReadMask($"[{nameof(StencilReadMask)}]")]
-        [StencilWriteMask($"[{nameof(StencilWriteMask)}]")]
+        [Stencil(RefS = nameof(StencilRef), CompS = nameof(StencilCmp), PassS = nameof(StencilPass), FailS = nameof(StencilFail), ZFailS = nameof(StencilZFail), ReadMaskS = nameof(StencilReadMask), WriteMaskS = nameof(StencilWriteMask))]
         [ShaderFeature(ShaderFeatures.Geometry)]
         [ShaderVertex("")]
         [ShaderFragment("")]

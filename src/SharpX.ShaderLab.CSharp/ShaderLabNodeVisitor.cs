@@ -313,6 +313,16 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             commands.Add(SyntaxFactory.CommandDeclaration("ZFail", parameter!));
         }
 
+        if (HasAttribute(node, typeof(StencilAttribute)))
+        {
+            var args = GetNamedAttributeData(node, typeof(StencilAttribute));
+            foreach (var arg in args)
+                if (arg.Key.EndsWith("S"))
+                    commands.Add(SyntaxFactory.CommandDeclaration(arg.Key.Substring(0, arg.Key.Length - 1), $"[{arg.Value}]"));
+                else
+                    commands.Add(SyntaxFactory.CommandDeclaration(arg.Key, arg.Value.ToString()!));
+        }
+
         return commands.Any() ? SyntaxFactory.StencilDeclaration(commands.ToArray()) : null;
     }
 
