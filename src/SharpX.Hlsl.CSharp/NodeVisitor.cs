@@ -532,6 +532,7 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             if (i.IsVar)
             {
                 var s = GetCurrentSymbol(i);
+                    return n.Name;
                 return s.ToDisplayString();
             }
 
@@ -571,9 +572,9 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return isArray ? attr.ConstructorArguments.SelectMany(w => w.Values.Select(v => v.ToString()!)).ToArray() : attr.ConstructorArguments.Select(w => w.Value?.ToString() ?? string.Empty).ToArray();
     }
 
-    private bool HasCBufferAttribute(MemberDeclarationSyntax member)
+    private bool HasCBufferAttribute(SyntaxNode node)
     {
-        return HasAttribute(member, typeof(CBufferAttribute));
+        return HasAttribute(node, typeof(CBufferAttribute));
     }
 
     private bool HasComponentAttribute(SyntaxNode node)
