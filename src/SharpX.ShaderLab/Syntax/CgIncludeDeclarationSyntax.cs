@@ -16,7 +16,7 @@ public class CgIncludeDeclarationSyntax : ShaderLabSyntaxNode
 
     public SyntaxNode Source => GetRed(ref _source, 1)!;
 
-    public SyntaxToken EndCgKeyword => new(this, ((CgIncludeDeclarationSyntaxInternal)Green).CgIncludeKeyword, GetChildPosition(2), GetChildIndex(2));
+    public SyntaxToken EndCgKeyword => new(this, ((CgIncludeDeclarationSyntaxInternal)Green).EndCgKeyword, GetChildPosition(2), GetChildIndex(2));
 
     internal CgIncludeDeclarationSyntax(ShaderLabSyntaxNodeInternal node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 
