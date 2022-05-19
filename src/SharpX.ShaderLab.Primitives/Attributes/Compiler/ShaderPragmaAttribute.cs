@@ -3,12 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class CustomEditorAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+public class ShaderPragmaAttribute : Attribute
 {
-    public CustomEditorAttribute(Type t) { }
-
-    public CustomEditorAttribute(string @ref) { }
+    public ShaderPragmaAttribute(string key, string value) { }
 }

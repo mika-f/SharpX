@@ -3,14 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.ShaderLab.Primitives.Enum;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
-
-[AttributeUsage(AttributeTargets.Class)]
-public class ZWriteAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class GrabPassAttribute : Attribute
 {
-    public ZWriteAttribute(ZWrite a) { }
+    public GrabPassAttribute() { }
 
-    public ZWriteAttribute(string a) { }
+    public GrabPassAttribute(string name) { }
 }

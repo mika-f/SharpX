@@ -3,10 +3,9 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.ShaderLab.Primitives.Attributes.Compiler;
+
 namespace SharpX.ShaderLab.Primitives.Attributes;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class ShaderProgramAttribute : Attribute
-{
-    public ShaderProgramAttribute(params Type[] refs) { }
-}
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+public class NormalAttribute : PropertyAttribute { }

@@ -3,12 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+using SharpX.ShaderLab.Primitives.Enum;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class StencilWriteMaskAttribute : Attribute
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ZTestAttribute : Attribute
 {
-    public StencilWriteMaskAttribute(int val) { }
-
-    public StencilWriteMaskAttribute(string val) { }
+    public ZTestAttribute(ZTestFunc a) { }
 }

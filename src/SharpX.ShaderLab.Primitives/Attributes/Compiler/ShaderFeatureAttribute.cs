@@ -5,12 +5,12 @@
 
 using SharpX.ShaderLab.Primitives.Enum;
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-[AttributeUsage(AttributeTargets.Class)]
-public class StencilZFailAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class ShaderFeatureAttribute : ShaderPragmaAttribute
 {
-    public StencilZFailAttribute(StencilOp val) { }
+    public ShaderFeatureAttribute(string value) : base("target", value) { }
 
-    public StencilZFailAttribute(string val) { }
+    public ShaderFeatureAttribute(ShaderFeatures value) : base("target", null) { }
 }

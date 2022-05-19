@@ -5,7 +5,7 @@
 
 using SharpX.ShaderLab.Primitives.Enum;
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class ShaderTagAttribute : Attribute

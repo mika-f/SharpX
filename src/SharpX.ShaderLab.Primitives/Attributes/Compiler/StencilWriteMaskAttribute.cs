@@ -3,10 +3,12 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public sealed class RangeAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class StencilWriteMaskAttribute : Attribute
 {
-    public RangeAttribute(float min, float max) { }
+    public StencilWriteMaskAttribute(int val) { }
+
+    public StencilWriteMaskAttribute(string val) { }
 }

@@ -3,7 +3,14 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+using SharpX.ShaderLab.Primitives.Enum;
 
-[AttributeUsage(AttributeTargets.Property)]
-public class ColorAttribute : Attribute { }
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ZWriteAttribute : Attribute
+{
+    public ZWriteAttribute(ZWrite a) { }
+
+    public ZWriteAttribute(string a) { }
+}

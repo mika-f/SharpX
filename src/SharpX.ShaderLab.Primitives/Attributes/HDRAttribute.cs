@@ -8,4 +8,5 @@ using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 namespace SharpX.ShaderLab.Primitives.Attributes;
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public sealed class HideInInspectorAttribute : PropertyAttribute { }
+// ReSharper disable once InconsistentNaming
+public class HDRAttribute : PropertyAttribute { }

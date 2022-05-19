@@ -3,10 +3,14 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+using SharpX.ShaderLab.Primitives.Enum;
 
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-public class ShaderPragmaAttribute : Attribute
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class StencilFailAttribute : Attribute
 {
-    public ShaderPragmaAttribute(string key, string value) { }
+    public StencilFailAttribute(StencilOp val) { }
+
+    public StencilFailAttribute(string val) { }
 }

@@ -3,12 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class FallbackAttribute : Attribute
+public sealed class ShaderVertexAttribute : ShaderPragmaAttribute
 {
-    public FallbackAttribute(Type t) { }
-
-    public FallbackAttribute(string @ref) { }
+    public ShaderVertexAttribute(string value) : base("vertex", value) { }
 }

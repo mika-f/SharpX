@@ -3,14 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.ShaderLab.Primitives.Enum;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-namespace SharpX.ShaderLab.Primitives.Attributes;
-
-[AttributeUsage(AttributeTargets.Class)]
-public class CullingAttribute : Attribute
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class SubShaderAttribute : Attribute
 {
-    public CullingAttribute(Culling a) { }
-
-    public CullingAttribute(string a) { }
+    public SubShaderAttribute(params Type[] refs) { }
 }
