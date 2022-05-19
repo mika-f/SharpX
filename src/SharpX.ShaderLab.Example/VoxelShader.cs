@@ -61,10 +61,12 @@ public class VoxelShader
     public static Sampler2D MainTexture { get; }
 
     [Name("MainTexture_ST")]
+    [DefaultValue("(1, 1, 1, 1)")]
     public static Vector4<float> MainTextureST { get; }
 
     [MainColor]
     [Color]
+    [DefaultValue("(1, 1, 1, 1)")]
     public static Vector4<float> Color { get; }
 
     #endregion

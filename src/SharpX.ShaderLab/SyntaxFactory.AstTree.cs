@@ -148,7 +148,7 @@ public partial class SyntaxFactory
 
     public static ShaderDeclarationSyntax ShaderDeclaration(string identifier, PropertiesDeclarationSyntax? properties, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<SubShaderDeclarationSyntax> subShaders, FallbackDeclarationSyntax? fallback, CustomEditorDeclarationSyntax? customEditor)
     {
-        return ShaderDeclaration(Token(SyntaxKind.ShaderKeyword), Literal(identifier), Token(SyntaxKind.OpenBraceToken), properties, cgInclude, subShaders, fallback, customEditor, Token(SyntaxKind.CloseBraceToken));
+        return ShaderDeclaration(Token(SyntaxKind.ShaderKeyword), StringLiteral(identifier), Token(SyntaxKind.OpenBraceToken), properties, cgInclude, subShaders, fallback, customEditor, Token(SyntaxKind.CloseBraceToken));
     }
 
     public static PropertiesDeclarationSyntax PropertiesDeclaration(SyntaxToken propertiesKeyword, SyntaxToken openBraceToken, SyntaxList<PropertyDeclarationSyntax> properties, SyntaxToken closeBraceToken)
@@ -180,9 +180,9 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
-    public static PropertyDeclarationSyntax PropertyDeclaration(string identifier, string displayName, SimpleNameSyntax type, ArgumentListSyntax? argumentList, EqualsValueClauseSyntax? @default)
+    public static PropertyDeclarationSyntax PropertyDeclaration(string identifier, string displayName, SimpleNameSyntax type, ArgumentListSyntax? argumentList, EqualsValueClauseSyntax @default)
     {
-        return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), Literal(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
+        return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), StringLiteral(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
     public static SubShaderDeclarationSyntax SubShaderDeclaration(SyntaxToken subShaderKeyword, SyntaxToken openBraceToken, TagsDeclarationSyntax? tags, SyntaxList<CommandDeclarationSyntax> commands, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<BasePassDeclarationSyntax> passes,
@@ -291,7 +291,7 @@ public partial class SyntaxFactory
 
     public static UsePassDeclarationSyntax UsePassDeclaration(string passReference)
     {
-        return UsePassDeclaration(Token(SyntaxKind.UsePassKeyword), Literal(passReference));
+        return UsePassDeclaration(Token(SyntaxKind.UsePassKeyword), StringLiteral(passReference));
     }
 
     public static CommandDeclarationSyntax CommandDeclaration(SyntaxToken keyword, SeparatedSyntaxList<IdentifierNameSyntax> arguments)
@@ -332,7 +332,7 @@ public partial class SyntaxFactory
 
     public static NameDeclarationSyntax NameDeclaration(string name)
     {
-        return NameDeclaration(Token(SyntaxKind.NameKeyword), Literal(name));
+        return NameDeclaration(Token(SyntaxKind.NameKeyword), StringLiteral(name));
     }
 
     public static TagsDeclarationSyntax TagsDeclaration(SyntaxToken tagsKeyword, SyntaxToken openBraceToken, SyntaxList<TagDeclarationSyntax> tags, SyntaxToken closeBraceToken)
@@ -361,7 +361,7 @@ public partial class SyntaxFactory
 
     public static TagDeclarationSyntax TagDeclaration(string key, string value)
     {
-        return TagDeclaration(Literal(key), Token(SyntaxKind.EqualsToken), Literal(value));
+        return TagDeclaration(StringLiteral(key), Token(SyntaxKind.EqualsToken), StringLiteral(value));
     }
 
     public static FallbackDeclarationSyntax FallbackDeclaration(SyntaxToken fallbackKeyword, SyntaxToken shaderNameOrOffKeyword)
@@ -379,7 +379,7 @@ public partial class SyntaxFactory
 
     public static FallbackDeclarationSyntax FallbackDeclaration(string shaderName)
     {
-        return FallbackDeclaration(Literal(shaderName));
+        return FallbackDeclaration(StringLiteral(shaderName));
     }
 
     public static FallbackDeclarationSyntax FallbackDeclaration()
@@ -402,7 +402,7 @@ public partial class SyntaxFactory
 
     public static CustomEditorDeclarationSyntax CustomEditorDeclaration(string fullyQualifiedInspectorName)
     {
-        return CustomEditorDeclaration(Literal(fullyQualifiedInspectorName));
+        return CustomEditorDeclaration(StringLiteral(fullyQualifiedInspectorName));
     }
 
     public static HlslSourceSyntax HlslSource(SyntaxList<SyntaxNode> sources)

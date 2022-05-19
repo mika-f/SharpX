@@ -312,7 +312,7 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
         if (IsWord(currentKind) && IsWord(nextKind))
             return true;
 
-        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is null)
+        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is null or PropertyDeclarationSyntax)
             return true;
 
         if (currentToken.Width > 1 && nextToken.Width > 1)
@@ -410,6 +410,9 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
                 return nextToken.Parent is AttributeListSyntax ? 1 : 0;
         }
 
+        if (currentToken.Parent is ExpressionSyntax && currentToken.Parent.Parent is EqualsValueClauseSyntax)
+            return 1;
+
         return 0;
     }
 
@@ -422,6 +425,8 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
     // ReSharper disable once UnusedParameter.Local
     private static int LineBreaksAfterOpenBrace(SyntaxToken currentToken, SyntaxToken nextToken)
     {
+        if (currentToken.Parent is TextureLiteralExpressionSyntax)
+            return 0;
         return 1;
     }
 
@@ -440,7 +445,7 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
                 return 1;
 
             default:
-                return 2;
+                return currentToken.Parent is not TextureLiteralExpressionSyntax ? 2 : 1;
         }
     }
 
@@ -498,7 +503,7 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
                 return 0;
 
             var parentDepth = GetDeclarationDepth(node.Parent);
-            if (node.Parent is ShaderDeclarationSyntax or SubShaderDeclarationSyntax or TagsDeclarationSyntax or BasePassDeclarationSyntax or StencilDeclarationSyntax)
+            if (node.Parent is ShaderDeclarationSyntax or SubShaderDeclarationSyntax or TagsDeclarationSyntax or BasePassDeclarationSyntax or StencilDeclarationSyntax or PropertiesDeclarationSyntax)
                 return parentDepth + 1;
             return parentDepth;
         }

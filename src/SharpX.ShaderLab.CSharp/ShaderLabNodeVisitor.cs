@@ -9,11 +9,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
 using SharpX.Core.Extensions;
+using SharpX.Hlsl.Primitives.Attributes.Compiler;
+using SharpX.Hlsl.Primitives.Types;
 using SharpX.ShaderLab.Primitives.Attributes;
 using SharpX.ShaderLab.Primitives.Enum;
 using SharpX.ShaderLab.Syntax;
 
 using CompilationUnitSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax;
+using ExpressionSyntax = SharpX.ShaderLab.Syntax.ExpressionSyntax;
+using PropertyDeclarationSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax;
 
 namespace SharpX.ShaderLab.CSharp;
 
@@ -89,15 +93,23 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 foreach (var t in GetAttributeData(node, typeof(SubShaderAttribute))[0].Where(w => w != null).OfType<INamedTypeSymbol>())
                     _subShaders.Add(t);
 
-                var members = node.Members.Select(Visit)
+                var shaders = node.Members.Select(Visit)
                                   .Where(w => w != null)
                                   .OfType<SubShaderDeclarationSyntax>()
                                   .ToArray();
 
-                subShaders.AddRange(members);
+                subShaders.AddRange(shaders);
             }
 
-            return SyntaxFactory.ShaderDeclaration(name, null, null, SyntaxFactory.List(subShaders), null, null);
+            var members = node.Members.Select(Visit)
+                              .Where(w => w != null)
+                              .OfType<Syntax.PropertyDeclarationSyntax>()
+                              .ToArray();
+
+            var properties = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(members) : null;
+
+
+            return SyntaxFactory.ShaderDeclaration(name, properties, null, SyntaxFactory.List(subShaders), null, null);
         }
 
         // subshader and pass
@@ -304,6 +316,87 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         return commands.Any() ? SyntaxFactory.StencilDeclaration(commands.ToArray()) : null;
     }
 
+    public override ShaderLabSyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+    {
+        if (!node.Modifiers.Any(Microsoft.CodeAnalysis.CSharp.SyntaxKind.StaticKeyword))
+            return null;
+
+        var displayName = node.Identifier.ToFullString().Trim();
+        var identifier = HasAttribute(node, typeof(NameAttribute)) ? GetAttributeData(node, typeof(NameAttribute))[0][0]!.ToString()! : displayName;
+        var n = GetUnityDeclaredTypeName(node);
+
+        if (n == null)
+            return null;
+
+        var t = SyntaxFactory.IdentifierName(n);
+        var @default = SyntaxFactory.EqualsValueClause(GetUnityDeclaredDefaultValue(n, node));
+
+        return SyntaxFactory.PropertyDeclaration(identifier, displayName, t, null, @default);
+    }
+
+    private string? GetUnityDeclaredTypeName(PropertyDeclarationSyntax node)
+    {
+        var t = GetDeclarationSymbol(node.Type);
+        if (t == null)
+            return null;
+
+        if (t.Equals(GetSymbol(typeof(Sampler2D)), SymbolEqualityComparer.Default))
+            return "2D";
+        if (t.Equals(GetSymbol(typeof(Sampler3D)), SymbolEqualityComparer.Default))
+            return "3D";
+        if (t.Equals(GetSymbol(typeof(SamplerCUBE)), SymbolEqualityComparer.Default))
+            return "CUBE";
+
+        if (t.Equals(GetSymbol(typeof(Vector4<>)), SymbolEqualityComparer.Default))
+        {
+            if (HasAttribute(node, typeof(ColorAttribute)))
+                return "Color";
+            return "Vector";
+        }
+
+        if (t.Equals(GetSymbol(typeof(int)), SymbolEqualityComparer.Default))
+        {
+            if (HasAttribute(node, typeof(RangeAttribute)))
+            {
+                var args = GetAttributeData(node, typeof(RangeAttribute));
+                return $"Range({args[0][0]}, {args[1][0]})";
+            }
+
+            return "Int";
+        }
+
+        if (t.Equals(GetSymbol(typeof(float)), SymbolEqualityComparer.Default))
+        {
+            if (HasAttribute(node, typeof(RangeAttribute)))
+            {
+                var args = GetAttributeData(node, typeof(RangeAttribute));
+                return $"Range({args[0][0]}, {args[1][0]})";
+            }
+
+            return "Float";
+        }
+
+        return null;
+    }
+
+    private ExpressionSyntax GetUnityDeclaredDefaultValue(string t, PropertyDeclarationSyntax node)
+    {
+        var @default = HasAttribute(node, typeof(DefaultValueAttribute)) ? GetAttributeData(node, typeof(DefaultValueAttribute))[0][0]!.ToString()! : "";
+
+        return t switch
+        {
+            "2D" => SyntaxFactory.TextureLiteralExpression(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.StringLiteral(@default))),
+            "3d" => SyntaxFactory.TextureLiteralExpression(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.StringLiteral(@default))),
+            "CUBE" => SyntaxFactory.TextureLiteralExpression(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.StringLiteral(@default))),
+            "Color" => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(@default)),
+            "Vector" => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(@default)),
+            "Int" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
+            "Float" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
+            _ when t.StartsWith("Range") => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
     #region Helpers
 
     #region Attributes
@@ -384,6 +477,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         var s = _args.SemanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
         var attrs = isReturnAttr && decl is IMethodSymbol m ? m.GetReturnTypeAttributes() : decl.GetAttributes();
         return attrs.Any(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
+    }
+
+    private ISymbol? GetSymbol(Type t)
+    {
+        return _args.SemanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
     }
 
     private ISymbol? GetCurrentSymbol(SyntaxNode node)
