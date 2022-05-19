@@ -384,8 +384,11 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
             case SyntaxKind.CgProgramKeyword:
                 return 1;
 
-            case SyntaxKind.EndCgKeyword:
+            case SyntaxKind.CgIncludeKeyword:
                 return 1;
+
+            case SyntaxKind.EndCgKeyword:
+                return 2;
 
             case SyntaxKind.IdentifierToken:
                 if (currentToken.Parent?.Parent is CommandDeclarationSyntax command && command.Arguments.Last() == currentToken.Parent)

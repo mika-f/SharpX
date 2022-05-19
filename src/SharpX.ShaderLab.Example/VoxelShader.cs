@@ -50,7 +50,7 @@ public class VoxelShader
     public static Sampler2D MainTexture { get; }
 
     [Name("MainTexture_ST")]
-    [DefaultValue("(1, 1, 1, 1)")]
+    [OnlyDeclaration]
     public static Vector4<float> MainTextureST { get; }
 
     [MainColor]
@@ -153,28 +153,35 @@ public class VoxelShader
     #region Stencil
 
     [DefaultValue(0)]
+    [OnlyProperty]
     public static int StencilRef { get; }
 
     [Enum(typeof(CompareFunction))]
     [DefaultValue(CompareFunction.Disabled)]
+    [OnlyProperty]
     public static CompareFunction StencilCmp { get; }
 
     [Enum(typeof(StencilOp))]
     [DefaultValue(StencilOp.Keep)]
+    [OnlyProperty]
     public static StencilOp StencilPass { get; }
 
     [Enum(typeof(StencilOp))]
     [DefaultValue(StencilOp.Keep)]
+    [OnlyProperty]
     public static StencilOp StencilFail { get; }
 
     [Enum(typeof(StencilOp))]
     [DefaultValue(StencilOp.Keep)]
+    [OnlyProperty]
     public static StencilOp StencilZFail { get; }
 
     [DefaultValue(0)]
+    [OnlyProperty]
     public static int StencilReadMask { get; }
 
     [DefaultValue(0)]
+    [OnlyProperty]
     public static int StencilWriteMask { get; }
 
     #endregion
@@ -182,9 +189,11 @@ public class VoxelShader
     #region Meta
 
     [HideInInspector]
+    [OnlyProperty]
     public static int FoldoutStatus1 { get; }
 
     [HideInInspector]
+    [OnlyProperty]
     public static int FoldoutStatus2 { get; }
 
     #endregion

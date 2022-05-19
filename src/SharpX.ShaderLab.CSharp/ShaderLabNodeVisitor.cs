@@ -11,12 +11,14 @@ using SharpX.Composition.Interfaces;
 using SharpX.Core.Extensions;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
-using SharpX.ShaderLab.Primitives.Attributes;
+using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 using SharpX.ShaderLab.Primitives.Enum;
 using SharpX.ShaderLab.Syntax;
 
+using AttributeSyntax = SharpX.ShaderLab.Syntax.AttributeSyntax;
 using CompilationUnitSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUnitSyntax;
 using ExpressionSyntax = SharpX.ShaderLab.Syntax.ExpressionSyntax;
+using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using PropertyDeclarationSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax;
 
 namespace SharpX.ShaderLab.CSharp;
@@ -26,12 +28,14 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
     private readonly IBackendVisitorArgs<ShaderLabSyntaxNode> _args;
     private readonly HashSet<INamedTypeSymbol> _subShaders;
     private readonly HashSet<INamedTypeSymbol> _passes;
+    private readonly List<FieldDeclarationSyntax> _globalFields;
 
     public ShaderLabNodeVisitor(IBackendVisitorArgs<ShaderLabSyntaxNode> args) : base(args)
     {
         _args = args;
         _subShaders = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
         _passes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+        _globalFields = new List<FieldDeclarationSyntax>();
     }
 
     public override ShaderLabSyntaxNode? DefaultVisit(SyntaxNode node)
@@ -101,6 +105,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 subShaders.AddRange(shaders);
             }
 
+            _globalFields.Clear();
             var members = node.Members.Select(Visit)
                               .Where(w => w != null)
                               .OfType<Syntax.PropertyDeclarationSyntax>()
@@ -108,8 +113,19 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
             var properties = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(members) : null;
 
+            var sources = new List<Core.SyntaxNode>();
 
-            return SyntaxFactory.ShaderDeclaration(name, properties, null, SyntaxFactory.List(subShaders), null, null);
+            CgIncludeDeclarationSyntax? cgInclude = null;
+            if (sources.Count > 0 || _globalFields.Count > 0)
+            {
+                sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
+                _globalFields.Clear();
+
+                var includeSource = SyntaxFactory.HlslSource(SyntaxFactory.List(sources));
+                cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
+            }
+
+            return SyntaxFactory.ShaderDeclaration(name, properties, cgInclude, SyntaxFactory.List(subShaders), null, null);
         }
 
         // subshader and pass
@@ -333,13 +349,14 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
         var displayName = node.Identifier.ToFullString().Trim();
         var identifier = HasAttribute(node, typeof(NameAttribute)) ? GetAttributeData(node, typeof(NameAttribute))[0][0]!.ToString()! : displayName;
-        var n = GetUnityDeclaredTypeName(node);
+        var ut = GetUnityDeclaredTypeName(node);
 
-        if (n == null)
+        if (ut == null)
             return null;
 
-        var t = SyntaxFactory.IdentifierName(n);
-        var @default = SyntaxFactory.EqualsValueClause(GetUnityDeclaredDefaultValue(n, node));
+        var t = SyntaxFactory.IdentifierName(ut);
+        var @default = SyntaxFactory.EqualsValueClause(GetUnityDeclaredDefaultValue(ut, node));
+
         var attributeList = new List<AttributeSyntax>();
         var attributes = GetAttributes(node);
         if (attributes.Any(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
@@ -352,6 +369,18 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             }
 
         var decl = SyntaxFactory.PropertyDeclaration(attributeList.Count > 0 ? SyntaxFactory.AttributeList(attributeList.ToArray()) : null, identifier, displayName, t, null, @default);
+
+        if (HasAttribute(node, typeof(OnlyPropertyAttribute)))
+            return decl;
+
+        var ht = GetHlslType(ut);
+        if (ht.StartsWith("MACRO:"))
+            _globalFields.Add(Hlsl.SyntaxFactory.FieldDeclaration(Hlsl.SyntaxFactory.IdentifierName(""), Hlsl.SyntaxFactory.Identifier(ht.Replace("MACRO:", "").Replace("&s", identifier)))); // workaround for use MACRO in field declaration
+        else
+            _globalFields.Add(Hlsl.SyntaxFactory.FieldDeclaration(Hlsl.SyntaxFactory.IdentifierName(ht), Hlsl.SyntaxFactory.Identifier(identifier)));
+
+        if (HasAttribute(node, typeof(OnlyDeclarationAttribute)))
+            return null;
 
         return decl;
     }
@@ -399,6 +428,22 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         }
 
         return null;
+    }
+
+    private string GetHlslType(string t)
+    {
+        return t switch
+        {
+            "2D" => "MACRO:UNITY_DECLARE_TEX2D(&s)",
+            "3D" => "MACRO:UNITY_DECLARE_TEX3D(&s)",
+            "CUBE" => "MACRO:UNITY_DECLARE_TEXCUBE(&s)",
+            "Color" => "float4",
+            "Vector" => "float4",
+            "Int" => "int",
+            "Float" => "float",
+            _ when t.StartsWith("Range") => "float",
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     private ExpressionSyntax GetUnityDeclaredDefaultValue(string t, PropertyDeclarationSyntax node)
@@ -485,6 +530,30 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         }).ToList();
     }
 
+    private List<KeyValuePair<string, object>> GetNamedAttributeData(SyntaxNode node, Type t)
+    {
+        var decl = GetDeclarationSymbol(node);
+        if (decl == null)
+            return new List<KeyValuePair<string, object>>();
+        return GetNamedAttributeData(decl, t);
+    }
+
+    private List<KeyValuePair<string, object>> GetNamedAttributeData(ISymbol decl, Type t)
+    {
+        var s = _args.SemanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
+        var attr = decl.GetAttributes().FirstOrDefault(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
+        if (attr == null)
+            return new List<KeyValuePair<string, object>>();
+
+        return attr.NamedArguments.Select(w =>
+        {
+            var key = w.Key;
+            var value = w.Value.Kind == TypedConstantKind.Array ? w.Value.Values : w.Value.Value!;
+
+            return new KeyValuePair<string, object>(key, value);
+        }).ToList();
+    }
+
     private bool HasAttribute(SyntaxNode node, Type t, bool isReturnAttr = false)
     {
         var decl = GetDeclarationSymbol(node);
@@ -499,6 +568,19 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         var s = _args.SemanticModel.Compilation.GetTypeByMetadataName(t.FullName ?? throw new ArgumentNullException());
         var attrs = isReturnAttr && decl is IMethodSymbol m ? m.GetReturnTypeAttributes() : decl.GetAttributes();
         return attrs.Any(w => w.AttributeClass?.Equals(s, SymbolEqualityComparer.Default) == true);
+    }
+
+    private List<AttributeData> GetAttributes(SyntaxNode node)
+    {
+        var decl = GetDeclarationSymbol(node);
+        if (decl == null)
+            return new List<AttributeData>();
+        return GetAttributes(decl);
+    }
+
+    private List<AttributeData> GetAttributes(ISymbol symbol)
+    {
+        return symbol.GetAttributes().ToList();
     }
 
     private ISymbol? GetSymbol(Type t)
