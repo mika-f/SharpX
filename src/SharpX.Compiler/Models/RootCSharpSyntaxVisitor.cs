@@ -15,11 +15,13 @@ internal class RootCSharpSyntaxVisitor<T> : CSharpSyntaxVisitor<T> where T : Syn
 {
     private readonly List<CSharpSyntaxVisitor<T>> _visitors;
     private readonly Hashtable _counter;
+    private int _initialCounter;
 
     public RootCSharpSyntaxVisitor()
     {
         _visitors = new List<CSharpSyntaxVisitor<T>>();
         _counter = new Hashtable();
+        _initialCounter = 0;
     }
 
     public override T? Visit(Microsoft.CodeAnalysis.SyntaxNode? node)
@@ -27,20 +29,20 @@ internal class RootCSharpSyntaxVisitor<T> : CSharpSyntaxVisitor<T> where T : Syn
         if (node == null)
             return default;
 
-        var counter = _counter[node] as int? ?? 0;
+        var counter = _counter[node] as int? ?? _initialCounter;
+
+        if (_initialCounter == 0)
+            _initialCounter++; // remove self if it is not root element
+
         foreach (var visitor in _visitors.Skip(counter))
         {
             _counter[node] = counter + 1;
 
             var v = visitor.Visit(node);
             if (v != null)
-            {
-                _counter.Remove(node);
                 return v;
-            }
         }
 
-        _counter.Remove(node);
         return default;
     }
 
