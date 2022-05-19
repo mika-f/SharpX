@@ -23,7 +23,7 @@ public class CSharpCompiler : IDisposable
 {
     private readonly List<IErrorMessage> _errors;
     private readonly CSharpCompilerOptions _options;
-    private List<SharpXPluginHost> _hosts;
+    private readonly List<SharpXPluginHost> _hosts;
     private BackendRegistry? _registry;
     private SharpXWorkspace? _workspace;
 
