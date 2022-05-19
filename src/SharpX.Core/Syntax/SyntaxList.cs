@@ -18,4 +18,10 @@ public abstract partial class SyntaxList : SyntaxNode
     {
         throw Exceptions.Unreachable;
     }
+
+    protected internal override SyntaxNode ReplaceCore<TNode>(IEnumerable<TNode>? nodes = null, Func<TNode, TNode, SyntaxNode>? computeReplacementNode = null, IEnumerable<SyntaxToken>? tokens = null, Func<SyntaxToken, SyntaxToken, SyntaxToken>? computeReplacementToken = null,
+                                                              IEnumerable<SyntaxTrivia>? trivia = null, Func<SyntaxTrivia, SyntaxTrivia, SyntaxTrivia>? computeReplacementTrivia = null)
+    {
+        throw Exceptions.Unreachable;
+    }
 }

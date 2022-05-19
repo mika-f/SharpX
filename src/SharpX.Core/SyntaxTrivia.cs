@@ -5,6 +5,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.CodeAnalysis.Text;
+
 namespace SharpX.Core;
 
 /// <summary>
@@ -44,6 +46,8 @@ public readonly struct SyntaxTrivia : IEquatable<SyntaxTrivia>
     public int Width => UnderlyingNode?.Width ?? 0;
 
     public int FullWidth => UnderlyingNode?.FullWidth ?? 0;
+
+    public TextSpan FullSpan => UnderlyingNode != null ? new TextSpan(Position, UnderlyingNode.FullWidth) : default;
 
     public bool ContainsDiagnostics => UnderlyingNode?.ContainsDiagnostics ?? false;
 

@@ -49,10 +49,21 @@ public abstract class SyntaxNode
 
     #region Token Lookup
 
+    public SyntaxToken GetFirstToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
+    {
+        return SyntaxNavigator.Instance.GetFirstToken(this, includeZeroWidth, includeSkipped, includeDirectives);
+    }
+
     public SyntaxToken GetLastToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
     {
         return SyntaxNavigator.Instance.GetLastToken(this, includeZeroWidth, includeSkipped, includeDirectives);
     }
+
+    protected internal abstract SyntaxNode ReplaceCore<TNode>(
+        IEnumerable<TNode>? nodes = null, Func<TNode, TNode, SyntaxNode>? computeReplacementNode = null,
+        IEnumerable<SyntaxToken>? tokens = null, Func<SyntaxToken, SyntaxToken, SyntaxToken>? computeReplacementToken = null,
+        IEnumerable<SyntaxTrivia>? trivia = null, Func<SyntaxTrivia, SyntaxTrivia, SyntaxTrivia>? computeReplacementTrivia = null
+    ) where TNode : SyntaxNode;
 
     #endregion
 
@@ -170,7 +181,6 @@ public abstract class SyntaxNode
     {
         return new ChildSyntaxList(this);
     }
-
 
     public SyntaxTriviaList GetTrailingTrivia()
     {

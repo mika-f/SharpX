@@ -45,6 +45,11 @@ internal class SyntaxNavigator
         return GetNextToken(current, predicate, stepInto != null, stepInto);
     }
 
+    public SyntaxToken GetFirstToken(SyntaxNode current, bool includeZeroWidth, bool includeSkipped, bool includeDirectives)
+    {
+        return GetFirstToken(current, GetPredicateFunction(includeZeroWidth), GetStepIntoFunction(includeSkipped, includeDirectives));
+    }
+
     public SyntaxToken GetLastToken(SyntaxNode current, bool includeZeroWidth, bool includeSkipped, bool includeDirectives)
     {
         return GetLastToken(current, GetPredicateFunction(includeZeroWidth), GetStepIntoFunction(includeSkipped, includeDirectives));
@@ -52,7 +57,7 @@ internal class SyntaxNavigator
 
     #region GetFirstToken
 
-    private SyntaxToken GetFirstToken(SyntaxNode current, Func<SyntaxToken, bool> predicate, Func<SyntaxTrivia, bool> stepInto)
+    private SyntaxToken GetFirstToken(SyntaxNode current, Func<SyntaxToken, bool> predicate, Func<SyntaxTrivia, bool>? stepInto)
     {
         var stack = new Stack<ChildSyntaxList.Enumerator>();
         try
