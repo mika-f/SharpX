@@ -312,4 +312,9 @@ internal partial class SyntaxFactoryInternal
 
         return new CustomEditorDeclarationSyntaxInternal(SyntaxKind.CustomEditorDeclaration, customEditorKeyword, fullyQualifiedInspectorName);
     }
+
+    public static HlslSourceSyntaxInternal HlslSource(SyntaxListInternal<GreenNode> sources)
+    {
+        return new HlslSourceSyntaxInternal(SyntaxKind.HlslSourceUnit, sources.Node!);
+    }
 }

@@ -6,7 +6,6 @@
 
 using SharpX.Core;
 using SharpX.ShaderLab.Syntax;
-using SharpX.ShaderLab.Syntax.InternalSyntax;
 
 namespace SharpX.ShaderLab;
 
@@ -139,6 +138,11 @@ public abstract class ShaderLabSyntaxVisitor<TResult>
     }
 
     public virtual TResult? VisitCustomEditorDeclaration(CustomEditorDeclarationSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
+    public virtual TResult? VisitHlslSource(HlslSourceSyntax node)
     {
         return DefaultVisit(node);
     }

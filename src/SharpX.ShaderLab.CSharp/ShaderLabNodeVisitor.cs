@@ -47,7 +47,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (decl is ShaderDeclarationSyntax shader)
             return SyntaxFactory.CompilationUnit(shader);
 
-        return null; // returns HLSL source code that wrapped by ShaderLabSyntaxNode
+        return members[0]; // returns HLSL source code that wrapped by ShaderLabSyntaxNode
     }
 
     public override ShaderLabSyntaxNode? VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
@@ -186,7 +186,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                                       .ToList();
 
 
-                    var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a"));
+                    var cgProgram = members.Count == 0 ? SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a")) : SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("b"));
                     var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
                     return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
                 }
@@ -197,9 +197,9 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         }
 
         var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
-        var str = source?.ToFullString();
-
-        return null;
+        if (source == null || string.IsNullOrWhiteSpace(source.ToFullString()))
+            return null;
+        return SyntaxFactory.HlslSource(SyntaxFactory.List(source));
     }
 
     private List<BaseCommandDeclarationSyntax> ExtractCommands(ClassDeclarationSyntax node)

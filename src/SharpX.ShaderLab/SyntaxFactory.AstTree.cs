@@ -404,4 +404,9 @@ public partial class SyntaxFactory
     {
         return CustomEditorDeclaration(Literal(fullyQualifiedInspectorName));
     }
+
+    public static HlslSourceSyntax HlslSource(SyntaxList<SyntaxNode> sources)
+    {
+        return (HlslSourceSyntax)SyntaxFactoryInternal.HlslSource(sources.Node.ToGreenList<GreenNode>()).CreateRed();
+    }
 }

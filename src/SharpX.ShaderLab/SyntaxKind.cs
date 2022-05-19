@@ -171,6 +171,8 @@ public enum SyntaxKind
 
     GrabPassDeclaration,
 
+    HlslSourceUnit,
+
     NameDeclaration,
 
     PropertiesDeclaration,

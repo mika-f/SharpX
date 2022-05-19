@@ -6,7 +6,6 @@
 using SharpX.Core;
 using SharpX.Core.Syntax;
 using SharpX.ShaderLab.Syntax;
-using SharpX.ShaderLab.Syntax.InternalSyntax;
 
 namespace SharpX.ShaderLab;
 
@@ -251,6 +250,11 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
             VisitToken(node.CustomEditorKeyword),
             VisitToken(node.FullyQualifiedInspectorName)
         );
+    }
+
+    public override SyntaxNode? VisitHlslSource(HlslSourceSyntax node)
+    {
+        return node;
     }
 
     public virtual SyntaxToken? VisitToken(SyntaxToken? token)

@@ -5,6 +5,7 @@
 
 using SharpX.Composition.Attributes;
 using SharpX.Composition.Interfaces;
+using SharpX.ShaderLab.Syntax;
 
 namespace SharpX.ShaderLab.CSharp;
 
@@ -15,6 +16,11 @@ public class PluginEntryPoint : IBackend
     {
         registry.RegisterBackendVisitor("ShaderLab", typeof(ShaderLabNodeVisitor), typeof(ShaderLabSyntaxNode), 0);
         registry.RegisterReferences("ShaderLab", "./SharpX.ShaderLab.Primitives.dll", "./SharpX.Hlsl.Primitives.dll");
-        registry.RegisterExtensions("ShaderLab", _ => "shader");
+        registry.RegisterExtensions("ShaderLab", w =>
+        {
+            if (w is HlslSourceSyntax)
+                return "hlsl";
+            return "shader";
+        });
     }
 }
