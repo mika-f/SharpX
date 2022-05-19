@@ -62,7 +62,7 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
     {
         return node.Update(
             (NameSyntax?)Visit(node.Name) ?? throw new ArgumentNullException(),
-            (ArgumentListSyntax?)Visit(node.ArgumentList) ?? throw new ArgumentNullException()
+            (ArgumentListSyntax?)Visit(node.ArgumentList)
         );
     }
 
@@ -116,6 +116,7 @@ public class ShaderLabSyntaxRewriter : ShaderLabSyntaxVisitor<SyntaxNode?>
     public override SyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax node)
     {
         return node.Update(
+            (AttributeListSyntax?)Visit(node.AttributeList),
             VisitToken(node.Identifier),
             VisitToken(node.OpenParenToken),
             VisitToken(node.DisplayName),

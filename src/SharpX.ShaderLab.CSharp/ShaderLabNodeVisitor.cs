@@ -340,8 +340,20 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
         var t = SyntaxFactory.IdentifierName(n);
         var @default = SyntaxFactory.EqualsValueClause(GetUnityDeclaredDefaultValue(n, node));
+        var attributeList = new List<AttributeSyntax>();
+        var attributes = GetAttributes(node);
+        if (attributes.Any(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
+            foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
+            {
+                var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name.Substring(0, data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)));
+                var argumentList = SyntaxFactory.ArgumentList();
+                var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
+                attributeList.Add(attr);
+            }
 
-        return SyntaxFactory.PropertyDeclaration(identifier, displayName, t, null, @default);
+        var decl = SyntaxFactory.PropertyDeclaration(attributeList.Count > 0 ? SyntaxFactory.AttributeList(attributeList.ToArray()) : null, identifier, displayName, t, null, @default);
+
+        return decl;
     }
 
     private string? GetUnityDeclaredTypeName(PropertyDeclarationSyntax node)

@@ -23,8 +23,8 @@ public class AttributeSyntax : ShaderLabSyntaxNode
     {
         return index switch
         {
-            0 => GetRedAtZero(ref _argumentList),
-            1 => GetRed(ref _name, 1),
+            0 => GetRedAtZero(ref _name),
+            1 => GetRed(ref _argumentList, 1),
             _ => null
         };
     }
@@ -33,13 +33,13 @@ public class AttributeSyntax : ShaderLabSyntaxNode
     {
         return index switch
         {
-            0 => _argumentList,
-            1 => _name,
+            0 => _name,
+            1 => _argumentList,
             _ => null
         };
     }
 
-    public AttributeSyntax Update(NameSyntax name, ArgumentListSyntax argumentList)
+    public AttributeSyntax Update(NameSyntax name, ArgumentListSyntax? argumentList)
     {
         if (name != Name || argumentList != ArgumentList)
             return SyntaxFactory.Attribute(name, argumentList);

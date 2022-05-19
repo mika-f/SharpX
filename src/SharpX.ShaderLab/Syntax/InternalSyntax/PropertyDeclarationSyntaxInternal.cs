@@ -13,6 +13,8 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
+    public AttributeListSyntaxInternal? AttributeList { get; }
+
     public SyntaxTokenInternal Identifier { get; }
 
     public SyntaxTokenInternal OpenParenToken { get; }
@@ -29,10 +31,16 @@ internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public EqualsValueClauseSyntaxInternal DefaultValue { get; }
 
-    public PropertyDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type, ArgumentListSyntaxInternal? argumentList,
-                                             SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default) : base(kind)
+    public PropertyDeclarationSyntaxInternal(SyntaxKind kind, AttributeListSyntaxInternal? attributeList, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type,
+                                             ArgumentListSyntaxInternal? argumentList, SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default) : base(kind)
     {
-        SlotCount = 8;
+        SlotCount = 9;
+
+        if (attributeList != null)
+        {
+            AdjustWidth(attributeList);
+            AttributeList = attributeList;
+        }
 
         AdjustWidth(identifier);
         Identifier = identifier;
@@ -62,10 +70,16 @@ internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         DefaultValue = @default;
     }
 
-    public PropertyDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type, ArgumentListSyntaxInternal? argumentList,
-                                             SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public PropertyDeclarationSyntaxInternal(SyntaxKind kind, AttributeListSyntaxInternal? attributeList, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type,
+                                             ArgumentListSyntaxInternal? argumentList, SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
-        SlotCount = 8;
+        SlotCount = 9;
+
+        if (attributeList != null)
+        {
+            AdjustWidth(attributeList);
+            AttributeList = attributeList;
+        }
 
         AdjustWidth(identifier);
         Identifier = identifier;
@@ -97,26 +111,27 @@ internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
     {
-        return new PropertyDeclarationSyntaxInternal(Kind, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, GetDiagnostics(), annotations);
+        return new PropertyDeclarationSyntaxInternal(Kind, AttributeList, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, GetDiagnostics(), annotations);
     }
 
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PropertyDeclarationSyntaxInternal(Kind, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, diagnostics, GetAnnotations());
+        return new PropertyDeclarationSyntaxInternal(Kind, AttributeList, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, diagnostics, GetAnnotations());
     }
 
     public override GreenNode? GetSlot(int index)
     {
         return index switch
         {
-            0 => Identifier,
-            1 => OpenParenToken,
-            2 => DisplayName,
-            3 => CommaToken,
-            4 => Type,
-            5 => ArgumentList,
-            6 => CloseParenToken,
-            7 => DefaultValue,
+            0 => AttributeList,
+            1 => Identifier,
+            2 => OpenParenToken,
+            3 => DisplayName,
+            4 => CommaToken,
+            5 => Type,
+            6 => ArgumentList,
+            7 => CloseParenToken,
+            8 => DefaultValue,
             _ => null
         };
     }

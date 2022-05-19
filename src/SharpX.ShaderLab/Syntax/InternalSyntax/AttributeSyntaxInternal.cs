@@ -15,28 +15,34 @@ internal class AttributeSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
     public NameSyntaxInternal Name { get; }
 
-    public ArgumentListSyntaxInternal ArgumentList { get; }
+    public ArgumentListSyntaxInternal? ArgumentList { get; }
 
-    public AttributeSyntaxInternal(SyntaxKind kind, NameSyntaxInternal name, ArgumentListSyntaxInternal argumentList) : base(kind)
+    public AttributeSyntaxInternal(SyntaxKind kind, NameSyntaxInternal name, ArgumentListSyntaxInternal? argumentList) : base(kind)
     {
         SlotCount = 2;
 
         AdjustWidth(name);
         Name = name;
 
-        AdjustWidth(argumentList);
-        ArgumentList = argumentList;
+        if (argumentList != null)
+        {
+            AdjustWidth(argumentList);
+            ArgumentList = argumentList;
+        }
     }
 
-    public AttributeSyntaxInternal(SyntaxKind kind, NameSyntaxInternal name, ArgumentListSyntaxInternal argumentList, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public AttributeSyntaxInternal(SyntaxKind kind, NameSyntaxInternal name, ArgumentListSyntaxInternal? argumentList, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 2;
 
         AdjustWidth(name);
         Name = name;
 
-        AdjustWidth(argumentList);
-        ArgumentList = argumentList;
+        if (argumentList != null)
+        {
+            AdjustWidth(argumentList);
+            ArgumentList = argumentList;
+        }
     }
 
     public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)

@@ -14,7 +14,7 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
-    private readonly GreenNode _arguments;
+    private readonly GreenNode? _arguments;
 
     public SyntaxTokenInternal OpenParenToken { get; }
 
@@ -22,29 +22,35 @@ internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public SyntaxTokenInternal CloseParenToken { get; }
 
-    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode arguments, SyntaxTokenInternal closeParenToken) : base(kind)
+    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? arguments, SyntaxTokenInternal closeParenToken) : base(kind)
     {
         SlotCount = 3;
 
         AdjustWidth(openParenToken);
         OpenParenToken = openParenToken;
 
-        AdjustWidth(arguments);
-        _arguments = arguments;
+        if (arguments != null)
+        {
+            AdjustWidth(arguments);
+            _arguments = arguments;
+        }
 
         AdjustWidth(closeParenToken);
         CloseParenToken = closeParenToken;
     }
 
-    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode arguments, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? arguments, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 3;
 
         AdjustWidth(openParenToken);
         OpenParenToken = openParenToken;
 
-        AdjustWidth(arguments);
-        _arguments = arguments;
+        if (arguments != null)
+        {
+            AdjustWidth(arguments);
+            _arguments = arguments;
+        }
 
         AdjustWidth(closeParenToken);
         CloseParenToken = closeParenToken;

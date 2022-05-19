@@ -87,11 +87,11 @@ public partial class SyntaxFactory
         return AttributeList(Token(SyntaxKind.OpenBracketToken), SeparatedList(attributes), Token(SyntaxKind.CloseBracketToken));
     }
 
-    public static AttributeSyntax Attribute(NameSyntax name, ArgumentListSyntax argumentList)
+    public static AttributeSyntax Attribute(NameSyntax name, ArgumentListSyntax? argumentList)
     {
         return (AttributeSyntax)SyntaxFactoryInternal.Attribute(
             (NameSyntaxInternal)name.Green,
-            (ArgumentListSyntaxInternal)argumentList.Green
+            (ArgumentListSyntaxInternal?)argumentList?.Green
         ).CreateRed();
     }
 
@@ -166,9 +166,11 @@ public partial class SyntaxFactory
         return PropertiesDeclaration(Token(SyntaxKind.PropertiesKeyword), Token(SyntaxKind.OpenBraceToken), List(properties), Token(SyntaxKind.CloseBraceToken));
     }
 
-    public static PropertyDeclarationSyntax PropertyDeclaration(SyntaxToken identifier, SyntaxToken openParenToken, SyntaxToken displayName, SyntaxToken commaToken, SimpleNameSyntax type, ArgumentListSyntax? argumentList, SyntaxToken closeParenToken, EqualsValueClauseSyntax @default)
+    public static PropertyDeclarationSyntax PropertyDeclaration(AttributeListSyntax? attributeList, SyntaxToken identifier, SyntaxToken openParenToken, SyntaxToken displayName, SyntaxToken commaToken, SimpleNameSyntax type, ArgumentListSyntax? argumentList, SyntaxToken closeParenToken,
+                                                                EqualsValueClauseSyntax @default)
     {
         return (PropertyDeclarationSyntax)SyntaxFactoryInternal.PropertyDeclaration(
+            (AttributeListSyntaxInternal?)attributeList?.Green,
             (SyntaxTokenInternal)identifier.Node!,
             (SyntaxTokenInternal)openParenToken.Node!,
             (SyntaxTokenInternal)displayName.Node!,
@@ -180,9 +182,9 @@ public partial class SyntaxFactory
         ).CreateRed();
     }
 
-    public static PropertyDeclarationSyntax PropertyDeclaration(string identifier, string displayName, SimpleNameSyntax type, ArgumentListSyntax? argumentList, EqualsValueClauseSyntax @default)
+    public static PropertyDeclarationSyntax PropertyDeclaration(AttributeListSyntax? attributeList, string identifier, string displayName, SimpleNameSyntax type, ArgumentListSyntax? argumentList, EqualsValueClauseSyntax @default)
     {
-        return PropertyDeclaration(Identifier(identifier), Token(SyntaxKind.OpenParenToken), StringLiteral(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
+        return PropertyDeclaration(attributeList, Identifier(identifier), Token(SyntaxKind.OpenParenToken), StringLiteral(displayName), Token(SyntaxKind.CommaToken), type, argumentList, Token(SyntaxKind.CloseParenToken), @default);
     }
 
     public static SubShaderDeclarationSyntax SubShaderDeclaration(SyntaxToken subShaderKeyword, SyntaxToken openBraceToken, TagsDeclarationSyntax? tags, SyntaxList<CommandDeclarationSyntax> commands, CgIncludeDeclarationSyntax? cgInclude, SyntaxList<BasePassDeclarationSyntax> passes,

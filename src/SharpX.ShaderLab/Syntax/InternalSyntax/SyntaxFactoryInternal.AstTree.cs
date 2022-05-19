@@ -59,7 +59,7 @@ internal partial class SyntaxFactoryInternal
         return new AttributeListSyntaxInternal(SyntaxKind.AttributeList, openBracketToken, attributes.Node!, closeBracketToken);
     }
 
-    public static AttributeSyntaxInternal Attribute(NameSyntaxInternal name, ArgumentListSyntaxInternal argumentList)
+    public static AttributeSyntaxInternal Attribute(NameSyntaxInternal name, ArgumentListSyntaxInternal? argumentList)
     {
         return new AttributeSyntaxInternal(SyntaxKind.Attribute, name, argumentList);
     }
@@ -145,7 +145,8 @@ internal partial class SyntaxFactoryInternal
         return new PropertiesDeclarationSyntaxInternal(SyntaxKind.PropertiesDeclaration, propertiesKeyword, openBraceToken, properties.Node!, closeBraceToken);
     }
 
-    public static PropertyDeclarationSyntaxInternal PropertyDeclaration(SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type, ArgumentListSyntaxInternal? argumentList,
+    public static PropertyDeclarationSyntaxInternal PropertyDeclaration(AttributeListSyntaxInternal? attributeList, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type,
+                                                                        ArgumentListSyntaxInternal? argumentList,
                                                                         SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default)
     {
         if (identifier.Kind != SyntaxKind.IdentifierToken)
@@ -159,7 +160,7 @@ internal partial class SyntaxFactoryInternal
         if (closeParenToken.Kind != SyntaxKind.CloseParenToken)
             throw new ArgumentException(nameof(closeParenToken));
 
-        return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
+        return new PropertyDeclarationSyntaxInternal(SyntaxKind.PropertyDeclaration, attributeList, identifier, openParenToken, displayName, commaToken, type, argumentList, closeParenToken, @default);
     }
 
     public static SubShaderDeclarationSyntaxInternal SubShaderDeclaration(SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, SyntaxListInternal<CommandDeclarationSyntaxInternal> commands, CgIncludeDeclarationSyntaxInternal? cgInclude,

@@ -14,7 +14,7 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
 internal class AttributeListSyntaxInternal : ShaderLabSyntaxNodeInternal
 {
-    private readonly GreenNode _attributes;
+    private readonly GreenNode? _attributes;
 
     public SyntaxTokenInternal OpenBracketToken { get; }
 
@@ -22,29 +22,35 @@ internal class AttributeListSyntaxInternal : ShaderLabSyntaxNodeInternal
 
     public SyntaxTokenInternal CloseBracketToken { get; }
 
-    public AttributeListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode attributes, SyntaxTokenInternal closeBracketToken) : base(kind)
+    public AttributeListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode? attributes, SyntaxTokenInternal closeBracketToken) : base(kind)
     {
         SlotCount = 3;
 
         AdjustWidth(openBracketToken);
         OpenBracketToken = openBracketToken;
 
-        AdjustWidth(attributes);
-        _attributes = attributes;
+        if (attributes != null)
+        {
+            AdjustWidth(attributes);
+            _attributes = attributes;
+        }
 
         AdjustWidth(closeBracketToken);
         CloseBracketToken = closeBracketToken;
     }
 
-    public AttributeListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode attributes, SyntaxTokenInternal closeBracketToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public AttributeListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode? attributes, SyntaxTokenInternal closeBracketToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
     {
         SlotCount = 3;
 
         AdjustWidth(openBracketToken);
         OpenBracketToken = openBracketToken;
 
-        AdjustWidth(attributes);
-        _attributes = attributes;
+        if (attributes != null)
+        {
+            AdjustWidth(attributes);
+            _attributes = attributes;
+        }
 
         AdjustWidth(closeBracketToken);
         CloseBracketToken = closeBracketToken;

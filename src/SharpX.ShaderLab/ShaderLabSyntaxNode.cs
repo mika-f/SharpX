@@ -23,4 +23,10 @@ public abstract class ShaderLabSyntaxNode : SyntaxNode
     }
 
     public abstract TResult? Accept<TResult>(ShaderLabSyntaxVisitor<TResult> visitor);
+
+    protected override SyntaxNode ReplaceCore<TNode>(IEnumerable<TNode>? nodes = null, Func<TNode, TNode, SyntaxNode>? computeReplacementNode = null, IEnumerable<SyntaxToken>? tokens = null, Func<SyntaxToken, SyntaxToken, SyntaxToken>? computeReplacementToken = null,
+                                                     IEnumerable<SyntaxTrivia>? trivia = null, Func<SyntaxTrivia, SyntaxTrivia, SyntaxTrivia>? computeReplacementTrivia = null)
+    {
+        throw new NotImplementedException();
+    }
 }
