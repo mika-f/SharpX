@@ -41,86 +41,209 @@ public sealed partial class Vector4<T>
     public Vector4(Vector1<T> _1, Vector1<T> _2, Vector1<T> _3, Vector1<T> _4) { }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(T _);
+    public static explicit operator Vector4<T>(T _)
+    {
+        throw new NotImplementedException();
+    }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector1<T> _);
+    public static explicit operator Vector4<T>(Vector1<T> _)
+    {
+        throw new NotImplementedException();
+    }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector2<T> _);
+    public static explicit operator Vector4<T>(Vector2<T> _)
+    {
+        throw new NotImplementedException();
+    }
 
     [ImplicitCastInCompiler]
-    public static extern explicit operator Vector4<T>(Vector3<T> _);
+    public static explicit operator Vector4<T>(Vector3<T> _)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator >(Vector4<T> a, Vector4<T> b);
+    public static bool operator >(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator >=(Vector4<T> a, Vector4<T> b);
+    public static bool operator >=(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator <(Vector4<T> a, Vector4<T> b);
+    public static bool operator <(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator <=(Vector4<T> a, Vector4<T> b);
+    public static bool operator <=(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator !=(Vector4<T> a, Vector4<T> b);
+    public static bool operator !=(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern bool operator ==(Vector4<T> a, Vector4<T> b);
 
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector4<T> b);
+    public static bool operator ==(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector4<T> b);
 
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector4<T> b);
+    public static Vector4<T> operator +(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector4<T> b);
 
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector4<T> b);
+    public static Vector4<T> operator -(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator +(Vector4<T> a, T b);
+    public static Vector4<T> operator *(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(Vector4<T> a, T b);
+    public static Vector4<T> operator /(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator *(Vector4<T> a, T b);
+    public static Vector4<T> operator %(Vector4<T> a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(Vector4<T> a, T b);
+    public static Vector4<T> operator +(Vector4<T> a, T b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator %(Vector4<T> a, T b);
+    public static Vector4<T> operator -(Vector4<T> a, T b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator +(T a, Vector4<T> b);
+    public static Vector4<T> operator *(Vector4<T> a, T b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(T a, Vector4<T> b);
+    public static Vector4<T> operator /(Vector4<T> a, T b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator *(T a, Vector4<T> b);
+    public static Vector4<T> operator %(Vector4<T> a, T b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(T a, Vector4<T> b);
+    public static Vector4<T> operator +(T a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator %(T a, Vector4<T> b);
+    public static Vector4<T> operator -(T a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector1<T> b);
+    public static Vector4<T> operator *(T a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector1<T> b);
+    public static Vector4<T> operator /(T a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector1<T> b);
+    public static Vector4<T> operator %(T a, Vector4<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector1<T> b);
+    public static Vector4<T> operator +(Vector4<T> a, Vector1<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector1<T> b);
+    public static Vector4<T> operator -(Vector4<T> a, Vector1<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector2<T> b);
+    public static Vector4<T> operator *(Vector4<T> a, Vector1<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector2<T> b);
+    public static Vector4<T> operator /(Vector4<T> a, Vector1<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector2<T> b);
+    public static Vector4<T> operator %(Vector4<T> a, Vector1<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector2<T> b);
+    public static Vector4<T> operator +(Vector4<T> a, Vector2<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector2<T> b);
+    public static Vector4<T> operator -(Vector4<T> a, Vector2<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator +(Vector4<T> a, Vector3<T> b);
+    public static Vector4<T> operator *(Vector4<T> a, Vector2<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator -(Vector4<T> a, Vector3<T> b);
+    public static Vector4<T> operator /(Vector4<T> a, Vector2<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator *(Vector4<T> a, Vector3<T> b);
+    public static Vector4<T> operator %(Vector4<T> a, Vector2<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator /(Vector4<T> a, Vector3<T> b);
+    public static Vector4<T> operator +(Vector4<T> a, Vector3<T> b)
+    {
+        throw new NotImplementedException();
+    }
 
-    public static extern Vector4<T> operator %(Vector4<T> a, Vector3<T> b);
+    public static Vector4<T> operator -(Vector4<T> a, Vector3<T> b)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Vector4<T> operator *(Vector4<T> a, Vector3<T> b)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Vector4<T> operator /(Vector4<T> a, Vector3<T> b)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static Vector4<T> operator %(Vector4<T> a, Vector3<T> b)
+    {
+        throw new NotImplementedException();
+    }
 }
