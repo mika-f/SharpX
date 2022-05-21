@@ -55,8 +55,8 @@ internal class BackendContainer
     {
         try
         {
-            var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
-            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }));
+            var (instance, register, visit1, visit2) = CreateRootSyntaxVisitorInstance();
+            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }));
 
             foreach (var visitor in _visitors)
             {
@@ -65,7 +65,7 @@ internal class BackendContainer
             }
 
 
-            return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+            return visit1.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
         }
         catch (Exception e)
         {
@@ -80,8 +80,8 @@ internal class BackendContainer
     {
         try
         {
-            var (instance, register, visit) = CreateRootSyntaxVisitorInstance();
-            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit.Invoke(instance, new object?[] { node }), (language, node) => invoker.Invoke(language, node));
+            var (instance, register, visit1, visit2) = CreateRootSyntaxVisitorInstance();
+            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }), (language, node) => invoker.Invoke(language, node));
 
             foreach (var visitor in _visitors)
             {
@@ -90,7 +90,7 @@ internal class BackendContainer
             }
 
 
-            return visit.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
+            return visit1.Invoke(instance, new object?[] { syntax }) as SyntaxNode;
         }
         catch (Exception e)
         {
@@ -101,7 +101,7 @@ internal class BackendContainer
         return null;
     }
 
-    private (object, MethodInfo, MethodInfo) CreateRootSyntaxVisitorInstance()
+    private (object, MethodInfo, MethodInfo, MethodInfo) CreateRootSyntaxVisitorInstance()
     {
         var activator = typeof(RootCSharpSyntaxVisitor<>).MakeGenericType(ReturnType);
         var instance = Activator.CreateInstance(activator);
@@ -113,17 +113,21 @@ internal class BackendContainer
         if (register == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Register(CSharpSyntaxVisitor<{ReturnType.FullName}>)");
 
-        var visit = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public);
-        if (visit == null)
+        var visit1 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode) });
+        if (visit1 == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Visit(Microsoft.CodeAnalysis.SyntaxNode)");
 
-        return (instance, register, visit);
+        var visit2 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode), ReturnType });
+        if (visit2 == null)
+            throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Visit(Microsoft.CodeAnalysis.SyntaxNode)");
+        return (instance, register, visit1, visit2);
     }
 
-    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit, Expression<Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?>>? invoker = default)
+    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit1, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?, SyntaxNode?>> visit2,
+                                            Expression<Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?>>? invoker = default)
     {
         var activator = typeof(BackendVisitorArgs<>).MakeGenericType(ReturnType);
-        var instance = Activator.CreateInstance(activator, semanticModel, CreateDelegateLambda(visit), CreateInvokerLambda(invoker));
+        var instance = Activator.CreateInstance(activator, semanticModel, CreateDelegate1Lambda(visit1), CreateDelegate2Lambda(visit2), CreateInvokerLambda(invoker));
 
         if (instance == null)
             throw new InvalidOperationException($"failed to create the instance of BackendVisitorArgs<{ReturnType.FullName}>.");
@@ -131,12 +135,24 @@ internal class BackendContainer
         return instance;
     }
 
-    private Delegate CreateDelegateLambda(Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit)
+    private Delegate CreateDelegate1Lambda(Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit)
     {
         var parameter = Expression.Parameter(typeof(Microsoft.CodeAnalysis.SyntaxNode));
         var invocation = Expression.Invoke(visit, parameter);
         var cast = Expression.Convert(invocation, ReturnType);
         var lambda = Expression.Lambda(cast, parameter);
+        var @delegate = lambda.Compile();
+
+        return @delegate;
+    }
+
+    private Delegate CreateDelegate2Lambda(Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?, SyntaxNode?>> visit)
+    {
+        var parameter1 = Expression.Parameter(typeof(Microsoft.CodeAnalysis.SyntaxNode));
+        var parameter2 = Expression.Parameter(typeof(SyntaxNode));
+        var invocation = Expression.Invoke(visit, parameter1, parameter2);
+        var cast = Expression.Convert(invocation, ReturnType);
+        var lambda = Expression.Lambda(cast, parameter1, parameter2);
         var @delegate = lambda.Compile();
 
         return @delegate;

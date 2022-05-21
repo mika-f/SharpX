@@ -111,7 +111,7 @@ public class CSharpCompiler : IDisposable
         return isSuccessful;
     }
 
-    private async Task<bool> LoadPluginAtPath(string path)
+    private async Task<bool> LoadBackendPluginAtPathAsync(string path)
     {
         var host = new SharpXPluginHost(path);
         _hosts.Add(host);

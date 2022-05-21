@@ -9,9 +9,11 @@ using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Composition.Interfaces;
 
-public interface IBackendVisitorArgs<out TResult> where TResult : SyntaxNode
+public interface IBackendVisitorArgs<TResult> where TResult : SyntaxNode
 {
-    protected internal Func<Microsoft.CodeAnalysis.SyntaxNode?, TResult> Delegate { get; }
+    protected internal Func<Microsoft.CodeAnalysis.SyntaxNode?, TResult> Delegate1 { get; }
+
+    protected internal Func<Microsoft.CodeAnalysis.SyntaxNode?, TResult?, TResult> Delegate2 { get; }
 
     SemanticModel SemanticModel { get; }
 
