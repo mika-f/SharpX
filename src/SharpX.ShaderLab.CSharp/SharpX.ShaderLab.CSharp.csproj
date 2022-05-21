@@ -18,7 +18,10 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\SharpX.ShaderLab.Primitives\SharpX.ShaderLab.Primitives.csproj" />
-    <ProjectReference Include="..\SharpX.ShaderLab\SharpX.ShaderLab.csproj" />
+    <ProjectReference Include="..\SharpX.ShaderLab\SharpX.ShaderLab.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

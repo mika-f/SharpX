@@ -13,14 +13,14 @@ using SharpX.ShaderLab.Primitives.Enum;
 namespace SharpX.ShaderLab.Example;
 
 [ShaderName("NatsunekoLaboratory/SakuraShader/Avatars/Effects")]
-[SubShader(typeof(SubShader0))]
+// [SubShader(typeof(SubShader0))]
 [Inline]
 public class VoxelShader
 {
     [ShaderTag(ShaderTags.RenderType, RenderType.Opaque)]
     [ShaderTag(ShaderTags.Queue, RenderQueue.Transparent)]
     [ShaderTag(ShaderTags.DisableBatching, true)]
-    [ShaderPass(typeof(PassVoxel), typeof(PassHolograph))]
+    // [ShaderPass(typeof(PassVoxel), typeof(PassHolograph))]
     public class SubShader0
     {
         [RenderPass]

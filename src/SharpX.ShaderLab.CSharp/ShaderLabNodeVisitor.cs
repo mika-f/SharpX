@@ -26,15 +26,12 @@ namespace SharpX.ShaderLab.CSharp;
 public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntaxNode>
 {
     private readonly IBackendVisitorArgs<ShaderLabSyntaxNode> _args;
-    private readonly HashSet<INamedTypeSymbol> _subShaders;
-    private readonly HashSet<INamedTypeSymbol> _passes;
     private readonly List<FieldDeclarationSyntax> _globalFields;
+    private int _level = 0;
 
     public ShaderLabNodeVisitor(IBackendVisitorArgs<ShaderLabSyntaxNode> args) : base(args)
     {
         _args = args;
-        _subShaders = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
-        _passes = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
         _globalFields = new List<FieldDeclarationSyntax>();
     }
 
@@ -84,150 +81,135 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
     public override ShaderLabSyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
     {
-        if (HasShaderNameAttribute(node))
+        try
         {
-            var name = GetAttributeData(node, typeof(ShaderNameAttribute))[0][0] as string;
-            if (string.IsNullOrWhiteSpace(name))
+            _level++;
+
+            if (HasShaderNameAttribute(node) && _level == 1)
+            {
+                var name = GetAttributeData(node, typeof(ShaderNameAttribute))[0][0] as string;
+                if (string.IsNullOrWhiteSpace(name))
+                    return null;
+
+                var subShaders = new List<SubShaderDeclarationSyntax>();
+                var members = node.Members.Select(Visit).Where(w => w != null).ToArray();
+                var shaders = members.OfType<SubShaderDeclarationSyntax>().ToArray();
+                subShaders.AddRange(shaders);
+
+                var properties = members.OfType<Syntax.PropertyDeclarationSyntax>().ToArray();
+                var propertiesDecl = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(properties) : null;
+
+                var sources = new List<Core.SyntaxNode>();
+
+                CgIncludeDeclarationSyntax? cgInclude = null;
+                if (sources.Count > 0 || _globalFields.Count > 0)
+                {
+                    sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
+                    _globalFields.Clear();
+
+                    var includeSource = SyntaxFactory.HlslSource(SyntaxFactory.List(sources));
+                    cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
+                }
+
+                return SyntaxFactory.ShaderDeclaration(name, propertiesDecl, cgInclude, SyntaxFactory.List(subShaders), null, null);
+            }
+
+            // subshader and pass
+
+            // tags
+            var tags = new List<TagDeclarationSyntax>();
+
+            for (var i = 0; i < GetAttributeLength(node, typeof(ShaderTagAttribute)); i++)
+            {
+                var attr = GetAttributeData(node, typeof(ShaderTagAttribute), i);
+                var name = attr[0][0] is int t ? Enum.GetName(typeof(ShaderTags), t) : attr[0][0]!.ToString();
+                var value = attr[1][0] switch
+                {
+                    int v => name switch
+                    {
+                        "RenderType" => Enum.GetName(typeof(RenderType), v),
+                        "Queue" => Enum.GetName(typeof(RenderQueue), v),
+                        "PreviewType" => Enum.GetName(typeof(PreviewType), v),
+                        "LightMode" => Enum.GetName(typeof(LightMode), v),
+                        "PassFlags" => Enum.GetName(typeof(PassFlags), v),
+                        "RequireOptions" => Enum.GetName(typeof(RequireOptions), v),
+                        _ => null
+                    },
+                    _ => attr[1][0]!.ToString()
+                };
+
+                if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                tags.Add(SyntaxFactory.TagDeclaration(name, value));
+            }
+
+            var symbol = GetCurrentSymbol(node) as INamedTypeSymbol;
+            if (symbol == null)
                 return null;
 
-            var subShaders = new List<SubShaderDeclarationSyntax>();
+            // commands
+            var commands = ExtractCommands(node);
 
-            if (HasSubShaderAttribute(node))
+            if (_level == 2)
             {
-                foreach (var t in GetAttributeData(node, typeof(SubShaderAttribute))[0].Where(w => w != null).OfType<INamedTypeSymbol>())
-                    _subShaders.Add(t);
-
-                var shaders = node.Members.Select(Visit)
+                var passes = new List<BasePassDeclarationSyntax>();
+                var members = node.Members.Select(Visit)
                                   .Where(w => w != null)
-                                  .OfType<SubShaderDeclarationSyntax>()
-                                  .ToArray();
+                                  .ToList();
 
-                subShaders.AddRange(shaders);
+                if (members.OfType<BasePassDeclarationSyntax>().Any())
+                    passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
+
+                CgIncludeDeclarationSyntax? cgInclude = null;
+
+
+                return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
             }
 
-            _globalFields.Clear();
-            var members = node.Members.Select(Visit)
-                              .Where(w => w != null)
-                              .OfType<Syntax.PropertyDeclarationSyntax>()
-                              .ToArray();
-
-            var properties = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(members) : null;
-
-            var sources = new List<Core.SyntaxNode>();
-
-            CgIncludeDeclarationSyntax? cgInclude = null;
-            if (sources.Count > 0 || _globalFields.Count > 0)
+            if (_level == 3)
             {
-                sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
-                _globalFields.Clear();
+                var stencil = ExtractStencil(node);
+                if (stencil != null)
+                    commands.Add(stencil);
 
-                var includeSource = SyntaxFactory.HlslSource(SyntaxFactory.List(sources));
-                cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
-            }
-
-            return SyntaxFactory.ShaderDeclaration(name, properties, cgInclude, SyntaxFactory.List(subShaders), null, null);
-        }
-
-        // subshader and pass
-
-        // tags
-        var tags = new List<TagDeclarationSyntax>();
-
-        for (var i = 0; i < GetAttributeLength(node, typeof(ShaderTagAttribute)); i++)
-        {
-            var attr = GetAttributeData(node, typeof(ShaderTagAttribute), i);
-            var name = attr[0][0] is int t ? Enum.GetName(typeof(ShaderTags), t) : attr[0][0]!.ToString();
-            var value = attr[1][0] switch
-            {
-                int v => name switch
+                switch (true)
                 {
-                    "RenderType" => Enum.GetName(typeof(RenderType), v),
-                    "Queue" => Enum.GetName(typeof(RenderQueue), v),
-                    "PreviewType" => Enum.GetName(typeof(PreviewType), v),
-                    "LightMode" => Enum.GetName(typeof(LightMode), v),
-                    "PassFlags" => Enum.GetName(typeof(PassFlags), v),
-                    "RequireOptions" => Enum.GetName(typeof(RequireOptions), v),
-                    _ => null
-                },
-                _ => attr[1][0]!.ToString()
-            };
+                    case { } when HasGrabPassAttribute(node):
+                    {
+                        var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
+                        var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                        if (identifier.Length == 1)
+                            return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                        return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                    }
 
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(value))
-                continue;
-
-            tags.Add(SyntaxFactory.TagDeclaration(name, value));
-        }
-
-        var symbol = GetCurrentSymbol(node) as INamedTypeSymbol;
-        if (symbol == null)
-            return null;
-
-        // commands
-        var commands = ExtractCommands(node);
-
-        if (_subShaders.Contains(symbol))
-        {
-            _subShaders.Remove(symbol);
-
-            var passes = new List<BasePassDeclarationSyntax>();
-
-            if (HasShaderPassAttribute(node))
-                foreach (var t in GetAttributeData(node, typeof(ShaderPassAttribute))[0].Where(w => w != null).OfType<INamedTypeSymbol>())
-                    _passes.Add(t);
-
-            var members = node.Members.Select(Visit)
-                              .Where(w => w != null)
-                              .ToList();
-
-            if (members.OfType<BasePassDeclarationSyntax>().Any())
-                passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
-
-            CgIncludeDeclarationSyntax? cgInclude = null;
+                    case { } when HasRenderPassAttribute(node):
+                    {
+                        var members = node.Members.Select(Visit)
+                                          .Where(w => w != null)
+                                          .ToList();
 
 
-            return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
-        }
+                        var cgProgram = members.Count == 0 ? SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a")) : SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("b"));
+                        var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                        return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
+                    }
 
-        if (_passes.Contains(symbol))
-        {
-            _passes.Remove(symbol);
-
-            var stencil = ExtractStencil(node);
-            if (stencil != null)
-                commands.Add(stencil);
-
-            switch (true)
-            {
-                case { } when HasGrabPassAttribute(node):
-                {
-                    var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
-                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                    if (identifier.Length == 1)
-                        return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
-                    return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                    default:
+                        return null;
                 }
-
-                case { } when HasRenderPassAttribute(node):
-                {
-                    var members = node.Members.Select(Visit)
-                                      .Where(w => w != null)
-                                      .ToList();
-
-
-                    var cgProgram = members.Count == 0 ? SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a")) : SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("b"));
-                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                    return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
-                }
-
-                default:
-                    return null;
             }
-        }
 
-        var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
-        if (source == null || string.IsNullOrWhiteSpace(source.ToFullString()))
-            return null;
-        return SyntaxFactory.HlslSource(SyntaxFactory.List(source));
+            var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
+            if (source == null || string.IsNullOrWhiteSpace(source.ToFullString()))
+                return null;
+            return SyntaxFactory.HlslSource(SyntaxFactory.List(source));
+        }
+        finally
+        {
+            _level--;
+        }
     }
 
     private List<BaseCommandDeclarationSyntax> ExtractCommands(ClassDeclarationSyntax node)
