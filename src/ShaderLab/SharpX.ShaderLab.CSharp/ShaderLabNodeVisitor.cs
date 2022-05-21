@@ -431,6 +431,8 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
     private ExpressionSyntax GetUnityDeclaredDefaultValue(string t, PropertyDeclarationSyntax node)
     {
         var @default = HasAttribute(node, typeof(DefaultValueAttribute)) ? GetAttributeData(node, typeof(DefaultValueAttribute))[0][0]!.ToString()! : "";
+        if (string.IsNullOrWhiteSpace(@default))
+            @default = t is "Int" or "Float" or "Range" ? "0" : "";
 
         return t switch
         {
@@ -439,9 +441,9 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             "CUBE" => SyntaxFactory.TextureLiteralExpression(SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.StringLiteral(@default))),
             "Color" => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(@default)),
             "Vector" => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(@default)),
-            "Int" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
-            "Float" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
-            _ when t.StartsWith("Range") => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(1)),
+            "Int" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(int.Parse(@default))),
+            "Float" => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(float.Parse(@default))),
+            _ when t.StartsWith("Range") => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(float.Parse(@default))),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
