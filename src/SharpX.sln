@@ -31,9 +31,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.ShaderLab.CSharp", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.ShaderLab", "SharpX.ShaderLab\SharpX.ShaderLab.csproj", "{28124C38-6840-4AB0-BD7B-11BE8038C6D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.ShaderLab.Example", "SharpX.ShaderLab.Example\SharpX.ShaderLab.Example.csproj", "{BDD9F2DC-41D7-449F-B71C-009CC2616367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.ShaderLab.Example", "SharpX.ShaderLab.Example\SharpX.ShaderLab.Example.csproj", "{BDD9F2DC-41D7-449F-B71C-009CC2616367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.Hlsl.Example", "SharpX.Hlsl.Example\SharpX.Hlsl.Example.csproj", "{A525444A-E266-4003-A537-993116A8AFAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.Example", "SharpX.Hlsl.Example\SharpX.Hlsl.Example.csproj", "{A525444A-E266-4003-A537-993116A8AFAE}"
+EndProject
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.ShaderLab.CSharp.Boolean", "SharpX.ShaderLab.CSharp.Boolean\SharpX.ShaderLab.CSharp.Boolean.csproj", "{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +96,10 @@ Global
 		{A525444A-E266-4003-A537-993116A8AFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A525444A-E266-4003-A537-993116A8AFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A525444A-E266-4003-A537-993116A8AFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +116,7 @@ Global
 		{28124C38-6840-4AB0-BD7B-11BE8038C6D0} = {10ADF049-11EE-4BCF-B386-2DFDD40C2DE2}
 		{BDD9F2DC-41D7-449F-B71C-009CC2616367} = {10ADF049-11EE-4BCF-B386-2DFDD40C2DE2}
 		{A525444A-E266-4003-A537-993116A8AFAE} = {068E62EC-32D6-40AA-9833-48B8856220F9}
+		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B} = {10ADF049-11EE-4BCF-B386-2DFDD40C2DE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4947C43-2DC8-411A-9E52-69E6E5C334D8}
