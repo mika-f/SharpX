@@ -6,6 +6,7 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.Loader;
 
 using Microsoft.CodeAnalysis;
 
@@ -22,14 +23,14 @@ namespace SharpX.Compiler;
 public class CSharpCompiler : IDisposable
 {
     private readonly List<IErrorMessage> _errors;
+    private readonly List<AssemblyLoadContext> _hosts;
     private readonly CSharpCompilerOptions _options;
-    private readonly List<SharpXPluginHost> _hosts;
     private BackendRegistry? _registry;
     private SharpXWorkspace? _workspace;
 
     public IReadOnlyCollection<IErrorMessage> Errors => _errors.AsReadOnly();
 
-    private CSharpCompiler(CSharpCompilerOptions options, List<SharpXPluginHost> hosts, SharpXWorkspace? workspace = null, BackendRegistry? registry = null)
+    private CSharpCompiler(CSharpCompilerOptions options, List<AssemblyLoadContext> hosts, SharpXWorkspace? workspace = null, BackendRegistry? registry = null)
     {
         _options = options;
         _workspace = workspace;
@@ -40,7 +41,7 @@ public class CSharpCompiler : IDisposable
 
     public CSharpCompiler() : this(CSharpCompilerOptions.Default) { }
 
-    public CSharpCompiler(CSharpCompilerOptions options) : this(options, new List<SharpXPluginHost>()) { }
+    public CSharpCompiler(CSharpCompilerOptions options) : this(options, new List<AssemblyLoadContext>()) { }
 
     public void Dispose()
     {
@@ -52,14 +53,60 @@ public class CSharpCompiler : IDisposable
         return new CSharpCompiler(_options with { Sources = sources }, _hosts, _workspace, _registry);
     }
 
+    public async Task<bool> LoadLanguagesAsync(CancellationToken ct)
+    {
+        var isSuccessful = true;
+        foreach (var path in _options.Languages)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            if (File.Exists(path))
+                isSuccessful &= await LoadLanguagePluginAtPathAsync(path);
+        }
+
+        return isSuccessful;
+    }
+
+    private Task<bool> LoadLanguagePluginAtPathAsync(string path)
+    {
+        try
+        {
+            var hasEntryPoint = false;
+            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+            foreach (var type in assembly.GetTypes())
+                switch (type)
+                {
+                    case { } when type.GetCustomAttribute<LanguageAttribute>() != null && typeof(ILanguage).IsAssignableFrom(type):
+                        hasEntryPoint = true;
+                        break;
+                }
+
+
+            if (hasEntryPoint)
+                return Task.FromResult(true);
+
+            return Task.FromResult(false);
+        }
+        catch (Exception e)
+        {
+            if (Debugger.IsAttached)
+                Debugger.Break();
+
+            return Task.FromResult(false);
+        }
+    }
+
     public async Task<bool> LoadPluginsAsync(CancellationToken ct)
     {
         _registry = new BackendRegistry();
 
         var isSuccessful = true;
         foreach (var path in _options.Plugins)
+        {
+            ct.ThrowIfCancellationRequested();
             if (File.Exists(path))
-                isSuccessful &= await LoadPluginAtPath(path);
+                isSuccessful &= await LoadBackendPluginAtPathAsync(path);
+        }
 
         return isSuccessful;
     }

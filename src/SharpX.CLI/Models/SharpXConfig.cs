@@ -23,6 +23,9 @@ public class SharpXConfig
     [JsonPropertyName("excludes")]
     public List<string> Excludes { get; set; }
 
+    [JsonPropertyName("languages")]
+    public List<string> Languages { get; set; }
+
     [JsonPropertyName("plugins")]
     public List<string> Plugins { get; set; }
 
@@ -38,6 +41,7 @@ public class SharpXConfig
         Files = new List<string>(),
         Includes = new List<string> { "./src/" },
         Excludes = new List<string>(),
+        Languages = new List<string>(),
         Plugins = new List<string>()
     };
 }

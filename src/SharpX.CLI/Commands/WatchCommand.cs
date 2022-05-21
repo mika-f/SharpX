@@ -27,6 +27,13 @@ internal class WatchCommand : CompileCommand
         var source = new CancellationTokenSource();
         var options = ToCompilerOptions(FromConfigJson());
         var compiler = new CSharpCompiler(options);
+
+        if (!await compiler.LoadLanguagesAsync(source.Token))
+        {
+            ConsoleExt.WriteError("failed to load language implementations");
+            return ExitCodes.Failure;
+        }
+
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
             ConsoleExt.WriteError("failed to load plugins");

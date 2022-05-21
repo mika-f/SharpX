@@ -35,6 +35,12 @@ internal class CompileCommand
 
         Console.CancelKeyPress += (_, _) => source.Cancel();
 
+        if (!await compiler.LoadLanguagesAsync(source.Token))
+        {
+            ConsoleExt.WriteError("failed to load language implementations");
+            return ExitCodes.Failure;
+        }
+
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
             ConsoleExt.WriteError("failed to load plugins");
@@ -111,6 +117,6 @@ internal class CompileCommand
     {
         if (config == null)
             return CSharpCompilerOptions.Default;
-        return new CSharpCompilerOptions(config.CompilerOptions.BaseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Plugins);
+        return new CSharpCompilerOptions(config.CompilerOptions.BaseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Languages.Select(Path.GetFullPath).ToList(), config.Plugins);
     }
 }

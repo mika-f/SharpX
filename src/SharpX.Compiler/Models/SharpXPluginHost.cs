@@ -7,7 +7,7 @@ namespace SharpX.Compiler.Models
     {
         private readonly AssemblyDependencyResolver _resolver;
 
-        public SharpXPluginHost(string path)
+        public SharpXPluginHost(string path, bool isCollectible = false) : base(isCollectible)
         {
             _resolver = new AssemblyDependencyResolver(path);
         }
