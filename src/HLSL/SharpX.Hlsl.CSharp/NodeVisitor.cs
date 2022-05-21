@@ -328,6 +328,15 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     {
         return SyntaxFactory.EmptyStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>());
     }
+
+    public override HlslSyntaxNode? VisitBreakStatement(BreakStatementSyntax node)
+    {
+        return base.VisitBreakStatement(node);
+    }
+
+    public override HlslSyntaxNode? VisitContinueStatement(ContinueStatementSyntax node)
+    {
+        return base.VisitContinueStatement(node);
     }
 
     public override HlslSyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
@@ -340,6 +349,15 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return statement.WithExpression(expression);
     }
 
+    public override HlslSyntaxNode? VisitWhileStatement(WhileStatementSyntax node)
+    {
+        return base.VisitWhileStatement(node);
+    }
+
+    public override HlslSyntaxNode? VisitDoStatement(DoStatementSyntax node)
+    {
+        return base.VisitDoStatement(node);
+    }
 
     public override HlslSyntaxNode? VisitForStatement(ForStatementSyntax node)
     {
@@ -390,6 +408,26 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         return SyntaxFactory.ElseClause(statement);
     }
 
+    public override HlslSyntaxNode? VisitSwitchStatement(SwitchStatementSyntax node)
+    {
+        return base.VisitSwitchStatement(node);
+    }
+
+    public override HlslSyntaxNode? VisitSwitchSection(SwitchSectionSyntax node)
+    {
+        return base.VisitSwitchSection(node);
+    }
+
+    public override HlslSyntaxNode? VisitCaseSwitchLabel(CaseSwitchLabelSyntax node)
+    {
+        return base.VisitCaseSwitchLabel(node);
+    }
+
+    public override HlslSyntaxNode? VisitDefaultSwitchLabel(DefaultSwitchLabelSyntax node)
+    {
+        return base.VisitDefaultSwitchLabel(node);
+    }
+
     public override HlslSyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
     {
         var expression = (ExpressionSyntax?)Visit(node.Expression);
@@ -403,6 +441,26 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     {
         var members = node.Members.Select(w => (Syntax.MemberDeclarationSyntax?)Visit(w)).Where(w => w != null).Select(w => w!);
         return SyntaxFactory.CompilationUnit(SyntaxFactory.List(members));
+    }
+
+    public override HlslSyntaxNode? VisitAttributeList(AttributeListSyntax node)
+    {
+        return base.VisitAttributeList(node);
+    }
+
+    public override HlslSyntaxNode? VisitAttribute(AttributeSyntax node)
+    {
+        return base.VisitAttribute(node);
+    }
+
+    public override HlslSyntaxNode? VisitAttributeArgumentList(AttributeArgumentListSyntax node)
+    {
+        return base.VisitAttributeArgumentList(node);
+    }
+
+    public override HlslSyntaxNode? VisitAttributeArgument(AttributeArgumentSyntax node)
+    {
+        return base.VisitAttributeArgument(node);
     }
 
     public override HlslSyntaxNode? VisitClassDeclaration(ClassDeclarationSyntax node)
@@ -478,6 +536,15 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         if (HasRegisterAttribute(node))
             return field.WithRegister(SyntaxFactory.Register(GetAttributeData(node, typeof(RegisterAttribute))[0]));
         return field;
+    }
+
+    public override HlslSyntaxNode? VisitFieldDeclaration(FieldDeclarationSyntax node)
+    {
+        if (!node.Modifiers.Any(CSharpSyntaxKind.ConstKeyword))
+            return null;
+
+        // TODO: compile const field as define preprocessor directive
+        return null;
     }
 
     public override HlslSyntaxNode? VisitParameter(ParameterSyntax node)

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
-    <ProjectReference Include="..\SharpX.Hlsl\SharpX.Hlsl.csproj" />
+    <ProjectReference Include="..\..\Hlsl\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
+    <ProjectReference Include="..\..\Hlsl\SharpX.Hlsl\SharpX.Hlsl.csproj" />
   </ItemGroup>
 
 </Project>

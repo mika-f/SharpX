@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
+    <ProjectReference Include="..\..\Hlsl\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
     <ProjectReference Include="..\SharpX.ShaderLab.Primitives\SharpX.ShaderLab.Primitives.csproj" />
   </ItemGroup>
 

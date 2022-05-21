@@ -1,19 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <BaseOutputPath>..\SharpX.CLI\bin\</BaseOutputPath>
+    <BaseOutputPath>..\..\SharpX.CLI\bin\</BaseOutputPath>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpX.Composition\SharpX.Composition.csproj">
+    <ProjectReference Include="..\..\SharpX.Composition\SharpX.Composition.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\SharpX.Core\SharpX.Core.csproj">
+    <ProjectReference Include="..\..\SharpX.Core\SharpX.Core.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
