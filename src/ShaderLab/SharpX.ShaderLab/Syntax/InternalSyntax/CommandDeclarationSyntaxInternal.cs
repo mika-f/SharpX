@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -31,7 +27,7 @@ internal class CommandDeclarationSyntaxInternal : BaseCommandDeclarationSyntaxIn
         _arguments = arguments;
     }
 
-    public CommandDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, GreenNode arguments, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public CommandDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, GreenNode arguments, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -42,14 +38,9 @@ internal class CommandDeclarationSyntaxInternal : BaseCommandDeclarationSyntaxIn
         _arguments = arguments;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new CommandDeclarationSyntaxInternal(Kind, Keyword, _arguments, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CommandDeclarationSyntaxInternal(Kind, Keyword, _arguments, diagnostics, GetAnnotations());
+        return new CommandDeclarationSyntaxInternal(Kind, Keyword, _arguments, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -23,7 +19,7 @@ internal class PredefinedTypeSyntaxInternal : TypeSyntaxInternal
         Keyword = keyword;
     }
 
-    public PredefinedTypeSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public PredefinedTypeSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 1;
 
@@ -31,14 +27,9 @@ internal class PredefinedTypeSyntaxInternal : TypeSyntaxInternal
         Keyword = keyword;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new PredefinedTypeSyntaxInternal(Kind, Keyword, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PredefinedTypeSyntaxInternal(Kind, Keyword, diagnostics, GetAnnotations());
+        return new PredefinedTypeSyntaxInternal(Kind, Keyword, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

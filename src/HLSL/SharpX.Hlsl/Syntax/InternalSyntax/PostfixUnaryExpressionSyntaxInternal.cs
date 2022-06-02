@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -28,7 +24,7 @@ internal class PostfixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
         OperatorToken = operatorToken;
     }
 
-    public PostfixUnaryExpressionSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal operand, SyntaxTokenInternal operatorToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public PostfixUnaryExpressionSyntaxInternal(SyntaxKind kind, ExpressionSyntaxInternal operand, SyntaxTokenInternal operatorToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -39,14 +35,9 @@ internal class PostfixUnaryExpressionSyntaxInternal : ExpressionSyntaxInternal
         OperatorToken = operatorToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new PostfixUnaryExpressionSyntaxInternal(Kind, Operand, OperatorToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PostfixUnaryExpressionSyntaxInternal(Kind, Operand, OperatorToken, diagnostics, GetAnnotations());
+        return new PostfixUnaryExpressionSyntaxInternal(Kind, Operand, OperatorToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

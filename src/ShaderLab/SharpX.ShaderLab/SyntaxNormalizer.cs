@@ -5,8 +5,6 @@
 
 using System.Text;
 
-using Microsoft.CodeAnalysis.Text;
-
 using SharpX.Core;
 using SharpX.ShaderLab.Syntax;
 

@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -33,7 +29,7 @@ internal class TextureLiteralExpressionSyntaxInternal : ExpressionSyntaxInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public TextureLiteralExpressionSyntaxInternal(SyntaxKind kind, LiteralExpressionSyntaxInternal value, SyntaxTokenInternal openBraceToken, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public TextureLiteralExpressionSyntaxInternal(SyntaxKind kind, LiteralExpressionSyntaxInternal value, SyntaxTokenInternal openBraceToken, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -47,14 +43,9 @@ internal class TextureLiteralExpressionSyntaxInternal : ExpressionSyntaxInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new TextureLiteralExpressionSyntaxInternal(Kind, Value, OpenBraceToken, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new TextureLiteralExpressionSyntaxInternal(Kind, Value, OpenBraceToken, CloseBraceToken, diagnostics, GetAnnotations());
+        return new TextureLiteralExpressionSyntaxInternal(Kind, Value, OpenBraceToken, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

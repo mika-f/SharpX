@@ -3,12 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
-using SyntaxTrivia = SharpX.Core.SyntaxTrivia;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -18,19 +13,14 @@ internal class SyntaxTriviaInternal : ShaderLabSyntaxNodeInternal
 
     public override bool IsTrivia => true;
 
-    public SyntaxTriviaInternal(SyntaxKind kind, string text, DiagnosticInfo[]? diagnostics = null, SyntaxAnnotation[]? annotations = null) : base(kind, text.Length, diagnostics, annotations)
+    public SyntaxTriviaInternal(SyntaxKind kind, string text, DiagnosticInfo[]? diagnostics = null) : base(kind, text.Length, diagnostics)
     {
         _text = text;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new SyntaxTriviaInternal(Kind, _text, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTriviaInternal(Kind, _text, diagnostics, GetAnnotations());
+        return new SyntaxTriviaInternal(Kind, _text, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

@@ -5,10 +5,7 @@
 
 using System.Globalization;
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-using SharpX.Core.Extensions;
 using SharpX.Core.Syntax.InternalSyntax;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -49,7 +46,7 @@ internal static partial class SyntaxFactory
         if (!elastic)
             return trivia;
 
-        return trivia.WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation });
+        return trivia; /* .WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation }); */
     }
 
     public static SyntaxTriviaInternal Whitespace(string text, bool elastic = false)
@@ -58,7 +55,7 @@ internal static partial class SyntaxFactory
         if (!elastic)
             return trivia;
 
-        return trivia.WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation });
+        return trivia; /* .WithAnnotationsGreen(new[] { SyntaxAnnotation.ElasticAnnotation }); */
     }
 
     public static SyntaxTriviaInternal Comment(string text)

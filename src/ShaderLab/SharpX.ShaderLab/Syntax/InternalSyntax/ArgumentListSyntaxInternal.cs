@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -39,7 +35,7 @@ internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseParenToken = closeParenToken;
     }
 
-    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? arguments, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public ArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? arguments, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -56,14 +52,9 @@ internal class ArgumentListSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseParenToken = closeParenToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ArgumentListSyntaxInternal(Kind, OpenParenToken, _arguments, CloseParenToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ArgumentListSyntaxInternal(Kind, OpenParenToken, _arguments, CloseParenToken, diagnostics, GetAnnotations());
+        return new ArgumentListSyntaxInternal(Kind, OpenParenToken, _arguments, CloseParenToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

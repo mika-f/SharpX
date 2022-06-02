@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -39,7 +35,7 @@ internal class TypeArgumentListSyntaxInternal : HlslSyntaxNodeInternal
         GreaterThanToken = greaterThanToken;
     }
 
-    public TypeArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal lessThanToken, GreenNode? arguments, SyntaxTokenInternal greaterThanToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public TypeArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal lessThanToken, GreenNode? arguments, SyntaxTokenInternal greaterThanToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -56,14 +52,9 @@ internal class TypeArgumentListSyntaxInternal : HlslSyntaxNodeInternal
         GreaterThanToken = greaterThanToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new TypeArgumentListSyntaxInternal(Kind, LessThanToken, _arguments, GreaterThanToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new TypeArgumentListSyntaxInternal(Kind, LessThanToken, _arguments, GreaterThanToken, diagnostics, GetAnnotations());
+        return new TypeArgumentListSyntaxInternal(Kind, LessThanToken, _arguments, GreaterThanToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

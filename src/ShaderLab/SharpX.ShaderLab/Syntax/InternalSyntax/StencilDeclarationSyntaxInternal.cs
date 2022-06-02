@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -41,7 +37,7 @@ internal class StencilDeclarationSyntaxInternal : BaseCommandDeclarationSyntaxIn
         CloseBraceToken = closeBraceToken;
     }
 
-    public StencilDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal openBraceToken, GreenNode commands, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public StencilDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal openBraceToken, GreenNode commands, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 4;
 
@@ -58,14 +54,9 @@ internal class StencilDeclarationSyntaxInternal : BaseCommandDeclarationSyntaxIn
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new StencilDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, _commands, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new StencilDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, _commands, CloseBraceToken, diagnostics, GetAnnotations());
+        return new StencilDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, _commands, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

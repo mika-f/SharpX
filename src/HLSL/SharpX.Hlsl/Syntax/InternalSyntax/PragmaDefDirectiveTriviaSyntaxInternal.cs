@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -108,7 +104,7 @@ internal class PragmaDefDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInt
 
     public PragmaDefDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal pragmaKeyword, SyntaxTokenInternal defKeyword, SyntaxTokenInternal openParenToken, SyntaxTokenInternal target, SyntaxTokenInternal firstCommaToken, SyntaxTokenInternal register,
                                                   SyntaxTokenInternal secondCommaToken, SyntaxTokenInternal val1, SyntaxTokenInternal thirdCommaToken, SyntaxTokenInternal val2, SyntaxTokenInternal fourthCommaToken, SyntaxTokenInternal val3, SyntaxTokenInternal fifthCommaToken,
-                                                  SyntaxTokenInternal val4, SyntaxTokenInternal closeParenToken, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                                  SyntaxTokenInternal val4, SyntaxTokenInternal closeParenToken, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 17;
 
@@ -164,32 +160,6 @@ internal class PragmaDefDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInt
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new PragmaDefDirectiveTriviaSyntaxInternal(
-            Kind,
-            HashToken,
-            PragmaKeyword,
-            DefKeyword,
-            OpenParenToken,
-            Target,
-            FirstCommaToken,
-            Register,
-            SecondCommaToken,
-            Val1,
-            ThirdCommaToken,
-            Val2,
-            FourthCommaToken,
-            Val3,
-            FifthCommaToken,
-            Val4,
-            CloseParenToken,
-            EndOfDirectiveToken,
-            GetDiagnostics(),
-            annotations
-        );
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
         return new PragmaDefDirectiveTriviaSyntaxInternal(
@@ -211,8 +181,7 @@ internal class PragmaDefDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInt
             Val4,
             CloseParenToken,
             EndOfDirectiveToken,
-            diagnostics,
-            GetAnnotations()
+            diagnostics
         );
     }
 

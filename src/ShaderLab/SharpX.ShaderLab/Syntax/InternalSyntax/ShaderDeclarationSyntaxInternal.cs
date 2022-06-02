@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -83,7 +79,7 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
     }
 
     public ShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal shaderKeyword, SyntaxTokenInternal identifier, SyntaxTokenInternal openBraceToken, PropertiesDeclarationSyntaxInternal? properties, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? subShaders,
-                                           FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                           FallbackDeclarationSyntaxInternal? fallback, CustomEditorDeclarationSyntaxInternal? customEditor, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 9;
 
@@ -130,14 +126,9 @@ internal class ShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ShaderDeclarationSyntaxInternal(Kind, ShaderKeyword, Identifier, OpenBraceToken, Properties, CgInclude, _subShaders, Fallback, CustomEditor, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ShaderDeclarationSyntaxInternal(Kind, ShaderKeyword, Identifier, OpenBraceToken, Properties, CgInclude, _subShaders, Fallback, CustomEditor, CloseBraceToken, diagnostics, GetAnnotations());
+        return new ShaderDeclarationSyntaxInternal(Kind, ShaderKeyword, Identifier, OpenBraceToken, Properties, CgInclude, _subShaders, Fallback, CustomEditor, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

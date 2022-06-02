@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -15,5 +13,5 @@ internal abstract class ConditionalDirectiveTriviaSyntaxInternal : BranchingDire
 
     protected ConditionalDirectiveTriviaSyntaxInternal(SyntaxKind kind) : base(kind) { }
 
-    protected ConditionalDirectiveTriviaSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations) { }
+    protected ConditionalDirectiveTriviaSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics) { }
 }

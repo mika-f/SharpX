@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -36,7 +32,7 @@ internal class WarningSpecifierSyntaxInternal : HlslSyntaxNodeInternal
         _numbers = numbers;
     }
 
-    public WarningSpecifierSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal specifier, SyntaxTokenInternal colonToken, GreenNode numbers, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public WarningSpecifierSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal specifier, SyntaxTokenInternal colonToken, GreenNode numbers, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -50,14 +46,9 @@ internal class WarningSpecifierSyntaxInternal : HlslSyntaxNodeInternal
         _numbers = numbers;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new WarningSpecifierSyntaxInternal(Kind, Specifier, ColonToken, _numbers, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new WarningSpecifierSyntaxInternal(Kind, Specifier, ColonToken, _numbers, diagnostics, GetAnnotations());
+        return new WarningSpecifierSyntaxInternal(Kind, Specifier, ColonToken, _numbers, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

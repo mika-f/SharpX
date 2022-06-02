@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -67,7 +63,7 @@ internal class DoStatementSyntaxInternal : StatementSyntaxInternal
     }
 
     public DoStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal doKeyword, StatementSyntaxInternal statement, SyntaxTokenInternal whileKeyword, SyntaxTokenInternal openParenToken, ExpressionSyntaxInternal condition, SyntaxTokenInternal closeParenToken,
-                                     SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                     SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 8;
 
@@ -99,14 +95,9 @@ internal class DoStatementSyntaxInternal : StatementSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new DoStatementSyntaxInternal(Kind, _attributeLists, DoKeyword, Statement, WhileKeyword, OpenParenToken, Condition, CloseParenToken, SemicolonToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new DoStatementSyntaxInternal(Kind, _attributeLists, DoKeyword, Statement, WhileKeyword, OpenParenToken, Condition, CloseParenToken, SemicolonToken, diagnostics, GetAnnotations());
+        return new DoStatementSyntaxInternal(Kind, _attributeLists, DoKeyword, Statement, WhileKeyword, OpenParenToken, Condition, CloseParenToken, SemicolonToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

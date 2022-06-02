@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -49,7 +45,7 @@ internal class BlockSyntaxInternal : StatementSyntaxInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public BlockSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal openBraceToken, GreenNode? statements, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public BlockSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal openBraceToken, GreenNode? statements, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 4;
 
@@ -72,14 +68,9 @@ internal class BlockSyntaxInternal : StatementSyntaxInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new BlockSyntaxInternal(Kind, _attributeLists, OpenBraceToken, _statements, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new BlockSyntaxInternal(Kind, _attributeLists, OpenBraceToken, _statements, CloseBraceToken, diagnostics, GetAnnotations());
+        return new BlockSyntaxInternal(Kind, _attributeLists, OpenBraceToken, _statements, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

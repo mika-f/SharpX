@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -40,7 +36,7 @@ internal class DiscardStatementSyntaxInternal : StatementSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
-    public DiscardStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal discardKeyword, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public DiscardStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal discardKeyword, SyntaxTokenInternal semicolonToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -57,14 +53,9 @@ internal class DiscardStatementSyntaxInternal : StatementSyntaxInternal
         SemicolonToken = semicolonToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new BreakStatementSyntaxInternal(Kind, _attributeLists, DiscardKeyword, SemicolonToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new BreakStatementSyntaxInternal(Kind, _attributeLists, DiscardKeyword, SemicolonToken, diagnostics, GetAnnotations());
+        return new BreakStatementSyntaxInternal(Kind, _attributeLists, DiscardKeyword, SemicolonToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

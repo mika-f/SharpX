@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -39,7 +35,7 @@ internal class ParameterListSyntaxInternal : HlslSyntaxNodeInternal
         CloseParenToken = closeParenToken;
     }
 
-    public ParameterListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? parameters, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public ParameterListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openParenToken, GreenNode? parameters, SyntaxTokenInternal closeParenToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -56,14 +52,9 @@ internal class ParameterListSyntaxInternal : HlslSyntaxNodeInternal
         CloseParenToken = closeParenToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ParameterListSyntaxInternal(Kind, OpenParenToken, _parameters, CloseParenToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ParameterListSyntaxInternal(Kind, OpenParenToken, _parameters, CloseParenToken, diagnostics, GetAnnotations());
+        return new ParameterListSyntaxInternal(Kind, OpenParenToken, _parameters, CloseParenToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

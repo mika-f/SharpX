@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -65,7 +61,7 @@ internal class ConstantBufferDeclarationSyntaxInternal : TypeDeclarationSyntaxIn
     }
 
     public ConstantBufferDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal identifier, RegisterSyntaxInternal? register, SyntaxTokenInternal openBraceToken, GreenNode? members, SyntaxTokenInternal closeBraceToken, SyntaxTokenInternal semicolonToken,
-                                                   DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                                   DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 7;
 
@@ -97,14 +93,9 @@ internal class ConstantBufferDeclarationSyntaxInternal : TypeDeclarationSyntaxIn
         SemicolonToken = semicolonToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ConstantBufferDeclarationSyntaxInternal(Kind, Keyword, Identifier, Register, OpenBraceToken, _members, CloseBraceToken, SemicolonToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ConstantBufferDeclarationSyntaxInternal(Kind, Keyword, Identifier, Register, OpenBraceToken, _members, CloseBraceToken, SemicolonToken, diagnostics, GetAnnotations());
+        return new ConstantBufferDeclarationSyntaxInternal(Kind, Keyword, Identifier, Register, OpenBraceToken, _members, CloseBraceToken, SemicolonToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

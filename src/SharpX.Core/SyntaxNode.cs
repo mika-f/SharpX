@@ -5,8 +5,6 @@
 
 using System.Diagnostics;
 
-using Microsoft.CodeAnalysis.Text;
-
 namespace SharpX.Core;
 
 /// <summary>
@@ -47,26 +45,6 @@ public abstract class SyntaxNode
 
     #endregion
 
-    #region Token Lookup
-
-    public SyntaxToken GetFirstToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
-    {
-        return SyntaxNavigator.Instance.GetFirstToken(this, includeZeroWidth, includeSkipped, includeDirectives);
-    }
-
-    public SyntaxToken GetLastToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
-    {
-        return SyntaxNavigator.Instance.GetLastToken(this, includeZeroWidth, includeSkipped, includeDirectives);
-    }
-
-    protected internal abstract SyntaxNode ReplaceCore<TNode>(
-        IEnumerable<TNode>? nodes = null, Func<TNode, TNode, SyntaxNode>? computeReplacementNode = null,
-        IEnumerable<SyntaxToken>? tokens = null, Func<SyntaxToken, SyntaxToken, SyntaxToken>? computeReplacementToken = null,
-        IEnumerable<SyntaxTrivia>? trivia = null, Func<SyntaxTrivia, SyntaxTrivia, SyntaxTrivia>? computeReplacementTrivia = null
-    ) where TNode : SyntaxNode;
-
-    #endregion
-
     protected SyntaxNode(GreenNode node, SyntaxNode? parent, int position)
     {
         Contract.Assert(position >= 0, "position cannot be negative");
@@ -97,6 +75,26 @@ public abstract class SyntaxNode
     {
         Green.WriteTo(writer);
     }
+
+    #region Token Lookup
+
+    public SyntaxToken GetFirstToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
+    {
+        return SyntaxNavigator.Instance.GetFirstToken(this, includeZeroWidth, includeSkipped, includeDirectives);
+    }
+
+    public SyntaxToken GetLastToken(bool includeZeroWidth = false, bool includeSkipped = false, bool includeDirectives = false)
+    {
+        return SyntaxNavigator.Instance.GetLastToken(this, includeZeroWidth, includeSkipped, includeDirectives);
+    }
+
+    protected internal abstract SyntaxNode ReplaceCore<TNode>(
+        IEnumerable<TNode>? nodes = null, Func<TNode, TNode, SyntaxNode>? computeReplacementNode = null,
+        IEnumerable<SyntaxToken>? tokens = null, Func<SyntaxToken, SyntaxToken, SyntaxToken>? computeReplacementToken = null,
+        IEnumerable<SyntaxTrivia>? trivia = null, Func<SyntaxTrivia, SyntaxTrivia, SyntaxTrivia>? computeReplacementTrivia = null
+    ) where TNode : SyntaxNode;
+
+    #endregion
 
     #region Syntax
 

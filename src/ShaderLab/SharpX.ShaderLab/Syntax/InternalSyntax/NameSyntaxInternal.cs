@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
@@ -12,5 +10,5 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 internal abstract class NameSyntaxInternal : TypeSyntaxInternal
 {
     protected NameSyntaxInternal(SyntaxKind kind) : base(kind) { }
-    protected NameSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations) { }
+    protected NameSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics) { }
 }

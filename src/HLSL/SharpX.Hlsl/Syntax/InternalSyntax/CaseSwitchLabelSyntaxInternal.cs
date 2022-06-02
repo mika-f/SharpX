@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -33,7 +29,7 @@ internal class CaseSwitchLabelSyntaxInternal : SwitchLabelSyntaxInternal
         ColonToken = colonToken;
     }
 
-    public CaseSwitchLabelSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal caseKeyword, ExpressionSyntaxInternal value, SyntaxTokenInternal colonToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public CaseSwitchLabelSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal caseKeyword, ExpressionSyntaxInternal value, SyntaxTokenInternal colonToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -47,14 +43,9 @@ internal class CaseSwitchLabelSyntaxInternal : SwitchLabelSyntaxInternal
         ColonToken = colonToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new CaseSwitchLabelSyntaxInternal(Kind, CaseKeyword, Value, ColonToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CaseSwitchLabelSyntaxInternal(Kind, CaseKeyword, Value, ColonToken, diagnostics, GetAnnotations());
+        return new CaseSwitchLabelSyntaxInternal(Kind, CaseKeyword, Value, ColonToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

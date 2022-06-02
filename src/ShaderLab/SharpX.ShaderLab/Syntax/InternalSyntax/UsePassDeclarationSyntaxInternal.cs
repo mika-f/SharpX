@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -29,7 +25,7 @@ internal class UsePassDeclarationSyntaxInternal : BasePassDeclarationSyntaxInter
         PassReference = passReference;
     }
 
-    public UsePassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal passReference, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public UsePassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal passReference, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -40,14 +36,9 @@ internal class UsePassDeclarationSyntaxInternal : BasePassDeclarationSyntaxInter
         PassReference = passReference;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new UsePassDeclarationSyntaxInternal(Kind, Keyword, PassReference, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new UsePassDeclarationSyntaxInternal(Kind, Keyword, PassReference, diagnostics, GetAnnotations());
+        return new UsePassDeclarationSyntaxInternal(Kind, Keyword, PassReference, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

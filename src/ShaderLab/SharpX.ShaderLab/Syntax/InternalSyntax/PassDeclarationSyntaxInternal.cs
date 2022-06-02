@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -56,7 +52,7 @@ internal class PassDeclarationSyntaxInternal : BasePassDeclarationSyntaxInternal
     }
 
     public PassDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal keyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode commands, CgProgramDeclarationSyntaxInternal cgProgram,
-                                         SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                         SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 6;
 
@@ -82,14 +78,9 @@ internal class PassDeclarationSyntaxInternal : BasePassDeclarationSyntaxInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new PassDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, Tags, _commands, CgProgram, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PassDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, Tags, _commands, CgProgram, CloseBraceToken, diagnostics, GetAnnotations());
+        return new PassDeclarationSyntaxInternal(Kind, Keyword, OpenBraceToken, Tags, _commands, CgProgram, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

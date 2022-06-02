@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -28,7 +24,7 @@ internal class ElseClauseSyntaxInternal : HlslSyntaxNodeInternal
         Statement = statement;
     }
 
-    public ElseClauseSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal elseKeyword, StatementSyntaxInternal statement, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public ElseClauseSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal elseKeyword, StatementSyntaxInternal statement, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -39,14 +35,9 @@ internal class ElseClauseSyntaxInternal : HlslSyntaxNodeInternal
         Statement = statement;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ElseClauseSyntaxInternal(Kind, ElseKeyword, Statement, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ElseClauseSyntaxInternal(Kind, ElseKeyword, Statement, diagnostics, GetAnnotations());
+        return new ElseClauseSyntaxInternal(Kind, ElseKeyword, Statement, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

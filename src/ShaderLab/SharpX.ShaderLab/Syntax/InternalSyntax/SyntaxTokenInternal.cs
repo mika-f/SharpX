@@ -5,11 +5,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -39,21 +35,16 @@ internal class SyntaxTokenInternal : ShaderLabSyntaxNodeInternal
     }
 
     public SyntaxTokenInternal(SyntaxKind kind, int fullWidth) : base(kind, fullWidth) { }
-    public SyntaxTokenInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, fullWidth, diagnostics, annotations) { }
+    public SyntaxTokenInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base(kind, fullWidth, diagnostics) { }
 
-    public SyntaxTokenInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public SyntaxTokenInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         FullWidth = Text.Length;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new SyntaxTokenInternal(Kind, FullWidth, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTokenInternal(Kind, FullWidth, diagnostics, GetAnnotations());
+        return new SyntaxTokenInternal(Kind, FullWidth, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

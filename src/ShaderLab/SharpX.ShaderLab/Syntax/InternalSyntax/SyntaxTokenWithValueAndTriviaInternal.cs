@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
@@ -29,7 +27,7 @@ internal class SyntaxTokenWithValueAndTriviaInternal<T> : SyntaxTokenWithValueIn
         }
     }
 
-    public SyntaxTokenWithValueAndTriviaInternal(SyntaxKind kind, string text, T value, GreenNode? leading, GreenNode? trailing, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, text, value, diagnostics, annotations)
+    public SyntaxTokenWithValueAndTriviaInternal(SyntaxKind kind, string text, T value, GreenNode? leading, GreenNode? trailing, DiagnosticInfo[]? diagnostics) : base(kind, text, value, diagnostics)
     {
         if (leading != null)
         {
@@ -54,23 +52,18 @@ internal class SyntaxTokenWithValueAndTriviaInternal<T> : SyntaxTokenWithValueIn
         return _trailing;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, diagnostics, GetAnnotations());
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, _trailing, diagnostics);
     }
 
     public override SyntaxTokenInternal TokenWithLeadingTrivia(GreenNode? trivia)
     {
-        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, trivia, _trailing, GetDiagnostics(), GetAnnotations());
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, trivia, _trailing, GetDiagnostics());
     }
 
     public override SyntaxTokenInternal TokenWitTrailingTrivia(GreenNode? trivia)
     {
-        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, trivia, GetDiagnostics(), GetAnnotations());
+        return new SyntaxTokenWithValueAndTriviaInternal<T>(Kind, Text, RawValue, _leading, trivia, GetDiagnostics());
     }
 }

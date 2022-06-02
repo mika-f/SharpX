@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -34,7 +30,7 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
         EndOfFileToken = endOfFileToken;
     }
 
-    public CompilationUnitSyntaxInternal(SyntaxKind kind, GreenNode? members, SyntaxTokenInternal endOfFileToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public CompilationUnitSyntaxInternal(SyntaxKind kind, GreenNode? members, SyntaxTokenInternal endOfFileToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -48,14 +44,9 @@ internal class CompilationUnitSyntaxInternal : HlslSyntaxNodeInternal
         EndOfFileToken = endOfFileToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new CompilationUnitSyntaxInternal(Kind, _members, EndOfFileToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CompilationUnitSyntaxInternal(Kind, _members, EndOfFileToken, diagnostics, GetAnnotations());
+        return new CompilationUnitSyntaxInternal(Kind, _members, EndOfFileToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

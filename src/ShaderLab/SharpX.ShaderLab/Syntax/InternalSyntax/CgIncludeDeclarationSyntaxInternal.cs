@@ -1,8 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-
-using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
+﻿using SharpX.Core;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax
 {
@@ -28,7 +24,7 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax
             EndCgKeyword = endCgKeyword;
         }
 
-        public CgIncludeDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal cgIncludeKeyword, GreenNode source, SyntaxTokenInternal endCgKeyword, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+        public CgIncludeDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal cgIncludeKeyword, GreenNode source, SyntaxTokenInternal endCgKeyword, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
         {
             SlotCount = 3;
 
@@ -42,14 +38,9 @@ namespace SharpX.ShaderLab.Syntax.InternalSyntax
             EndCgKeyword = endCgKeyword;
         }
 
-        public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-        {
-            return new CgIncludeDeclarationSyntaxInternal(Kind, CgIncludeKeyword, HlslSourceCode, EndCgKeyword, GetDiagnostics(), annotations);
-        }
-
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new CgIncludeDeclarationSyntaxInternal(Kind, CgIncludeKeyword, HlslSourceCode, EndCgKeyword, diagnostics, GetAnnotations());
+            return new CgIncludeDeclarationSyntaxInternal(Kind, CgIncludeKeyword, HlslSourceCode, EndCgKeyword, diagnostics);
         }
 
         public override GreenNode? GetSlot(int index)

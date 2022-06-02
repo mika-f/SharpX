@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -71,7 +67,7 @@ internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
     }
 
     public PropertyDeclarationSyntaxInternal(SyntaxKind kind, AttributeListSyntaxInternal? attributeList, SyntaxTokenInternal identifier, SyntaxTokenInternal openParenToken, SyntaxTokenInternal displayName, SyntaxTokenInternal commaToken, SimpleNameSyntaxInternal type,
-                                             ArgumentListSyntaxInternal? argumentList, SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                             ArgumentListSyntaxInternal? argumentList, SyntaxTokenInternal closeParenToken, EqualsValueClauseSyntaxInternal @default, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 9;
 
@@ -109,14 +105,9 @@ internal class PropertyDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         DefaultValue = @default;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new PropertyDeclarationSyntaxInternal(Kind, AttributeList, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new PropertyDeclarationSyntaxInternal(Kind, AttributeList, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, diagnostics, GetAnnotations());
+        return new PropertyDeclarationSyntaxInternal(Kind, AttributeList, Identifier, OpenParenToken, DisplayName, CommaToken, Type, ArgumentList, CloseParenToken, DefaultValue, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

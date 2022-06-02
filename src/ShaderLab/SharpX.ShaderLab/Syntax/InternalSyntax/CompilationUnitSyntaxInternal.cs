@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -28,7 +24,7 @@ internal class CompilationUnitSyntaxInternal : ShaderLabSyntaxNodeInternal
         EndOfFileToken = endOfFileToken;
     }
 
-    public CompilationUnitSyntaxInternal(SyntaxKind kind, ShaderDeclarationSyntaxInternal decl, SyntaxTokenInternal endOfFileToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public CompilationUnitSyntaxInternal(SyntaxKind kind, ShaderDeclarationSyntaxInternal decl, SyntaxTokenInternal endOfFileToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -39,14 +35,9 @@ internal class CompilationUnitSyntaxInternal : ShaderLabSyntaxNodeInternal
         EndOfFileToken = endOfFileToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new CompilationUnitSyntaxInternal(Kind, ShaderDeclaration, EndOfFileToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CompilationUnitSyntaxInternal(Kind, ShaderDeclaration, EndOfFileToken, diagnostics, GetAnnotations());
+        return new CompilationUnitSyntaxInternal(Kind, ShaderDeclaration, EndOfFileToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

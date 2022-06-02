@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -93,7 +89,7 @@ internal class ForStatementSyntaxInternal : StatementSyntaxInternal
     }
 
     public ForStatementSyntaxInternal(SyntaxKind kind, GreenNode? attributeLists, SyntaxTokenInternal forKeyword, SyntaxTokenInternal openParenToken, VariableDeclarationSyntaxInternal? declaration, GreenNode? initializers, SyntaxTokenInternal firstSemicolonToken, ExpressionSyntaxInternal? condition,
-                                      SyntaxTokenInternal secondSemicolonToken, GreenNode? incrementors, SyntaxTokenInternal closeParenToken, StatementSyntaxInternal statement, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                      SyntaxTokenInternal secondSemicolonToken, GreenNode? incrementors, SyntaxTokenInternal closeParenToken, StatementSyntaxInternal statement, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 11;
 
@@ -146,14 +142,9 @@ internal class ForStatementSyntaxInternal : StatementSyntaxInternal
         Statement = statement;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new ForStatementSyntaxInternal(Kind, _attributeLists, ForKeyword, OpenParenKeyword, Declaration, Initializers, FirstSemicolonToken, Condition, SecondSemicolonToken, Incrementors, CloseParenToken, Statement, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new ForStatementSyntaxInternal(Kind, _attributeLists, ForKeyword, OpenParenKeyword, Declaration, Initializers, FirstSemicolonToken, Condition, SecondSemicolonToken, Incrementors, CloseParenToken, Statement, diagnostics, GetAnnotations());
+        return new ForStatementSyntaxInternal(Kind, _attributeLists, ForKeyword, OpenParenKeyword, Declaration, Initializers, FirstSemicolonToken, Condition, SecondSemicolonToken, Incrementors, CloseParenToken, Statement, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

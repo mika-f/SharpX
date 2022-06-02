@@ -6,13 +6,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
-using SyntaxToken = SharpX.Core.SyntaxToken;
-using SyntaxTrivia = SharpX.Core.SyntaxTrivia;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -30,9 +24,7 @@ internal abstract class ShaderLabSyntaxNodeInternal : GreenNode
     protected ShaderLabSyntaxNodeInternal(SyntaxKind kind) : base((int)kind) { }
     protected ShaderLabSyntaxNodeInternal(SyntaxKind kind, int fullWidth) : base((int)kind, fullWidth) { }
     protected ShaderLabSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics) : base((int)kind, fullWidth, diagnostics) { }
-    protected ShaderLabSyntaxNodeInternal(SyntaxKind kind, int fullWidth, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base((int)kind, fullWidth, diagnostics, annotations) { }
     protected ShaderLabSyntaxNodeInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base((int)kind, diagnostics) { }
-    protected ShaderLabSyntaxNodeInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base((int)kind, diagnostics, annotations) { }
 
     public override SyntaxNode? GetStructure(SyntaxTrivia parentTrivia)
     {

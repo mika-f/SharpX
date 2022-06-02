@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -41,7 +37,7 @@ internal class TagsDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public TagsDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, GreenNode tags, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public TagsDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal tagsKeyword, SyntaxTokenInternal openBraceToken, GreenNode tags, SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 4;
 
@@ -58,14 +54,9 @@ internal class TagsDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new TagsDeclarationSyntaxInternal(Kind, TagsKeyword, OpenBraceToken, _tags, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new TagsDeclarationSyntaxInternal(Kind, TagsKeyword, OpenBraceToken, _tags, CloseBraceToken, diagnostics, GetAnnotations());
+        return new TagsDeclarationSyntaxInternal(Kind, TagsKeyword, OpenBraceToken, _tags, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

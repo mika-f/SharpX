@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -28,7 +24,7 @@ internal class CustomEditorDeclarationSyntaxInternal : ShaderLabSyntaxNodeIntern
         FullyQualifiedInspectorName = fullyQualifiedInspectorName;
     }
 
-    public CustomEditorDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal customEditorKeyword, SyntaxTokenInternal fullyQualifiedInspectorName, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public CustomEditorDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal customEditorKeyword, SyntaxTokenInternal fullyQualifiedInspectorName, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -39,14 +35,9 @@ internal class CustomEditorDeclarationSyntaxInternal : ShaderLabSyntaxNodeIntern
         FullyQualifiedInspectorName = fullyQualifiedInspectorName;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new CustomEditorDeclarationSyntaxInternal(Kind, CustomEditorKeyword, FullyQualifiedInspectorName, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new CustomEditorDeclarationSyntaxInternal(Kind, CustomEditorKeyword, FullyQualifiedInspectorName, diagnostics, GetAnnotations());
+        return new CustomEditorDeclarationSyntaxInternal(Kind, CustomEditorKeyword, FullyQualifiedInspectorName, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

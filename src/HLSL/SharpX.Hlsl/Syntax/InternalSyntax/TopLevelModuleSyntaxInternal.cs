@@ -1,9 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
-
-using SharpX.Core;
+﻿using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax
 {
@@ -24,7 +20,7 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
             }
         }
 
-        public TopLevelModuleSyntaxInternal(SyntaxKind kind, GreenNode? members, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+        public TopLevelModuleSyntaxInternal(SyntaxKind kind, GreenNode? members, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
         {
             SlotCount = 1;
 
@@ -35,14 +31,9 @@ namespace SharpX.Hlsl.Syntax.InternalSyntax
             }
         }
 
-        public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-        {
-            return new TopLevelModuleSyntaxInternal(Kind, _members, GetDiagnostics(), annotations);
-        }
-
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new TopLevelModuleSyntaxInternal(Kind, _members, diagnostics, GetAnnotations());
+            return new TopLevelModuleSyntaxInternal(Kind, _members, diagnostics);
         }
 
         public override GreenNode? GetSlot(int index)

@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -40,7 +36,7 @@ internal class BracketedArgumentListSyntaxInternal : BaseArgumentListSyntaxInter
         CloseBracketToken = closeBracketToken;
     }
 
-    public BracketedArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode? arguments, SyntaxTokenInternal closeBracketToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public BracketedArgumentListSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal openBracketToken, GreenNode? arguments, SyntaxTokenInternal closeBracketToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -57,14 +53,9 @@ internal class BracketedArgumentListSyntaxInternal : BaseArgumentListSyntaxInter
         CloseBracketToken = closeBracketToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new BracketedArgumentListSyntaxInternal(Kind, OpenBracketToken, _arguments, CloseBracketToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new BracketedArgumentListSyntaxInternal(Kind, OpenBracketToken, _arguments, CloseBracketToken, diagnostics, GetAnnotations());
+        return new BracketedArgumentListSyntaxInternal(Kind, OpenBracketToken, _arguments, CloseBracketToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

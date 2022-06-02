@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
@@ -15,5 +13,5 @@ internal abstract class BasePassDeclarationSyntaxInternal : ShaderLabSyntaxNodeI
 
     protected BasePassDeclarationSyntaxInternal(SyntaxKind kind) : base(kind) { }
 
-    protected BasePassDeclarationSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations) { }
+    protected BasePassDeclarationSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics) { }
 }

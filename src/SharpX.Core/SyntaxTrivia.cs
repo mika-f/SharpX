@@ -5,8 +5,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Microsoft.CodeAnalysis.Text;
-
 namespace SharpX.Core;
 
 /// <summary>

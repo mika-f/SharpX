@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
 
@@ -16,5 +14,5 @@ internal abstract class BaseArgumentListSyntaxInternal : HlslSyntaxNodeInternal
 
     protected BaseArgumentListSyntaxInternal(SyntaxKind kind) : base(kind) { }
 
-    protected BaseArgumentListSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations) { }
+    protected BaseArgumentListSyntaxInternal(SyntaxKind kind, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics) { }
 }

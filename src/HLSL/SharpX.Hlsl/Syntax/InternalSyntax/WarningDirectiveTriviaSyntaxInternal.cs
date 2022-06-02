@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -33,7 +29,7 @@ internal class WarningDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInter
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public WarningDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal warningKeyword, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public WarningDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal warningKeyword, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -47,14 +43,9 @@ internal class WarningDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInter
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new WarningDirectiveTriviaSyntaxInternal(Kind, HashToken, WarningKeyword, EndOfDirectiveToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new WarningDirectiveTriviaSyntaxInternal(Kind, HashToken, WarningKeyword, EndOfDirectiveToken, diagnostics, GetAnnotations());
+        return new WarningDirectiveTriviaSyntaxInternal(Kind, HashToken, WarningKeyword, EndOfDirectiveToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

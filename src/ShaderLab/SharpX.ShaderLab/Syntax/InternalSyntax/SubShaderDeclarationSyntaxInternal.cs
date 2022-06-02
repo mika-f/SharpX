@@ -3,12 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -71,7 +67,7 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
     }
 
     public SubShaderDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal subShaderKeyword, SyntaxTokenInternal openBraceToken, TagsDeclarationSyntaxInternal? tags, GreenNode? commands, CgIncludeDeclarationSyntaxInternal? cgInclude, GreenNode? passes,
-                                              SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+                                              SyntaxTokenInternal closeBraceToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 7;
 
@@ -110,14 +106,9 @@ internal class SubShaderDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         CloseBraceToken = closeBraceToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new SubShaderDeclarationSyntaxInternal(Kind, SubShaderKeyword, OpenBraceToken, Tags, _commands, CgInclude, _passes, CloseBraceToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new SubShaderDeclarationSyntaxInternal(Kind, SubShaderKeyword, OpenBraceToken, Tags, _commands, CgInclude, _passes, CloseBraceToken, diagnostics, GetAnnotations());
+        return new SubShaderDeclarationSyntaxInternal(Kind, SubShaderKeyword, OpenBraceToken, Tags, _commands, CgInclude, _passes, CloseBraceToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

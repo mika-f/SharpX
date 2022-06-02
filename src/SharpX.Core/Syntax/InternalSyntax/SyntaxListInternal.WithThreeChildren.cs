@@ -3,8 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 namespace SharpX.Core.Syntax.InternalSyntax;
 
 public abstract partial class SyntaxListInternal
@@ -29,7 +27,7 @@ public abstract partial class SyntaxListInternal
             _node3 = node3;
         }
 
-        public WithThreeChildren(GreenNode node1, GreenNode node2, GreenNode node3, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(diagnostics, annotations)
+        public WithThreeChildren(GreenNode node1, GreenNode node2, GreenNode node3, DiagnosticInfo[]? diagnostics) : base(diagnostics)
         {
             SlotCount = 3;
 
@@ -65,14 +63,9 @@ public abstract partial class SyntaxListInternal
             return true;
         }
 
-        public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-        {
-            return new WithThreeChildren(_node1, _node2, _node3, GetDiagnostics(), annotations);
-        }
-
         public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
         {
-            return new WithThreeChildren(_node1, _node2, _node3, diagnostics, GetAnnotations());
+            return new WithThreeChildren(_node1, _node2, _node3, diagnostics);
         }
     }
 }

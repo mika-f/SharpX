@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -33,7 +29,7 @@ internal class QualifiedNameSyntaxInternal : NameSyntaxInternal
         Right = right;
     }
 
-    public QualifiedNameSyntaxInternal(SyntaxKind kind, NameSyntaxInternal left, SyntaxTokenInternal dotToken, SimpleNameSyntaxInternal right, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public QualifiedNameSyntaxInternal(SyntaxKind kind, NameSyntaxInternal left, SyntaxTokenInternal dotToken, SimpleNameSyntaxInternal right, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 3;
 
@@ -47,14 +43,9 @@ internal class QualifiedNameSyntaxInternal : NameSyntaxInternal
         Right = right;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new QualifiedNameSyntaxInternal(Kind, Left, DotToken, Right, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new QualifiedNameSyntaxInternal(Kind, Left, DotToken, Right, diagnostics, GetAnnotations());
+        return new QualifiedNameSyntaxInternal(Kind, Left, DotToken, Right, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

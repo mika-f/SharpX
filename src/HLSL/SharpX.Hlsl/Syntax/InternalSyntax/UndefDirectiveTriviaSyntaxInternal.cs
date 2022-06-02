@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
 
@@ -38,7 +34,7 @@ internal class UndefDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInterna
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public UndefDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal undefKeyword, SyntaxTokenInternal name, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public UndefDirectiveTriviaSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal hashToken, SyntaxTokenInternal undefKeyword, SyntaxTokenInternal name, SyntaxTokenInternal endOfDirectiveToken, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 4;
 
@@ -55,14 +51,9 @@ internal class UndefDirectiveTriviaSyntaxInternal : DirectiveTriviaSyntaxInterna
         EndOfDirectiveToken = endOfDirectiveToken;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new UndefDirectiveTriviaSyntaxInternal(Kind, HashToken, UndefKeyword, Name, EndOfDirectiveToken, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new UndefDirectiveTriviaSyntaxInternal(Kind, HashToken, UndefKeyword, Name, EndOfDirectiveToken, diagnostics, GetAnnotations());
+        return new UndefDirectiveTriviaSyntaxInternal(Kind, HashToken, UndefKeyword, Name, EndOfDirectiveToken, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)

@@ -3,11 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
-
 using SharpX.Core;
-
-using SyntaxNode = SharpX.Core.SyntaxNode;
 
 namespace SharpX.ShaderLab.Syntax.InternalSyntax;
 
@@ -28,7 +24,7 @@ internal class FallbackDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         ShaderNameOrOffKeyword = shaderNameOrOffKeyword;
     }
 
-    public FallbackDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword, DiagnosticInfo[]? diagnostics, SyntaxAnnotation[]? annotations) : base(kind, diagnostics, annotations)
+    public FallbackDeclarationSyntaxInternal(SyntaxKind kind, SyntaxTokenInternal fallbackKeyword, SyntaxTokenInternal shaderNameOrOffKeyword, DiagnosticInfo[]? diagnostics) : base(kind, diagnostics)
     {
         SlotCount = 2;
 
@@ -39,14 +35,9 @@ internal class FallbackDeclarationSyntaxInternal : ShaderLabSyntaxNodeInternal
         ShaderNameOrOffKeyword = shaderNameOrOffKeyword;
     }
 
-    public override GreenNode SetAnnotations(SyntaxAnnotation[]? annotations)
-    {
-        return new FallbackDeclarationSyntaxInternal(Kind, FallbackKeyword, ShaderNameOrOffKeyword, GetDiagnostics(), annotations);
-    }
-
     public override GreenNode SetDiagnostics(DiagnosticInfo[]? diagnostics)
     {
-        return new FallbackDeclarationSyntaxInternal(Kind, FallbackKeyword, ShaderNameOrOffKeyword, diagnostics, GetAnnotations());
+        return new FallbackDeclarationSyntaxInternal(Kind, FallbackKeyword, ShaderNameOrOffKeyword, diagnostics);
     }
 
     public override GreenNode? GetSlot(int index)
