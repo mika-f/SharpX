@@ -227,25 +227,25 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (HasAttribute(node, typeof(CullingAttribute)))
         {
             var args = GetAttributeData(node, typeof(CullingAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(Culling), i)! : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(Culling), i)! : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("Culling", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("Culling", parameter));
         }
 
         if (HasAttribute(node, typeof(ZTestAttribute)))
         {
             var args = GetAttributeData(node, typeof(ZTestAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(ZTestFunc), i)! : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(ZTestFunc), i)! : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("ZTest", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("ZTest", parameter));
         }
 
         if (HasAttribute(node, typeof(ZWriteAttribute)))
         {
             var args = GetAttributeData(node, typeof(ZWriteAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(ZWrite), i)! : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(ZWrite), i)! : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("ZWrite", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("ZWrite", parameter));
         }
 
         return commands;
@@ -258,31 +258,31 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (HasAttribute(node, typeof(StencilRefAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilRefAttribute));
-            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? i.ToString() : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("Ref", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("Ref", parameter));
         }
 
         if (HasAttribute(node, typeof(StencilReadMaskAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilReadMaskAttribute));
-            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? i.ToString() : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("ReadMask", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("ReadMask", parameter));
         }
 
         if (HasAttribute(node, typeof(StencilWriteMaskAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilWriteMaskAttribute));
-            var parameter = args[0][0] is int i ? i.ToString() : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? i.ToString() : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("WriteMask", parameter!));
+            commands.Add(SyntaxFactory.CommandDeclaration("WriteMask", parameter));
         }
 
         if (HasAttribute(node, typeof(StencilCompareAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilCompareAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(CompareFunction), i) : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(CompareFunction), i) : $"[{args[0][0]!}]";
 
             commands.Add(SyntaxFactory.CommandDeclaration("Comp", parameter!));
         }
@@ -290,7 +290,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (HasAttribute(node, typeof(StencilPassAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilPassAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : $"[{args[0][0]!}]";
 
             commands.Add(SyntaxFactory.CommandDeclaration("Pass", parameter!));
         }
@@ -298,7 +298,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (HasAttribute(node, typeof(StencilFailAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilFailAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : $"[{args[0][0]!}]";
 
             commands.Add(SyntaxFactory.CommandDeclaration("Fail", parameter!));
         }
@@ -306,7 +306,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (HasAttribute(node, typeof(StencilZFailAttribute)))
         {
             var args = GetAttributeData(node, typeof(StencilZFailAttribute));
-            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : args[0][0]!.ToString();
+            var parameter = args[0][0] is int i ? Enum.GetName(typeof(StencilOp), i) : $"[{args[0][0]!}]";
 
             commands.Add(SyntaxFactory.CommandDeclaration("ZFail", parameter!));
         }
@@ -316,7 +316,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             var args = GetNamedAttributeData(node, typeof(StencilAttribute));
             foreach (var arg in args)
                 if (arg.Key.EndsWith("S"))
-                    commands.Add(SyntaxFactory.CommandDeclaration(arg.Key.Substring(0, arg.Key.Length - 1), $"[{arg.Value}]"));
+                    commands.Add(SyntaxFactory.CommandDeclaration(arg.Key[..^1], $"[{arg.Value}]"));
                 else
                     commands.Add(SyntaxFactory.CommandDeclaration(arg.Key, arg.Value.ToString()!));
         }
@@ -344,7 +344,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (attributes.Any(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
-                var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name.Substring(0, data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)));
+                var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name[..data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)]);
                 var argumentList = SyntaxFactory.ArgumentList();
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
                 attributeList.Add(attr);
