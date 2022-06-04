@@ -175,12 +175,16 @@ public class CSharpCompiler : IDisposable
         if (!isSuccessful)
             return false;
 
-        isSuccessful &= await CompileCSharpSourcesAsync(container, (language, node, model) =>
+        Func<string, SyntaxNode?, SemanticModel, Core.SyntaxNode?>? invoker = null;
+        invoker = (language, node, model) =>
         {
             if (node == null)
                 return default;
-            return _registry?.GetLanguageContainer(language)?.RunAsync(node, model);
-        }, ct);
+            return _registry?.GetLanguageContainer(language)?.RunAsync(node, model, (l, n) => invoker!.Invoke(l, n, model));
+        };
+
+
+        isSuccessful &= await CompileCSharpSourcesAsync(container, invoker, ct);
         return isSuccessful;
     }
 
