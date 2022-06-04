@@ -177,10 +177,14 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitLiteralExpression(LiteralExpressionSyntax node)
     {
+        var str = node.Token.ToTrimmedString();
+        if (node.Kind() is CSharpSyntaxKind.NumericLiteralExpression && str.EndsWith("f"))
+            str = str[..^1];
+
         return node.Kind() switch
         {
-            CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(node.Token.ToTrimmedString())),
-            CSharpSyntaxKind.NumericLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(node.Token.ToTrimmedString())),
+            CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(str)),
+            CSharpSyntaxKind.NumericLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(str)),
             _ => null
         };
     }
