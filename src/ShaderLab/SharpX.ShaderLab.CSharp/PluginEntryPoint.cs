@@ -14,8 +14,9 @@ public class PluginEntryPoint : IBackend
 {
     public void EntryPoint(IBackendRegistry registry)
     {
+        var url = Path.GetDirectoryName(typeof(PluginEntryPoint).Assembly.Location);
         registry.RegisterBackendVisitor("ShaderLab", typeof(ShaderLabNodeVisitor), typeof(ShaderLabSyntaxNode), 0);
-        registry.RegisterReferences("ShaderLab", "./SharpX.ShaderLab.Primitives.dll", "./SharpX.Hlsl.Primitives.dll");
+        registry.RegisterReferences("ShaderLab", Path.Combine(url, "SharpX.ShaderLab.Primitives.dll"), Path.Combine(url, "SharpX.Hlsl.Primitives.dll"));
         registry.RegisterExtensions("ShaderLab", w =>
         {
             if (w is HlslSourceSyntax)
