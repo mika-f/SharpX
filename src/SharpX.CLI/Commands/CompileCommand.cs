@@ -117,6 +117,9 @@ internal class CompileCommand
     {
         if (config == null)
             return CSharpCompilerOptions.Default;
-        return new CSharpCompilerOptions(config.CompilerOptions.BaseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, config.Languages.Select(Path.GetFullPath).ToList(), config.Plugins);
+        var baseUrl = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), config.CompilerOptions.BaseUrl));
+        var languages = config.Languages.Select(w => Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), w)));
+        var plugins = config.Plugins.Select(w => Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), w)));
+        return new CSharpCompilerOptions(baseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, languages.ToList(), plugins.ToList());
     }
 }
