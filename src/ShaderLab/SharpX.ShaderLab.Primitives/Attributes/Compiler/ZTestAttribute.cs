@@ -11,4 +11,6 @@ namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 public class ZTestAttribute : Attribute
 {
     public ZTestAttribute(ZTestFunc a) { }
+
+    public ZTestAttribute(string a) { }
 }
