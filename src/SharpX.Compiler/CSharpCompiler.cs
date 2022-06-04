@@ -108,6 +108,8 @@ public class CSharpCompiler : IDisposable
             ct.ThrowIfCancellationRequested();
             if (File.Exists(path))
                 isSuccessful &= await LoadBackendPluginAtPathAsync(path);
+            else
+                isSuccessful = false;
         }
 
         return isSuccessful;
