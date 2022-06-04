@@ -106,7 +106,7 @@ internal class CompileCommand
 
         if (File.Exists(Project))
         {
-            var sr = new StreamReader(DefaultConfig);
+            var sr = new StreamReader(Project);
             return JsonSerializer.Deserialize<SharpXConfig>(sr.ReadToEnd());
         }
 
