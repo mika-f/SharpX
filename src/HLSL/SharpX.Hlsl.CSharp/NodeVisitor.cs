@@ -608,7 +608,7 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
                     {
                         "Single" => "float",
                         "Bool" => "bool",
-                        _ => throw new ArgumentOutOfRangeException()
+                        _ => n.Name
                     };
                 return s.ToDisplayString();
             }
