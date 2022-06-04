@@ -229,7 +229,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             var args = GetAttributeData(node, typeof(CullingAttribute));
             var parameter = args[0][0] is int i ? Enum.GetName(typeof(Culling), i)! : $"[{args[0][0]!}]";
 
-            commands.Add(SyntaxFactory.CommandDeclaration("Culling", parameter));
+            commands.Add(SyntaxFactory.CommandDeclaration("Cull", parameter));
         }
 
         if (HasAttribute(node, typeof(ZTestAttribute)))
