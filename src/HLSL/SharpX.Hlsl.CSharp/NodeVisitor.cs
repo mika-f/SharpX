@@ -604,7 +604,12 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
             {
                 var s = GetCurrentSymbol(i);
                 if (s is INamedTypeSymbol n)
-                    return n.Name;
+                    return n.Name switch
+                    {
+                        "Single" => "float",
+                        "Bool" => "bool",
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
                 return s.ToDisplayString();
             }
 
