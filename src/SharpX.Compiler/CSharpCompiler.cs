@@ -62,6 +62,8 @@ public class CSharpCompiler : IDisposable
 
             if (File.Exists(path))
                 isSuccessful &= await LoadLanguagePluginAtPathAsync(path);
+            else
+                isSuccessful = false;
         }
 
         return isSuccessful;
