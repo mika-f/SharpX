@@ -203,6 +203,11 @@ public static partial class SyntaxFactory
         return new SeparatedSyntaxList<TNode>(new SyntaxNodeOrTokenList(node, 0));
     }
 
+    public static SeparatedSyntaxList<TNode> SeparatedList<TNode>(params TNode[] nodes) where TNode : SyntaxNode
+    {
+        return SeparatedList(nodes.ToList());
+    }
+
     public static SeparatedSyntaxList<TNode> SeparatedList<TNode>(IEnumerable<TNode>? nodes) where TNode : SyntaxNode
     {
         if (nodes == null)
