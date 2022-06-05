@@ -368,7 +368,15 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitDoStatement(DoStatementSyntax node)
     {
-        return base.VisitDoStatement(node);
+        var statement = (StatementSyntax?)Visit(node.Statement);
+        if (statement == null)
+            return null;
+
+        var condition = (ExpressionSyntax?)Visit(node.Condition);
+        if (condition == null)
+            return null;
+
+        return SyntaxFactory.DoStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>(), statement, condition);
     }
 
     public override HlslSyntaxNode? VisitForStatement(ForStatementSyntax node)
