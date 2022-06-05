@@ -335,12 +335,12 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitBreakStatement(BreakStatementSyntax node)
     {
-        return base.VisitBreakStatement(node);
+        return SyntaxFactory.BreakStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>());
     }
 
     public override HlslSyntaxNode? VisitContinueStatement(ContinueStatementSyntax node)
     {
-        return base.VisitContinueStatement(node);
+        return SyntaxFactory.ContinueStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>());
     }
 
     public override HlslSyntaxNode? VisitReturnStatement(ReturnStatementSyntax node)
@@ -355,7 +355,15 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitWhileStatement(WhileStatementSyntax node)
     {
-        return base.VisitWhileStatement(node);
+        var condition = (ExpressionSyntax?)Visit(node.Condition);
+        if (condition == null)
+            return null;
+
+        var statement = (StatementSyntax?)Visit(node.Statement);
+        if (statement == null)
+            return null;
+
+        return SyntaxFactory.WhileStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>(), condition, statement);
     }
 
     public override HlslSyntaxNode? VisitDoStatement(DoStatementSyntax node)
