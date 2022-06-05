@@ -18,6 +18,7 @@ using CSharpSyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 using ExpressionSyntax = SharpX.Hlsl.Syntax.ExpressionSyntax;
 using SimpleNameSyntax = SharpX.Hlsl.Syntax.SimpleNameSyntax;
 using StatementSyntax = SharpX.Hlsl.Syntax.StatementSyntax;
+using SwitchLabelSyntax = SharpX.Hlsl.Syntax.SwitchLabelSyntax;
 
 namespace SharpX.Hlsl.CSharp;
 
@@ -430,22 +431,61 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
 
     public override HlslSyntaxNode? VisitSwitchStatement(SwitchStatementSyntax node)
     {
-        return base.VisitSwitchStatement(node);
+        var expression = (ExpressionSyntax?)Visit(node.Expression);
+        if (expression == null)
+            return null;
+
+        var sections = SyntaxFactory.List<Syntax.SwitchSectionSyntax>();
+        foreach (var section in node.Sections)
+        {
+            var statement = (Syntax.SwitchSectionSyntax?)Visit(section);
+            if (statement == null)
+                return null;
+
+            sections = sections.Add(statement);
+        }
+
+        return SyntaxFactory.SwitchStatement(SyntaxFactory.List<Syntax.AttributeListSyntax>(), expression, sections);
     }
 
     public override HlslSyntaxNode? VisitSwitchSection(SwitchSectionSyntax node)
     {
-        return base.VisitSwitchSection(node);
+        var labels = SyntaxFactory.List<SwitchLabelSyntax>();
+
+        foreach (var l in node.Labels)
+        {
+            var label = (SwitchLabelSyntax?)Visit(l);
+            if (label == null)
+                return null;
+
+            labels = labels.Add(label);
+        }
+
+        var statements = SyntaxFactory.List<StatementSyntax>();
+        foreach (var stmt in node.Statements)
+        {
+            var statement = (StatementSyntax?)Visit(stmt);
+            if (statement == null)
+                return null;
+
+            statements = statements.Add(statement);
+        }
+
+        return SyntaxFactory.SwitchSection(labels, statements);
     }
 
     public override HlslSyntaxNode? VisitCaseSwitchLabel(CaseSwitchLabelSyntax node)
     {
-        return base.VisitCaseSwitchLabel(node);
+        var expression = (ExpressionSyntax?)Visit(node.Value);
+        if (expression == null)
+            return null;
+
+        return SyntaxFactory.CaseSwitchLabel(expression);
     }
 
     public override HlslSyntaxNode? VisitDefaultSwitchLabel(DefaultSwitchLabelSyntax node)
     {
-        return base.VisitDefaultSwitchLabel(node);
+        return SyntaxFactory.DefaultSwitchLabel();
     }
 
     public override HlslSyntaxNode? VisitExpressionStatement(ExpressionStatementSyntax node)
