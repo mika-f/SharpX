@@ -57,7 +57,7 @@ internal class RootCSharpSyntaxVisitor<T> : CSharpSyntaxVisitor<T> where T : Syn
         foreach (var visitor in _visitors.Skip(counter))
         {
             _counter[oldNode] = counter + 1;
-            rewritten = visitor.Visit(oldNode, newNode);
+            rewritten = visitor.Visit(oldNode, rewritten);
         }
 
         return rewritten;
