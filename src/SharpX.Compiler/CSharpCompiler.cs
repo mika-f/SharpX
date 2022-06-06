@@ -122,16 +122,18 @@ public class CSharpCompiler : IDisposable
 
         try
         {
+            var isLoaded = false;
             var assembly = host.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(path)));
             foreach (var type in assembly.GetTypes())
                 switch (type)
                 {
                     case { } when type.GetCustomAttribute<BackendAttribute>() != null && typeof(IBackend).IsAssignableFrom(type):
                         await ExecutePluginEntryPointAsync(type);
+                        isLoaded = true;
                         break;
                 }
 
-            return true;
+            return isLoaded;
         }
         catch (Exception e)
         {
