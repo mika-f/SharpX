@@ -47,7 +47,13 @@ public abstract class CompositeCSharpSyntaxVisitor<TResult> : CSharpSyntaxVisito
     public TResult? Visit(Microsoft.CodeAnalysis.SyntaxNode? node, TResult? newNode)
     {
         if (node != null)
-            return Accept(node, newNode) ?? _delegate2.Invoke(node, newNode);
+        {
+            var rewritten = Accept(node, newNode);
+            if (rewritten == null)
+                rewritten = _delegate2.Invoke(node, newNode);
+
+            return rewritten;
+        }
 
         return newNode;
     }

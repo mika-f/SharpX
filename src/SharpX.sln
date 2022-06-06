@@ -35,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.Example", "Hlsl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.ShaderLab.CSharp.Boolean", "ShaderLab\SharpX.ShaderLab.CSharp.Boolean\SharpX.ShaderLab.CSharp.Boolean.csproj", "{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.Hlsl.CSharp.ObjectInitializer", "HLSL\SharpX.Hlsl.CSharp.ObjectInitializer\SharpX.Hlsl.CSharp.ObjectInitializer.csproj", "{1638803E-5381-4FC2-9A9B-56B7ACB2751E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.CSharp.ObjectInitializer", "HLSL\SharpX.Hlsl.CSharp.ObjectInitializer\SharpX.Hlsl.CSharp.ObjectInitializer.csproj", "{1638803E-5381-4FC2-9A9B-56B7ACB2751E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.CSharp.Enum", "HLSL\SharpX.Hlsl.CSharp.Enum\SharpX.Hlsl.CSharp.Enum.csproj", "{2A296F70-29CA-442C-B994-2BFFCD484914}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{1638803E-5381-4FC2-9A9B-56B7ACB2751E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1638803E-5381-4FC2-9A9B-56B7ACB2751E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1638803E-5381-4FC2-9A9B-56B7ACB2751E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A296F70-29CA-442C-B994-2BFFCD484914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A296F70-29CA-442C-B994-2BFFCD484914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A296F70-29CA-442C-B994-2BFFCD484914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A296F70-29CA-442C-B994-2BFFCD484914}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{A525444A-E266-4003-A537-993116A8AFAE} = {068E62EC-32D6-40AA-9833-48B8856220F9}
 		{2EC7D03E-4AB3-4CB3-94A5-B7B8A9D47E8B} = {10ADF049-11EE-4BCF-B386-2DFDD40C2DE2}
 		{1638803E-5381-4FC2-9A9B-56B7ACB2751E} = {068E62EC-32D6-40AA-9833-48B8856220F9}
+		{2A296F70-29CA-442C-B994-2BFFCD484914} = {068E62EC-32D6-40AA-9833-48B8856220F9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4947C43-2DC8-411A-9E52-69E6E5C334D8}
