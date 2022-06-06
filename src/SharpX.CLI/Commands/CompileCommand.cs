@@ -43,7 +43,7 @@ internal class CompileCommand
 
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
-            ConsoleExt.WriteError("failed to load plugins");
+            ConsoleExt.WriteError("failed to load plugins, missing entrypoint or failed to execute entrypoint");
             return ExitCodes.Failure;
         }
 

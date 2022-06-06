@@ -16,7 +16,7 @@ namespace SharpX.Compiler.Models.Abstractions;
 
 internal class BackendContainer
 {
-    private readonly SortedList<uint, Type> _visitors;
+    private readonly SortedList<uint, List<Type>> _visitors;
     private readonly List<string> _references;
 
     public string Language { get; }
@@ -31,13 +31,20 @@ internal class BackendContainer
     {
         Language = language;
         ReturnType = @return;
-        _visitors = new SortedList<uint, Type>();
+        _visitors = new SortedList<uint, List<Type>>();
         _references = new List<string>();
     }
 
     public void Register(uint priority, Type visitor)
     {
-        _visitors.Add(priority, visitor);
+        if (_visitors.ContainsKey(priority))
+        {
+            _visitors[priority].Add(visitor);
+            return;
+        }
+
+        _visitors.Add(priority, new List<Type>());
+        _visitors[priority].Add(visitor);
     }
 
     public void AddReferences(string[] references)
@@ -59,8 +66,9 @@ internal class BackendContainer
             var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }));
 
             foreach (var visitor in _visitors)
+            foreach (var type in visitor.Value)
             {
-                var visitorInstance = Activator.CreateInstance(visitor.Value, args);
+                var visitorInstance = Activator.CreateInstance(type, args);
                 register.Invoke(instance, new[] { visitorInstance });
             }
 
@@ -84,8 +92,9 @@ internal class BackendContainer
             var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }), (language, node) => invoker.Invoke(language, node));
 
             foreach (var visitor in _visitors)
+            foreach (var type in visitor.Value)
             {
-                var visitorInstance = Activator.CreateInstance(visitor.Value, args);
+                var visitorInstance = Activator.CreateInstance(type, args);
                 register.Invoke(instance, new[] { visitorInstance });
             }
 
