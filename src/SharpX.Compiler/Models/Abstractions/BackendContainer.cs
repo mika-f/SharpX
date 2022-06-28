@@ -16,8 +16,8 @@ namespace SharpX.Compiler.Models.Abstractions;
 
 internal class BackendContainer
 {
-    private readonly SortedList<uint, List<Type>> _visitors;
     private readonly List<string> _references;
+    private readonly SortedList<uint, List<Type>> _visitors;
 
     public string Language { get; }
 
@@ -58,12 +58,12 @@ internal class BackendContainer
         ExtensionCallback = callback;
     }
 
-    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model)
+    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model, Dictionary<INamedTypeSymbol, string> fileMappings)
     {
         try
         {
             var (instance, register, visit1, visit2) = CreateRootSyntaxVisitorInstance();
-            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }));
+            var args = CreateBackendVisitorArgs(model, fileMappings, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }));
 
             foreach (var visitor in _visitors)
             foreach (var type in visitor.Value)
@@ -84,12 +84,12 @@ internal class BackendContainer
         return null;
     }
 
-    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model, Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?> invoker)
+    public SyntaxNode? RunAsync(Microsoft.CodeAnalysis.SyntaxNode syntax, SemanticModel model, Dictionary<INamedTypeSymbol, string> fileMappings, Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?> invoker)
     {
         try
         {
             var (instance, register, visit1, visit2) = CreateRootSyntaxVisitorInstance();
-            var args = CreateBackendVisitorArgs(model, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }), (language, node) => invoker.Invoke(language, node));
+            var args = CreateBackendVisitorArgs(model, fileMappings, node => (SyntaxNode?)visit1.Invoke(instance, new object?[] { node }), (oldNode, newNode) => (SyntaxNode?)visit2.Invoke(instance, new object?[] { oldNode, newNode }), (language, node) => invoker.Invoke(language, node));
 
             foreach (var visitor in _visitors)
             foreach (var type in visitor.Value)
@@ -132,11 +132,11 @@ internal class BackendContainer
         return (instance, register, visit1, visit2);
     }
 
-    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit1, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?, SyntaxNode?>> visit2,
+    private object CreateBackendVisitorArgs(SemanticModel semanticModel, Dictionary<INamedTypeSymbol, string> fileMappings, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?>> visit1, Expression<Func<Microsoft.CodeAnalysis.SyntaxNode, SyntaxNode?, SyntaxNode?>> visit2,
                                             Expression<Func<string, Microsoft.CodeAnalysis.SyntaxNode?, SyntaxNode?>>? invoker = default)
     {
         var activator = typeof(BackendVisitorArgs<>).MakeGenericType(ReturnType);
-        var instance = Activator.CreateInstance(activator, semanticModel, CreateDelegate1Lambda(visit1), CreateDelegate2Lambda(visit2), CreateInvokerLambda(invoker));
+        var instance = Activator.CreateInstance(activator, semanticModel, fileMappings, CreateDelegate1Lambda(visit1), CreateDelegate2Lambda(visit2), CreateInvokerLambda(invoker));
 
         if (instance == null)
             throw new InvalidOperationException($"failed to create the instance of BackendVisitorArgs<{ReturnType.FullName}>.");

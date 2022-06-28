@@ -18,4 +18,6 @@ public interface IBackendVisitorArgs<TResult> where TResult : SyntaxNode
     SemanticModel SemanticModel { get; }
 
     SyntaxNode? Invoke(string language, Microsoft.CodeAnalysis.SyntaxNode? syntaxNode);
+
+    string GetOutputFilePath(INamedTypeSymbol t);
 }

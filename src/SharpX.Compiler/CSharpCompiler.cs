@@ -7,8 +7,11 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text.RegularExpressions;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpX.Compiler.Extensions;
 using SharpX.Compiler.Interfaces;
@@ -173,20 +176,20 @@ public class CSharpCompiler : IDisposable
 
         _workspace = EnumerableSources();
 
-        var isSuccessful = await PrecompileCSharpSourcesAsync(ct);
+        var (isSuccessful, dict) = await PrecompileCSharpSourcesAsync(ct);
         if (!isSuccessful)
             return false;
 
-        Func<string, SyntaxNode?, SemanticModel, Core.SyntaxNode?>? invoker = null;
-        invoker = (language, node, model) =>
+        Func<string, SyntaxNode?, SemanticModel, Dictionary<INamedTypeSymbol, string>, Core.SyntaxNode?>? invoker = null;
+        invoker = (language, node, model, mappings) =>
         {
             if (node == null)
                 return default;
-            return _registry?.GetLanguageContainer(language)?.RunAsync(node, model, (l, n) => invoker!.Invoke(l, n, model));
+            return _registry?.GetLanguageContainer(language)?.RunAsync(node, model, mappings, (l, n) => invoker!.Invoke(l, n, model, mappings));
         };
 
 
-        isSuccessful &= await CompileCSharpSourcesAsync(container, invoker, ct);
+        isSuccessful &= await CompileCSharpSourcesAsync(container, dict, invoker, ct);
         return isSuccessful;
     }
 
@@ -208,7 +211,7 @@ public class CSharpCompiler : IDisposable
         return workspace.RemoveDocuments(removed);
     }
 
-    private async Task<bool> PrecompileCSharpSourcesAsync(CancellationToken ct)
+    private async Task<(bool, Dictionary<INamedTypeSymbol, string>?)> PrecompileCSharpSourcesAsync(CancellationToken ct)
     {
         var workspace = _workspace!;
         var diagnostics = await workspace.GetAllDocuments()
@@ -219,17 +222,37 @@ public class CSharpCompiler : IDisposable
                                          .ToListAsync(ct);
 
         if (diagnostics.None())
-            return true;
+        {
+            var t = await workspace.GetAllDocuments()
+                                   .ToAsyncEnumerable()
+                                   .SelectManyAwait(async ws =>
+                                   {
+                                       var m = await ws.GetSemanticModelAsync(ct);
+                                       if (m == null)
+                                           return new List<(string, INamedTypeSymbol)>().ToAsyncEnumerable();
+
+                                       var tree = await ws.GetSyntaxTreeAsync(ct);
+                                       var compilation = tree?.GetCompilationUnitRoot(ct);
+                                       var declarations = compilation?.DescendantNodes().Where(w => w is ClassDeclarationSyntax or InterfaceDeclarationSyntax or StructDeclarationSyntax or RecordDeclarationSyntax).ToList() ?? new List<SyntaxNode>();
+                                       var guid = ws.Id.Id.ToString()!;
+                                       return declarations.Select(w => m.GetDeclaredSymbol(w) as INamedTypeSymbol).NonNullable().Select(w => (guid, w)).ToAsyncEnumerable();
+                                   })
+                                   .ToDictionaryAsync(w => w.Item2, w => w.Item1, ct);
+
+            return (true, t);
+        }
 
         _errors.AddRange(diagnostics.Select(w => w.ToErrorMessage()));
-        return diagnostics.All(w => w.Severity != DiagnosticSeverity.Error);
+        return (diagnostics.All(w => w.Severity != DiagnosticSeverity.Error), null);
     }
 
-    private async Task<bool> CompileCSharpSourcesAsync(BackendContainer container, Func<string, SyntaxNode?, SemanticModel, Core.SyntaxNode?> invoker, CancellationToken ct)
+    private async Task<bool> CompileCSharpSourcesAsync(BackendContainer container, Dictionary<INamedTypeSymbol, string> fileMappings, Func<string, SyntaxNode?, SemanticModel, Dictionary<INamedTypeSymbol, string>, Core.SyntaxNode?> invoker, CancellationToken ct)
     {
         var workspace = _workspace!;
 
         var lockObj = new object();
+        var contentFileMappings = new Dictionary<string, string>();
+        var actualFileMappings = new Dictionary<string, (string Absolute, string Relative)>();
 
         await Parallel.ForEachAsync(workspace.GetAllDocuments(), ct, async (w, c) =>
         {
@@ -243,7 +266,7 @@ public class CSharpCompiler : IDisposable
                     return;
                 }
 
-            var source = container.RunAsync(syntax, model, (language, node) => invoker.Invoke(language, node, model));
+            var source = container.RunAsync(syntax, model, fileMappings, (language, node) => invoker.Invoke(language, node, model, fileMappings));
 
             lock (lockObj)
             {
@@ -258,16 +281,36 @@ public class CSharpCompiler : IDisposable
                     var baseUri = new Uri(Path.GetFullPath(_options.BaseUrl), UriKind.Absolute);
 
                     var relative = baseUri.MakeRelativeUri(fileUri);
-                    var extension = container.ExtensionCallback.Invoke(source);
-                    var @out = Path.GetFullPath(Path.Combine(_options.Output, Path.GetFileNameWithoutExtension(relative.ToString()) + "." + extension));
-                    var dir = Path.GetDirectoryName(@out) ?? throw new ArgumentNullException();
-                    if (!Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
+                    var baseDir = Path.GetDirectoryName(relative.ToString());
+                    var baseName = Path.GetFileNameWithoutExtension(relative.ToString());
+                    var extension = container.ExtensionCallback?.Invoke(source) ?? Path.GetExtension(relative.ToString());
+                    var @out = Path.GetFullPath(Path.Combine(_options.Output, baseDir ?? "", baseName + "." + extension));
+                    var id = w.Id.Id.ToString();
 
-                    File.WriteAllText(@out, str);
+                    actualFileMappings.Add(id, (@out, Path.Combine(baseDir ?? "", baseName + "." + extension)));
+                    contentFileMappings.Add(id, str);
                 }
             }
         });
+
+        var regex = new Regex("<#ref (?<guid>.*?)>", RegexOptions.Compiled);
+
+        foreach (var (guid, c) in contentFileMappings)
+        {
+            var content = c;
+            foreach (Match match in regex.Matches(content))
+            {
+                var fileReference = match.Groups["guid"].Value;
+                content = content.Replace(match.Value, actualFileMappings[fileReference].Relative);
+            }
+
+            var @out = actualFileMappings[guid].Absolute;
+            var dir = Path.GetDirectoryName(@out) ?? throw new ArgumentNullException();
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            await File.WriteAllTextAsync(@out, content, ct);
+        }
 
         return true;
     }
