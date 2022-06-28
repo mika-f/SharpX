@@ -57,7 +57,7 @@ internal abstract class HlslSyntaxNodeInternal : GreenNode
                 var structsInParent = StructureTable.GetOrCreateValue(parent);
                 lock (structsInParent)
                 {
-                    if (structsInParent.TryGetValue(parentTrivia, out var weakStructure))
+                    if (!structsInParent.TryGetValue(parentTrivia, out var weakStructure))
                     {
                         structure = StructuredTriviaSyntax.Create(parentTrivia);
                         structsInParent.Add(parentTrivia, new WeakReference<SyntaxNode?>(structure));
