@@ -180,6 +180,11 @@ public abstract class SyntaxNode
         return new ChildSyntaxList(this);
     }
 
+    public SyntaxTriviaList GetLeadingTrivia()
+    {
+        return GetFirstToken(true).LeadingTrivia;
+    }
+
     public SyntaxTriviaList GetTrailingTrivia()
     {
         return GetLastToken(true).TrailingTrivia;
