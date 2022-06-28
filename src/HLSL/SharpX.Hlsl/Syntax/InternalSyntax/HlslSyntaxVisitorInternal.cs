@@ -292,6 +292,12 @@ internal abstract class HlslSyntaxVisitorInternal<TResult>
         return DefaultVisit(node);
     }
 
+
+    public virtual TResult? VisitIncludeDirective(IncludeDirectiveSyntaxInternal node)
+    {
+        return DefaultVisit(node);
+    }
+
     #region Base Implementations
 
     public virtual TResult? Visit(HlslSyntaxNodeInternal? node)

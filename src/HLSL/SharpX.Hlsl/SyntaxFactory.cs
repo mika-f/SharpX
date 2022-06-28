@@ -143,6 +143,10 @@ public static partial class SyntaxFactory
         return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
+    {
+        return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, $"\"{value}\"", value, ElasticMarker.UnderlyingNode));
+    }
+
     public static SyntaxList<TNode> List<TNode>() where TNode : SyntaxNode
     {
         return default;
@@ -176,6 +180,11 @@ public static partial class SyntaxFactory
     public static SyntaxTokenList TokenList(params SyntaxToken[] tokens)
     {
         return new SyntaxTokenList(tokens);
+    }
+
+    public static SyntaxTrivia Trivia(StructuredTriviaSyntax trivia)
+    {
+        return new SyntaxTrivia(default, trivia.Green, 0, 0);
     }
 
     public static SyntaxTriviaList TriviaList()

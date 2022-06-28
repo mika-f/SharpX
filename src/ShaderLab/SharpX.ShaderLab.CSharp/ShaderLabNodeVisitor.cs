@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Diagnostics;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -27,7 +29,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 {
     private readonly IBackendVisitorArgs<ShaderLabSyntaxNode> _args;
     private readonly List<FieldDeclarationSyntax> _globalFields;
-    private int _level = 0;
+    private int _level;
 
     public ShaderLabNodeVisitor(IBackendVisitorArgs<ShaderLabSyntaxNode> args) : base(args)
     {
@@ -37,7 +39,9 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
     public override ShaderLabSyntaxNode? DefaultVisit(SyntaxNode node)
     {
-        return null;
+        // fallback to HLSL
+        var source = _args.Invoke("HLSL", node);
+        return source != null ? SyntaxFactory.HlslSource(source.NormalizeWhitespace()) : null;
     }
 
     public override ShaderLabSyntaxNode? VisitCompilationUnit(CompilationUnitSyntax node)
@@ -99,7 +103,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 var properties = members.OfType<Syntax.PropertyDeclarationSyntax>().ToArray();
                 var propertiesDecl = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(properties) : null;
 
-                var sources = new List<Core.SyntaxNode>();
+                var sources = new List<FieldDeclarationSyntax>();
 
                 CgIncludeDeclarationSyntax? cgInclude = null;
                 if (sources.Count > 0 || _globalFields.Count > 0)
@@ -107,7 +111,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                     sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
                     _globalFields.Clear();
 
-                    var includeSource = SyntaxFactory.HlslSource(SyntaxFactory.List(sources));
+                    var compilation = Hlsl.SyntaxFactory.CompilationUnit();
+                    foreach (var member in sources)
+                        compilation = compilation.AddMembers(member);
+
+                    var includeSource = SyntaxFactory.HlslSource(compilation);
                     cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
                 }
 
@@ -186,14 +194,47 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
                     case { } when HasRenderPassAttribute(node):
                     {
-                        var members = node.Members.Select(Visit)
-                                          .Where(w => w != null)
-                                          .ToList();
+                        if (node.Members.Count != 0)
+                        {
+                            var hlsl = _args.Invoke("HLSL", node);
+                            if (hlsl == null)
+                                return null;
 
+                            var program = SyntaxFactory.CgProgramDeclaration(hlsl);
+                            var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                            return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), program);
+                        }
+                        else
+                        {
+                            var program = Hlsl.SyntaxFactory.CompilationUnit();
+                            var attributes = GetAttributeData(node, typeof(ShaderProgramAttribute));
 
-                        var cgProgram = members.Count == 0 ? SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("a")) : SyntaxFactory.CgProgramDeclaration(SyntaxFactory.IdentifierName("b"));
-                        var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                        return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
+                            if (HasAttribute(node, typeof(ShaderVertexAttribute)))
+                            {
+                                /*
+                                var val = GetAttributeData(node, typeof(ShaderVertexAttribute))[0][0];
+                                if (val is string str)
+                                    program.Add(Hlsl.SyntaxFactory.Pragma(""));
+                                */
+                            }
+
+                            if (HasAttribute(node, typeof(ShaderProgramAttribute)))
+                            {
+                                var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
+                                foreach (var t in val)
+                                {
+                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(_args.GetOutputFilePath(t)).WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            ")).WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                                }
+                            }
+
+                            foreach (var attribute in attributes)
+                                Debug.WriteLine("");
+
+                            var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.HlslSource(program));
+                            var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                            return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
+                        }
                     }
 
                     default:
@@ -204,7 +245,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
             if (source == null || string.IsNullOrWhiteSpace(source.ToFullString()))
                 return null;
-            return SyntaxFactory.HlslSource(SyntaxFactory.List(source));
+            return SyntaxFactory.HlslSource(source);
         }
         finally
         {

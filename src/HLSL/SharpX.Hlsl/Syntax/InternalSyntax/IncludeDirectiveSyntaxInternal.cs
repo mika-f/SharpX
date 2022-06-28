@@ -70,11 +70,11 @@ internal class IncludeDirectiveSyntaxInternal : DirectiveTriviaSyntaxInternal
 
     public override SyntaxNode CreateRed(SyntaxNode? parent, int position)
     {
-        throw new NotImplementedException();
+        return new IncludeDirectiveSyntax(this, parent, position);
     }
 
     public override TResult? Accept<TResult>(HlslSyntaxVisitorInternal<TResult> visitor) where TResult : default
     {
-        throw new NotImplementedException();
+        return visitor.VisitIncludeDirective(this);
     }
 }

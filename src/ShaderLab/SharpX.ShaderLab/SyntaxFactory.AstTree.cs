@@ -407,8 +407,8 @@ public partial class SyntaxFactory
         return CustomEditorDeclaration(StringLiteral(fullyQualifiedInspectorName));
     }
 
-    public static HlslSourceSyntax HlslSource(SyntaxList<SyntaxNode> sources)
+    public static HlslSourceSyntax HlslSource(SyntaxNode sources)
     {
-        return (HlslSourceSyntax)SyntaxFactoryInternal.HlslSource(sources.Node.ToGreenList<GreenNode>()).CreateRed();
+        return (HlslSourceSyntax)SyntaxFactoryInternal.HlslSource(sources.Green).CreateRed();
     }
 }

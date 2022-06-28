@@ -951,4 +951,24 @@ public static partial class SyntaxFactory
             (SemanticSyntaxInternal?)semantics?.Green
         ).CreateRed();
     }
+
+    public static IncludeDirectiveSyntax IncludeDirectiveTrivia(SyntaxToken hashToken, SyntaxToken includeKeyword, SyntaxToken file, SyntaxToken endOfDirectiveToken)
+    {
+        return (IncludeDirectiveSyntax)SyntaxFactoryInternal.IncludeDirectiveTrivia(
+            (SyntaxTokenInternal)hashToken.Node!,
+            (SyntaxTokenInternal)includeKeyword.Node!,
+            (SyntaxTokenInternal)file.Node!,
+            (SyntaxTokenInternal)endOfDirectiveToken.Node!
+        ).CreateRed();
+    }
+
+    public static IncludeDirectiveSyntax IncludeDirectiveTrivia(SyntaxToken file)
+    {
+        return IncludeDirectiveTrivia(Token(SyntaxKind.HashToken), Token(SyntaxKind.IncludeKeyword), file, Token(SyntaxKind.EndOfDirectiveToken));
+    }
+
+    public static IncludeDirectiveSyntax IncludeDirectiveTrivia(string file)
+    {
+        return IncludeDirectiveTrivia(StringLiteral(file));
+    }
 }

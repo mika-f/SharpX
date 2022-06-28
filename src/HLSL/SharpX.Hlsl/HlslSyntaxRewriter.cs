@@ -553,6 +553,16 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitIncludeDirective(IncludeDirectiveSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.HashToken),
+            VisitToken(node.IncludeKeyword),
+            VisitToken(node.File),
+            VisitToken(node.EndOfDirectiveToken)
+        );
+    }
+
     public virtual SyntaxToken VisitToken(SyntaxToken token)
     {
         var node = token.Node;

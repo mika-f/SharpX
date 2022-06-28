@@ -300,6 +300,11 @@ public abstract class HlslSyntaxVisitor<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitIncludeDirective(IncludeDirectiveSyntax node)
+    {
+        return DefaultVisit(node);
+    }
+
     #region Base Implementations
 
     public virtual TResult? Visit(SyntaxNode? node)

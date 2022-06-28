@@ -38,7 +38,12 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             var sources = (HlslSourceSyntax?)decl.CgInclude?.Source;
             if (sources == null)
                 return newNode;
-            return decl.WithCgInclude(SyntaxFactory.CgIncludeDeclaration(SyntaxFactory.HlslSource(sources.Sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    ")))))));
+            var compilation = Hlsl.SyntaxFactory.CompilationUnit();
+
+            foreach (var member in _globalFields)
+                compilation = compilation.AddMembers(member.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    ")));
+
+            return decl.WithCgInclude(SyntaxFactory.CgIncludeDeclaration(SyntaxFactory.HlslSource(compilation)));
         }
 
         return base.VisitClassDeclaration(oldNode, newNode);

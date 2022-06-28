@@ -7,7 +7,7 @@ using SharpX.Core;
 
 namespace SharpX.Hlsl.Syntax;
 
-internal abstract class StructuredTriviaSyntax : HlslSyntaxNode, IStructuredTriviaSyntax
+public abstract class StructuredTriviaSyntax : HlslSyntaxNode, IStructuredTriviaSyntax
 {
     protected StructuredTriviaSyntax(GreenNode node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 

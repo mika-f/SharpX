@@ -314,8 +314,8 @@ internal partial class SyntaxFactoryInternal
         return new CustomEditorDeclarationSyntaxInternal(SyntaxKind.CustomEditorDeclaration, customEditorKeyword, fullyQualifiedInspectorName);
     }
 
-    public static HlslSourceSyntaxInternal HlslSource(SyntaxListInternal<GreenNode> sources)
+    public static HlslSourceSyntaxInternal HlslSource(GreenNode sources)
     {
-        return new HlslSourceSyntaxInternal(SyntaxKind.HlslSourceUnit, sources.Node!);
+        return new HlslSourceSyntaxInternal(SyntaxKind.HlslSourceUnit, sources);
     }
 }
