@@ -17,6 +17,11 @@ public static class SyntaxNodeExtensions
         return (TNode)node.NormalizeWhitespaceCore(indentation, eol, elasticTrivia);
     }
 
+    public static TNode AddLeadingTrivia<TNode>(this TNode node, params SyntaxTrivia[] trivia) where TNode : SyntaxNode
+    {
+        return node.WithLeadingTrivia(node.GetLeadingTrivia().Concat(trivia));
+    }
+
     public static TNode WithLeadingTrivia<TNode>(this TNode node, params SyntaxTrivia[]? trivia) where TNode : SyntaxNode
     {
         return node.WithLeadingTrivia((IEnumerable<SyntaxTrivia>?)trivia);
@@ -27,6 +32,11 @@ public static class SyntaxNodeExtensions
         var first = node.GetFirstToken(includeZeroWidth: true);
         var newFirst = first.WithLeadingTrivia(trivia);
         return node.ReplaceToken(first, newFirst);
+    }
+
+    public static TNode AddTrailingTrivia<TNode>(this TNode node, params SyntaxTrivia[] trivia) where TNode : SyntaxNode
+    {
+        return node.WithTrailingTrivia(node.GetTrailingTrivia().Concat(trivia));
     }
 
     public static TNode WithTrailingTrivia<TNode>(this TNode node, params SyntaxTrivia[]? trivia) where TNode : SyntaxNode
