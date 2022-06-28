@@ -4,12 +4,13 @@
 // ------------------------------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
-using SharpX.Hlsl.Syntax;
 
-using MemberAccessExpressionSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.MemberAccessExpressionSyntax;
+using AttributeListSyntax = SharpX.Hlsl.Syntax.AttributeListSyntax;
+using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 
 namespace SharpX.Hlsl.CSharp.Enum;
 
@@ -21,6 +22,36 @@ internal class HlslNodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     public HlslNodeVisitor(IBackendVisitorArgs<HlslSyntaxNode> args) : base(args)
     {
         _args = args;
+    }
+
+    public override HlslSyntaxNode? VisitPropertyDeclaration(PropertyDeclarationSyntax oldNode, HlslSyntaxNode? newNode)
+    {
+        var m = _args.SemanticModel.GetSymbolInfo(oldNode.Type!);
+        if (m.Symbol is not INamedTypeSymbol symbol)
+            return newNode;
+
+        if (symbol.TypeKind != TypeKind.Enum)
+            return newNode;
+
+        if (newNode is not FieldDeclarationSyntax field)
+            return newNode;
+
+        return field.WithType(SyntaxFactory.IdentifierName("int"));
+    }
+
+    public override HlslSyntaxNode? VisitParameter(ParameterSyntax oldNode, HlslSyntaxNode? newNode)
+    {
+        var m = _args.SemanticModel.GetSymbolInfo(oldNode.Type!);
+        if (m.Symbol is not INamedTypeSymbol symbol)
+            return newNode;
+
+        if (symbol.TypeKind != TypeKind.Enum)
+            return newNode;
+
+        if (newNode is not Syntax.ParameterSyntax parameter)
+            return newNode;
+
+        return parameter.WithType(SyntaxFactory.IdentifierName("int"));
     }
 
     public override HlslSyntaxNode? VisitMemberAccessExpression(MemberAccessExpressionSyntax oldNode, HlslSyntaxNode? newNode)
