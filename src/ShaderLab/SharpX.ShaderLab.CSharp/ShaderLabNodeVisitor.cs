@@ -292,10 +292,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
         if (HasAttribute(node, typeof(BlendAttribute)))
         {
-            var args = GetAttributeData(node, typeof(BlendAttribute));
-            var chunk = args.Select(w => Enum.GetName(typeof(BlendFunc), (int)w[0]!)!).Chunk(args.Count == 4 ? 2 : 1);
-
-            commands.Add(SyntaxFactory.CommandDeclaration("Blend", chunk.Select(w => w.Length == 2 ? w[0] + w[1] : w[0]).ToArray()));
+            var args = GetAttributeData(node, typeof(BlendAttribute)).Select(w => Enum.GetName(typeof(BlendFunc), (int)w[0]!)!).ToList();
+            if (args.Count == 2)
+                commands.Add(SyntaxFactory.CommandDeclaration("Blend", $"{args[0]} {args[1]}"));
+            else
+                commands.Add(SyntaxFactory.CommandDeclaration("Blend", $"{args[0]} {args[1]}", $"{args[2]} {args[3]}"));
         }
 
         if (HasAttribute(node, typeof(CullingAttribute)))
