@@ -26,25 +26,25 @@ namespace SharpX.Compiler;
 public class CSharpCompiler : IDisposable
 {
     private readonly List<IErrorMessage> _errors;
-    private readonly List<AssemblyLoadContext> _hosts;
+    private readonly List<SharpXPluginHost> _hosts;
     private readonly CSharpCompilerOptions _options;
     private BackendRegistry? _registry;
     private SharpXWorkspace? _workspace;
 
     public IReadOnlyCollection<IErrorMessage> Errors => _errors.AsReadOnly();
 
-    private CSharpCompiler(CSharpCompilerOptions options, List<AssemblyLoadContext> hosts, SharpXWorkspace? workspace = null, BackendRegistry? registry = null)
+    private CSharpCompiler(CSharpCompilerOptions options, List<SharpXPluginHost> hosts, SharpXWorkspace? workspace = null, BackendRegistry? registry = null)
     {
         _options = options;
-        _workspace = workspace;
         _hosts = hosts;
+        _workspace = workspace;
         _registry = registry;
         _errors = new List<IErrorMessage>();
     }
 
     public CSharpCompiler() : this(CSharpCompilerOptions.Default) { }
 
-    public CSharpCompiler(CSharpCompilerOptions options) : this(options, new List<AssemblyLoadContext>()) { }
+    public CSharpCompiler(CSharpCompilerOptions options) : this(options, new List<SharpXPluginHost>()) { }
 
     public void Dispose()
     {
@@ -56,56 +56,31 @@ public class CSharpCompiler : IDisposable
         return new CSharpCompiler(_options with { Sources = sources }, _hosts, _workspace, _registry);
     }
 
-    public async Task<bool> LoadLanguagesAsync(CancellationToken ct)
-    {
-        var isSuccessful = true;
-        foreach (var path in _options.Languages)
-        {
-            ct.ThrowIfCancellationRequested();
-
-            if (File.Exists(path))
-                isSuccessful &= await LoadLanguagePluginAtPathAsync(path);
-            else
-                isSuccessful = false;
-        }
-
-        return isSuccessful;
-    }
-
-    private Task<bool> LoadLanguagePluginAtPathAsync(string path)
-    {
-        try
-        {
-            var hasEntryPoint = false;
-            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-            foreach (var type in assembly.GetTypes())
-                switch (type)
-                {
-                    case { } when type.GetCustomAttribute<LanguageAttribute>() != null && typeof(ILanguage).IsAssignableFrom(type):
-                        hasEntryPoint = true;
-                        break;
-                }
-
-
-            if (hasEntryPoint)
-                return Task.FromResult(true);
-
-            return Task.FromResult(false);
-        }
-        catch (Exception e)
-        {
-            if (Debugger.IsAttached)
-                Debugger.Break();
-
-            return Task.FromResult(false);
-        }
-    }
-
     public async Task<bool> LoadPluginsAsync(CancellationToken ct)
     {
         _registry = new BackendRegistry();
 
         var isSuccessful = true;
+        foreach (var path in _options.Languages)
+        {
+            ct.ThrowIfCancellationRequested();
+            if (File.Exists(path))
+                isSuccessful &= await LoadRequirementsPluginIntoDefaultContextAtPathAsync(path);
+
+            if (!isSuccessful)
+                return false;
+        }
+
+        foreach (var path in _options.Libraries)
+        {
+            ct.ThrowIfCancellationRequested();
+            if (File.Exists(path))
+                isSuccessful &= await LoadBackendPluginAtPathAsync(path, false);
+
+            if (!isSuccessful)
+                return false;
+        }
+
         foreach (var path in _options.Plugins)
         {
             ct.ThrowIfCancellationRequested();
@@ -113,20 +88,20 @@ public class CSharpCompiler : IDisposable
                 isSuccessful &= await LoadBackendPluginAtPathAsync(path);
             else
                 isSuccessful = false;
+
+            if (!isSuccessful)
+                return false;
         }
 
         return isSuccessful;
     }
 
-    private async Task<bool> LoadBackendPluginAtPathAsync(string path)
+    private async Task<bool> LoadRequirementsPluginIntoDefaultContextAtPathAsync(string path)
     {
-        var host = new SharpXPluginHost(path);
-        _hosts.Add(host);
-
         try
         {
             var isLoaded = false;
-            var assembly = host.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(path)));
+            var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
             foreach (var type in assembly.GetTypes())
                 switch (type)
                 {
@@ -137,6 +112,35 @@ public class CSharpCompiler : IDisposable
                 }
 
             return isLoaded;
+        }
+        catch (Exception e)
+        {
+            if (Debugger.IsAttached)
+                Debugger.Break();
+
+            return false;
+        }
+    }
+
+    private async Task<bool> LoadBackendPluginAtPathAsync(string path, bool doExecute = true)
+    {
+        var host = new SharpXPluginHost(path);
+        _hosts.Add(host);
+
+        try
+        {
+            var isLoaded = false;
+            var assembly = host.LoadFromAssemblyPath(path);
+            foreach (var type in assembly.GetTypes())
+                switch (type)
+                {
+                    case { } when type.GetCustomAttribute<BackendAttribute>() != null && typeof(IBackend).IsAssignableFrom(type):
+                        await ExecutePluginEntryPointAsync(type);
+                        isLoaded = true;
+                        break;
+                }
+
+            return (doExecute && isLoaded) || !doExecute;
         }
         catch (Exception e)
         {

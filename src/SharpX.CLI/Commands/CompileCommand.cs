@@ -35,12 +35,6 @@ internal class CompileCommand
 
         Console.CancelKeyPress += (_, _) => source.Cancel();
 
-        if (!await compiler.LoadLanguagesAsync(source.Token))
-        {
-            ConsoleExt.WriteError("failed to load language implementations");
-            return ExitCodes.Failure;
-        }
-
         if (!await compiler.LoadPluginsAsync(source.Token))
         {
             ConsoleExt.WriteError("failed to load plugins, missing entrypoint or failed to execute entrypoint");
@@ -120,6 +114,7 @@ internal class CompileCommand
         var baseUrl = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), config.CompilerOptions.BaseUrl));
         var languages = config.Languages.Select(w => Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), w)));
         var plugins = config.Plugins.Select(w => Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), w)));
-        return new CSharpCompilerOptions(baseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, config.CompilerOptions.Libraries, languages.ToList(), plugins.ToList());
+        var libraries = config.CompilerOptions.Libraries.Select(w => Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), w)));
+        return new CSharpCompilerOptions(baseUrl, config.Includes.Concat(config.Files).ToList(), config.CompilerOptions.OutDir, config.CompilerOptions.Target, libraries.ToList(), languages.ToList(), plugins.ToList());
     }
 }

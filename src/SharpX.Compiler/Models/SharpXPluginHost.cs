@@ -1,33 +1,39 @@
-﻿using System.Reflection;
+﻿// ------------------------------------------------------------------------------------------
+//  Copyright (c) Natsuneko. All rights reserved.
+//  Licensed under the MIT License. See LICENSE in the project root for license information.
+// ------------------------------------------------------------------------------------------
+
+using System.Reflection;
 using System.Runtime.Loader;
 
-namespace SharpX.Compiler.Models
+namespace SharpX.Compiler.Models;
+
+internal class SharpXPluginHost : AssemblyLoadContext
 {
-    internal class SharpXPluginHost : AssemblyLoadContext
+    private readonly AssemblyDependencyResolver _resolver;
+    private readonly string _root;
+
+    public SharpXPluginHost(string path, bool isCollectible = false) : base(Path.GetFileName(path), isCollectible)
     {
-        private readonly AssemblyDependencyResolver _resolver;
+        _root = Path.GetDirectoryName(path) ?? "";
+        _resolver = new AssemblyDependencyResolver(path);
+    }
 
-        public SharpXPluginHost(string path, bool isCollectible = false) : base(isCollectible)
-        {
-            _resolver = new AssemblyDependencyResolver(path);
-        }
+    protected override Assembly? Load(AssemblyName assemblyName)
+    {
+        var path = _resolver.ResolveAssemblyToPath(assemblyName);
+        if (string.IsNullOrWhiteSpace(path))
+            return null;
 
-        protected override Assembly? Load(AssemblyName assemblyName)
-        {
-            var path = _resolver.ResolveAssemblyToPath(assemblyName);
-            if (string.IsNullOrWhiteSpace(path))
-                return null;
+        return LoadFromAssemblyPath(path);
+    }
 
-            return LoadFromAssemblyPath(path);
-        }
+    protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
+    {
+        var path = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
+        if (string.IsNullOrWhiteSpace(path))
+            return IntPtr.Zero;
 
-        protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
-        {
-            var path = _resolver.ResolveUnmanagedDllToPath(unmanagedDllName);
-            if (string.IsNullOrWhiteSpace(path))
-                return IntPtr.Zero;
-
-            return LoadUnmanagedDllFromPath(path);
-        }
+        return LoadUnmanagedDllFromPath(path);
     }
 }

@@ -8,5 +8,11 @@ using SharpX.Composition.Interfaces;
 
 namespace SharpX.ShaderLab;
 
-[Language]
-public class PluginEntryPoint : ILanguage { }
+[Backend]
+public class PluginEntryPoint : IBackend
+{
+    public string ContextId => "HLSL";
+    {
+        // nop
+    }
+}
