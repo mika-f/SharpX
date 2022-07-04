@@ -222,6 +222,19 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                                 }
                             }
 
+                            if (HasAttribute(node, typeof(ShaderFragmentAttribute)))
+                            {
+                                var val = GetAttributeData(node, typeof(ShaderFragmentAttribute))[0][0];
+                                if (val is string str)
+                                {
+                                    var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("fragment"), Hlsl.SyntaxFactory.Identifier(str))
+                                                     .NormalizeWhitespace()
+                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                                }
+                            }
+
                             if (HasAttribute(node, typeof(ShaderProgramAttribute)))
                             {
                                 var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
