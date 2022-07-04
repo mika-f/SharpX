@@ -211,11 +211,15 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
                             if (HasAttribute(node, typeof(ShaderVertexAttribute)))
                             {
-                                /*
                                 var val = GetAttributeData(node, typeof(ShaderVertexAttribute))[0][0];
                                 if (val is string str)
-                                    program.Add(Hlsl.SyntaxFactory.Pragma(""));
-                                */
+                                {
+                                    var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("vertex"), Hlsl.SyntaxFactory.Identifier(str))
+                                                     .NormalizeWhitespace()
+                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                                }
                             }
 
                             if (HasAttribute(node, typeof(ShaderProgramAttribute)))
@@ -223,7 +227,10 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                                 var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
                                 foreach (var t in val)
                                 {
-                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(_args.GetOutputFilePath(t)).WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            ")).WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(_args.GetOutputFilePath(t))
+                                                     .NormalizeWhitespace()
+                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
                                     program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
                                 }
                             }
