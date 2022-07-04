@@ -616,6 +616,11 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
         var identifier = SyntaxFactory.Identifier(node.Identifier.ValueText);
 
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.List<Syntax.AttributeListSyntax>(), SyntaxFactory.TokenList(), type, identifier);
+        if (node.Modifiers.Any(w => w.IsKind(CSharpSyntaxKind.RefKeyword)))
+            parameter = parameter.AddModifiers(SyntaxFactory.Token(SyntaxKind.InOutKeyword));
+        if (node.Modifiers.Any(w => w.IsKind(CSharpSyntaxKind.OutKeyword)))
+            parameter = parameter.AddModifiers(SyntaxFactory.Token(SyntaxKind.OutKeyword));
+
         if (HasSemanticsAttribute(node))
             return parameter.WithSemantics(SyntaxFactory.Semantics(GetAttributeData(node, typeof(SemanticAttribute))[0]));
         return parameter;
