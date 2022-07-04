@@ -235,6 +235,19 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                                 }
                             }
 
+                            if (HasAttribute(node, typeof(ShaderIncludeAttribute)))
+                            {
+                                var val = GetAttributeData(node, typeof(ShaderIncludeAttribute))[0].OfType<string>();
+                                foreach (var i in val)
+                                {
+                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(i)
+                                                     .NormalizeWhitespace()
+                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                                }
+                            }
+
                             if (HasAttribute(node, typeof(ShaderProgramAttribute)))
                             {
                                 var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
