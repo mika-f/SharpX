@@ -12,7 +12,7 @@ public class HlslSourceSyntax : ShaderLabSyntaxNode
     private SyntaxNode? _sources;
 
 
-    public SyntaxList<SyntaxNode> Sources => new(GetRedAtZero(ref _sources));
+    public SyntaxNode Sources => GetRedAtZero(ref _sources)!;
 
     internal HlslSourceSyntax(GreenNode node, SyntaxNode? parent, int position) : base(node, parent, position) { }
 
