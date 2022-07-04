@@ -11,7 +11,7 @@ namespace SharpX.Hlsl;
 [Backend]
 public class PluginEntryPoint : IBackend
 {
-    public string ContextId => "HLSL";
+    public void EntryPoint(IBackendRegistry registry)
     {
         // nop
     }
