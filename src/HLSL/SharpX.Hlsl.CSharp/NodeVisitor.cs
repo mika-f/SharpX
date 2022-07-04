@@ -222,8 +222,6 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     public override HlslSyntaxNode? VisitArgument(ArgumentSyntax node)
     {
         var expression = (ExpressionSyntax?)Visit(node.Expression);
-        if (node.RefKindKeyword != default)
-            return null;
         if (expression == null)
             return null;
 
