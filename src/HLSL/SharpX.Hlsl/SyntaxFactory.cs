@@ -143,6 +143,7 @@ public static partial class SyntaxFactory
         return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, value, ElasticMarker.UnderlyingNode));
     }
 
+    public static SyntaxToken StringLiteral(string value)
     {
         return new SyntaxToken(SyntaxFactoryInternal.Literal(ElasticMarker.UnderlyingNode, $"\"{value}\"", value, ElasticMarker.UnderlyingNode));
     }
