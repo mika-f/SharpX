@@ -18,12 +18,6 @@ public sealed partial class Vector4<T>
 {
     public Vector4(Vector1<T> _) { }
 
-    public Vector4(Vector1<T> _1, Vector1<T> _2) { }
-
-    public Vector4(Vector1<T> _1, Vector2<T> _2) { }
-
-    public Vector4(Vector2<T> _1, Vector1<T> _2) { }
-
     public Vector4(Vector1<T> _1, Vector1<T> _2, Vector1<T> _3) { }
 
     public Vector4(Vector2<T> _1, Vector2<T> _2) { }
