@@ -507,6 +507,8 @@ public enum SyntaxKind
 
     IncludeDirectiveTrivia,
 
+    PragmaDirectiveTrivia,
+
     PragmaDefDirectiveTrivia,
 
     PragmaMessageDirectiveTrivia,

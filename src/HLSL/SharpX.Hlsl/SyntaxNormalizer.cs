@@ -402,13 +402,17 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
         if (currentKind == SyntaxKind.ColonToken && currentToken.Parent is RegisterSyntax)
             return true;
 
-        // directives
+        // literal[ ]literal
         if (SyntaxFacts.IsLiteral(currentKind) && SyntaxFacts.IsLiteral(nextKind))
             return true;
 
-        // Am I checking next tokens?
-        if (IsKeyword(currentKind) && currentKind != SyntaxKind.RegisterKeyword)
+        // directives
+        if (SyntaxFacts.IsDirective(currentKind))
             return true;
+
+        // Am I checking next tokens?
+            if (IsKeyword(currentKind) && currentKind != SyntaxKind.RegisterKeyword)
+                return true;
 
         // (some-word)[ ](some-word)
         if (IsWord(currentKind) && IsWord(nextKind))
@@ -523,6 +527,11 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
                     return 1;
                 break;
             }
+
+            case SyntaxKind.DoubleQuoteToken:
+                if (currentToken.Parent is IncludeDirectiveSyntax)
+                    return 1;
+                return 0;
 
             case SyntaxKind.IdentifierToken:
                 if (currentToken.Parent?.Parent is SemanticSyntax && currentToken.Parent.Parent.Parent is MethodDeclarationSyntax)

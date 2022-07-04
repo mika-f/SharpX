@@ -292,6 +292,10 @@ internal abstract class HlslSyntaxVisitorInternal<TResult>
         return DefaultVisit(node);
     }
 
+    public virtual TResult? VisitPragmaDirectiveTrivia(PragmaDirectiveTriviaSyntaxInternal node)
+    {
+        return DefaultVisit(node);
+    }
 
     public virtual TResult? VisitIncludeDirective(IncludeDirectiveSyntaxInternal node)
     {

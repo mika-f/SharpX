@@ -563,6 +563,16 @@ public class HlslSyntaxRewriter : HlslSyntaxVisitor<SyntaxNode?>
         );
     }
 
+    public override SyntaxNode? VisitPragmaDirectiveTrivia(PragmaDirectiveTriviaSyntax node)
+    {
+        return node.Update(
+            VisitToken(node.HashToken),
+            VisitToken(node.PragmaKeyword),
+            VisitList(node.Arguments),
+            VisitToken(node.EndOfDirectiveToken)
+        );
+    }
+
     public virtual SyntaxToken VisitToken(SyntaxToken token)
     {
         var node = token.Node;

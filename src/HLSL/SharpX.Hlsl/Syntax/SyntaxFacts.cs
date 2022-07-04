@@ -65,6 +65,32 @@ internal static class SyntaxFacts
         }
     }
 
+    public static bool IsDirective(SyntaxKind currentKind)
+    {
+        switch (currentKind)
+        {
+            case SyntaxKind.DefineDirectiveTrivia:
+            case SyntaxKind.ElifDirectiveTrivia:
+            case SyntaxKind.ElseDirectiveTrivia:
+            case SyntaxKind.EndIfDirectiveTrivia:
+            case SyntaxKind.ErrorDirectiveTrivia:
+            case SyntaxKind.IfDefDirectiveTrivia:
+            case SyntaxKind.IfDirectiveTrivia:
+            case SyntaxKind.IfnDefDirectiveTrivia:
+            case SyntaxKind.IncludeDirectiveTrivia:
+            case SyntaxKind.LineDirectiveTrivia:
+            case SyntaxKind.PragmaDefDirectiveTrivia:
+            case SyntaxKind.PragmaDirectiveTrivia:
+            case SyntaxKind.PragmaMessageDirectiveTrivia:
+            case SyntaxKind.PragmaPackMatrixDirectiveTrivia:
+            case SyntaxKind.PragmaWarningDirectiveTrivia:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
     public static string GetText(SyntaxKind kind)
     {
         return kind switch

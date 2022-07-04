@@ -3,6 +3,7 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using SharpX.Core;
 using SharpX.Core.Syntax.InternalSyntax;
 
 namespace SharpX.Hlsl.Syntax.InternalSyntax;
@@ -930,6 +931,19 @@ internal static partial class SyntaxFactory
         }
 
         return new IncludeDirectiveSyntaxInternal(SyntaxKind.IncludeDirectiveTrivia, hashToken, includeKeyword, file, endOfDirectiveToken);
+    }
+
+    public static PragmaDirectiveTriviaSyntaxInternal PragmaDirectiveTrivia(SyntaxTokenInternal hashToken, SyntaxTokenInternal pragmaKeyword, GreenNode arguments, SyntaxTokenInternal endOfDirectiveToken)
+    {
+        if (hashToken.Kind != SyntaxKind.HashToken)
+            throw new ArgumentException(nameof(hashToken));
+        if (pragmaKeyword.Kind != SyntaxKind.PragmaKeyword)
+            throw new ArgumentException(nameof(pragmaKeyword));
+        if (endOfDirectiveToken.Kind != SyntaxKind.EndOfDirectiveToken)
+            throw new ArgumentException(nameof(endOfDirectiveToken));
+
+
+        return new PragmaDirectiveTriviaSyntaxInternal(SyntaxKind.PragmaDirectiveTrivia, hashToken, pragmaKeyword, arguments, endOfDirectiveToken);
     }
 
     public static PragmaDefDirectiveTriviaSyntaxInternal PragmaDefDirectiveTrivia(SyntaxTokenInternal hashToken, SyntaxTokenInternal pragmaKeyword, SyntaxTokenInternal defKeyword, SyntaxTokenInternal openParenToken, SyntaxTokenInternal target, SyntaxTokenInternal firstCommaToken,

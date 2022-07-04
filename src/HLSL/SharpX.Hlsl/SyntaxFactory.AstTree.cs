@@ -971,4 +971,24 @@ public static partial class SyntaxFactory
     {
         return IncludeDirectiveTrivia(StringLiteral(file));
     }
+
+    public static PragmaDirectiveTriviaSyntax PragmaDirectiveTrivia(SyntaxToken hashToken, SyntaxToken pragmaKeyword, SyntaxTokenList arguments, SyntaxToken endOfDirectiveToken)
+    {
+        return (PragmaDirectiveTriviaSyntax)SyntaxFactoryInternal.PragmaDirectiveTrivia(
+            (SyntaxTokenInternal)hashToken.Node!,
+            (SyntaxTokenInternal)pragmaKeyword.Node!,
+            arguments.Node!,
+            (SyntaxTokenInternal)endOfDirectiveToken.Node!
+        ).CreateRed();
+    }
+
+    public static PragmaDirectiveTriviaSyntax PragmaDirectiveTrivia(SyntaxTokenList arguments)
+    {
+        return PragmaDirectiveTrivia(Token(SyntaxKind.HashToken), Token(SyntaxKind.PragmaKeyword), arguments, Token(SyntaxKind.EndOfDirectiveToken));
+    }
+
+    public static PragmaDirectiveTriviaSyntax PragmaDirectiveTrivia(params SyntaxToken[] arguments)
+    {
+        return PragmaDirectiveTrivia(TokenList(arguments));
+    }
 }
