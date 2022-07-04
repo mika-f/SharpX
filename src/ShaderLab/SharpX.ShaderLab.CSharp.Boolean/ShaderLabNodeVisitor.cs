@@ -14,6 +14,7 @@ using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 using SharpX.ShaderLab.Syntax;
 
 using AttributeSyntax = SharpX.ShaderLab.Syntax.AttributeSyntax;
+using CompilationUnitSyntax = SharpX.Hlsl.Syntax.CompilationUnitSyntax;
 using ExpressionSyntax = SharpX.ShaderLab.Syntax.ExpressionSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using PropertyDeclarationSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax;
@@ -35,10 +36,10 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
     {
         if (newNode is ShaderDeclarationSyntax decl)
         {
-            var sources = (HlslSourceSyntax?)decl.CgInclude?.Source;
-            if (sources == null)
+            var source = (HlslSourceSyntax?)decl.CgInclude?.Source;
+            var compilation = (CompilationUnitSyntax?)source?.Sources;
+            if (compilation == null)
                 return newNode;
-            var compilation = Hlsl.SyntaxFactory.CompilationUnit();
 
             foreach (var member in _globalFields)
                 compilation = compilation.AddMembers(member.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    ")));
