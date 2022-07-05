@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.CSharp.Enum", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.Primitives", "HLSL\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj", "{50136F87-E2C2-4533-8AEE-C24F11BBBEA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.ShaderLab.CSharp.Enum", "ShaderLab\SharpX.ShaderLab.CSharp.Enum\SharpX.ShaderLab.CSharp.Enum.csproj", "{98382329-4D6F-4214-9121-C5E3BFBE7F74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{50136F87-E2C2-4533-8AEE-C24F11BBBEA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50136F87-E2C2-4533-8AEE-C24F11BBBEA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50136F87-E2C2-4533-8AEE-C24F11BBBEA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98382329-4D6F-4214-9121-C5E3BFBE7F74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98382329-4D6F-4214-9121-C5E3BFBE7F74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98382329-4D6F-4214-9121-C5E3BFBE7F74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98382329-4D6F-4214-9121-C5E3BFBE7F74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +136,7 @@ Global
 		{1638803E-5381-4FC2-9A9B-56B7ACB2751E} = {068E62EC-32D6-40AA-9833-48B8856220F9}
 		{2A296F70-29CA-442C-B994-2BFFCD484914} = {068E62EC-32D6-40AA-9833-48B8856220F9}
 		{50136F87-E2C2-4533-8AEE-C24F11BBBEA6} = {068E62EC-32D6-40AA-9833-48B8856220F9}
+		{98382329-4D6F-4214-9121-C5E3BFBE7F74} = {10ADF049-11EE-4BCF-B386-2DFDD40C2DE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4947C43-2DC8-411A-9E52-69E6E5C334D8}
