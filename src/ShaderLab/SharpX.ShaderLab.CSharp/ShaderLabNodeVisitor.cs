@@ -491,9 +491,9 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
     {
         return t switch
         {
-            "2D" => "MACRO:UNITY_DECLARE_TEX2D(&s)",
-            "3D" => "MACRO:UNITY_DECLARE_TEX3D(&s)",
-            "CUBE" => "MACRO:UNITY_DECLARE_TEXCUBE(&s)",
+            "2D" => "sampler2D",
+            "3D" => "sampler3D",
+            "CUBE" => "samplerCUBE",
             "Color" => "float4",
             "Vector" => "float4",
             "Int" => "int",
