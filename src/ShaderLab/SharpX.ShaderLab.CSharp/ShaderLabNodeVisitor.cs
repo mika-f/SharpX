@@ -91,37 +91,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             _level++;
 
             if (HasShaderNameAttribute(node) && _level == 1)
-            {
-                var name = GetAttributeData(node, typeof(ShaderNameAttribute))[0][0] as string;
-                if (string.IsNullOrWhiteSpace(name))
-                    return null;
-
-                var subShaders = new List<SubShaderDeclarationSyntax>();
-                var members = node.Members.Select(Visit).Where(w => w != null).ToArray();
-                var shaders = members.OfType<SubShaderDeclarationSyntax>().ToArray();
-                subShaders.AddRange(shaders);
-
-                var properties = members.OfType<Syntax.PropertyDeclarationSyntax>().ToArray();
-                var propertiesDecl = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(properties) : null;
-
-                var sources = new List<FieldDeclarationSyntax>();
-
-                CgIncludeDeclarationSyntax? cgInclude = null;
-                if (sources.Count > 0 || _globalFields.Count > 0)
-                {
-                    sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
-                    _globalFields.Clear();
-
-                    var compilation = Hlsl.SyntaxFactory.CompilationUnit();
-                    foreach (var member in sources)
-                        compilation = compilation.AddMembers(member);
-
-                    var includeSource = SyntaxFactory.HlslSource(compilation);
-                    cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
-                }
-
-                return SyntaxFactory.ShaderDeclaration(name, propertiesDecl, cgInclude, SyntaxFactory.List(subShaders), null, null);
-            }
+                return VisitClassDeclarationForShader(node);
 
             // subshader and pass
 
@@ -153,128 +123,14 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 tags.Add(SyntaxFactory.TagDeclaration(name, value));
             }
 
-            var symbol = GetCurrentSymbol(node) as INamedTypeSymbol;
-            if (symbol == null)
-                return null;
-
             // commands
             var commands = ExtractCommands(node);
 
             if (_level == 2)
-            {
-                var passes = new List<BasePassDeclarationSyntax>();
-                var members = node.Members.Select(Visit)
-                                  .Where(w => w != null)
-                                  .ToList();
-
-                if (members.OfType<BasePassDeclarationSyntax>().Any())
-                    passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
-
-                CgIncludeDeclarationSyntax? cgInclude = null;
-
-
-                return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
-            }
+                return VisitClassDeclarationForSubShader(node, tags, commands);
 
             if (_level == 3)
-            {
-                var stencil = ExtractStencil(node);
-                if (stencil != null)
-                    commands.Add(stencil);
-
-                switch (true)
-                {
-                    case { } when HasGrabPassAttribute(node):
-                    {
-                        var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
-                        var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                        if (identifier.Length == 1)
-                            return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
-                        return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
-                    }
-
-                    case { } when HasRenderPassAttribute(node):
-                    {
-                        if (node.Members.Count != 0)
-                        {
-                            var hlsl = _args.Invoke("HLSL", node);
-                            if (hlsl == null)
-                                return null;
-
-                            var program = SyntaxFactory.CgProgramDeclaration(hlsl);
-                            var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                            return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), program);
-                        }
-                        else
-                        {
-                            var program = Hlsl.SyntaxFactory.CompilationUnit();
-                            var attributes = GetAttributeData(node, typeof(ShaderProgramAttribute));
-
-                            if (HasAttribute(node, typeof(ShaderVertexAttribute)))
-                            {
-                                var val = GetAttributeData(node, typeof(ShaderVertexAttribute))[0][0];
-                                if (val is string str)
-                                {
-                                    var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("vertex"), Hlsl.SyntaxFactory.Identifier(str))
-                                                     .NormalizeWhitespace()
-                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
-                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
-                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
-                                }
-                            }
-
-                            if (HasAttribute(node, typeof(ShaderFragmentAttribute)))
-                            {
-                                var val = GetAttributeData(node, typeof(ShaderFragmentAttribute))[0][0];
-                                if (val is string str)
-                                {
-                                    var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("fragment"), Hlsl.SyntaxFactory.Identifier(str))
-                                                     .NormalizeWhitespace()
-                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
-                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
-                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
-                                }
-                            }
-
-                            if (HasAttribute(node, typeof(ShaderIncludeAttribute)))
-                            {
-                                var val = GetAttributeData(node, typeof(ShaderIncludeAttribute))[0].OfType<string>();
-                                foreach (var i in val)
-                                {
-                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(i)
-                                                     .NormalizeWhitespace()
-                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
-                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
-                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
-                                }
-                            }
-
-                            if (HasAttribute(node, typeof(ShaderProgramAttribute)))
-                            {
-                                var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
-                                foreach (var t in val)
-                                {
-                                    var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(_args.GetOutputFilePath(t))
-                                                     .NormalizeWhitespace()
-                                                     .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
-                                                     .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
-                                    program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
-                                }
-                            }
-
-                            foreach (var attribute in attributes)
-                                Debug.WriteLine("");
-
-                            var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.HlslSource(program));
-                            var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
-                            return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
-                        }
-                    }
-
-                    default:
-                        return null;
-                }
-            }
+                return VisitClassDeclarationForPass(node, tags, commands);
 
             var source = _args.Invoke("HLSL", node)?.NormalizeWhitespace();
             if (source == null || string.IsNullOrWhiteSpace(source.ToFullString()))
@@ -284,6 +140,162 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         finally
         {
             _level--;
+        }
+    }
+
+    private ShaderLabSyntaxNode? VisitClassDeclarationForShader(ClassDeclarationSyntax node)
+    {
+        var name = GetAttributeData(node, typeof(ShaderNameAttribute))[0][0] as string;
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        var subShaders = new List<SubShaderDeclarationSyntax>();
+        var members = node.Members.Select(Visit).Where(w => w != null).ToArray();
+        var shaders = members.OfType<SubShaderDeclarationSyntax>().ToArray();
+        subShaders.AddRange(shaders);
+
+        var properties = members.OfType<Syntax.PropertyDeclarationSyntax>().ToArray();
+        var propertiesDecl = members.Length > 0 ? SyntaxFactory.PropertiesDeclaration(properties) : null;
+
+        var sources = new List<FieldDeclarationSyntax>();
+
+        CgIncludeDeclarationSyntax? cgInclude = null;
+        if (sources.Count > 0 || _globalFields.Count > 0)
+        {
+            sources.AddRange(_globalFields.Select(w => w.NormalizeWhitespace().WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("    "))));
+            _globalFields.Clear();
+
+            var compilation = Hlsl.SyntaxFactory.CompilationUnit();
+            foreach (var member in sources)
+                compilation = compilation.AddMembers(member);
+
+            var includeSource = SyntaxFactory.HlslSource(compilation);
+            cgInclude = SyntaxFactory.CgIncludeDeclaration(includeSource);
+        }
+
+        FallbackDeclarationSyntax? fallback = null;
+        if (HasAttribute(node, typeof(FallbackAttribute)))
+            fallback = SyntaxFactory.FallbackDeclaration(GetAttributeData(node, typeof(FallbackAttribute))[0][0]!.ToString()!);
+
+        CustomEditorDeclarationSyntax? customEditor = null;
+        if (HasAttribute(node, typeof(CustomEditorAttribute)))
+            customEditor = SyntaxFactory.CustomEditorDeclaration(ToDisplayString(GetAttributeData(node, typeof(CustomEditorAttribute))[0][0]!)[0]);
+
+        return SyntaxFactory.ShaderDeclaration(name, propertiesDecl, cgInclude, SyntaxFactory.List(subShaders), fallback, customEditor);
+    }
+
+    private ShaderLabSyntaxNode? VisitClassDeclarationForSubShader(ClassDeclarationSyntax node, List<TagDeclarationSyntax> tags, List<BaseCommandDeclarationSyntax> commands)
+    {
+        var passes = new List<BasePassDeclarationSyntax>();
+        var members = node.Members.Select(Visit)
+                          .Where(w => w != null)
+                          .ToList();
+
+        if (members.OfType<BasePassDeclarationSyntax>().Any())
+            passes.AddRange(members.OfType<BasePassDeclarationSyntax>());
+
+        CgIncludeDeclarationSyntax? cgInclude = null;
+
+        return SyntaxFactory.SubShaderDeclaration(SyntaxFactory.TagsDeclaration(tags.ToArray()), SyntaxFactory.List(commands.OfType<CommandDeclarationSyntax>()), cgInclude, SyntaxFactory.List(passes));
+    }
+
+    private ShaderLabSyntaxNode? VisitClassDeclarationForPass(ClassDeclarationSyntax node, List<TagDeclarationSyntax> tags, List<BaseCommandDeclarationSyntax> commands)
+    {
+        var stencil = ExtractStencil(node);
+        if (stencil != null)
+            commands.Add(stencil);
+
+        switch (true)
+        {
+            case { } when HasGrabPassAttribute(node):
+            {
+                var identifier = GetAttributeData(node, typeof(GrabPassAttribute))[0];
+                var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                if (identifier.Length == 1)
+                    return SyntaxFactory.GrabPassDeclaration(identifier[0] as string, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+                return SyntaxFactory.GrabPassDeclaration(null, tagDecl, commands.OfType<NameDeclarationSyntax>().FirstOrDefault());
+            }
+
+            case { } when HasRenderPassAttribute(node):
+            {
+                if (node.Members.Count != 0)
+                {
+                    var hlsl = _args.Invoke("HLSL", node);
+                    if (hlsl == null)
+                        return null;
+
+                    var program = SyntaxFactory.CgProgramDeclaration(hlsl);
+                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                    return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), program);
+                }
+                else
+                {
+                    var program = Hlsl.SyntaxFactory.CompilationUnit();
+                    var attributes = GetAttributeData(node, typeof(ShaderProgramAttribute));
+
+                    if (HasAttribute(node, typeof(ShaderVertexAttribute)))
+                    {
+                        var val = GetAttributeData(node, typeof(ShaderVertexAttribute))[0][0];
+                        if (val is string str)
+                        {
+                            var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("vertex"), Hlsl.SyntaxFactory.Identifier(str))
+                                             .NormalizeWhitespace()
+                                             .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                             .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                            program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                        }
+                    }
+
+                    if (HasAttribute(node, typeof(ShaderFragmentAttribute)))
+                    {
+                        var val = GetAttributeData(node, typeof(ShaderFragmentAttribute))[0][0];
+                        if (val is string str)
+                        {
+                            var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(Hlsl.SyntaxFactory.Identifier("fragment"), Hlsl.SyntaxFactory.Identifier(str))
+                                             .NormalizeWhitespace()
+                                             .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                             .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                            program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                        }
+                    }
+
+                    if (HasAttribute(node, typeof(ShaderIncludeAttribute)))
+                    {
+                        var val = GetAttributeData(node, typeof(ShaderIncludeAttribute))[0].OfType<string>();
+                        foreach (var i in val)
+                        {
+                            var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(i)
+                                             .NormalizeWhitespace()
+                                             .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                             .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                            program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                        }
+                    }
+
+                    if (HasAttribute(node, typeof(ShaderProgramAttribute)))
+                    {
+                        var val = GetAttributeData(node, typeof(ShaderProgramAttribute))[0].OfType<INamedTypeSymbol>();
+                        foreach (var t in val)
+                        {
+                            var trivia = Hlsl.SyntaxFactory.IncludeDirectiveTrivia(_args.GetOutputFilePath(t))
+                                             .NormalizeWhitespace()
+                                             .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                             .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                            program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                        }
+                    }
+
+                    foreach (var attribute in attributes)
+                        Debug.WriteLine("");
+
+                    var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.HlslSource(program));
+                    var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
+                    return SyntaxFactory.PassDeclaration(tagDecl, SyntaxFactory.List(commands), cgProgram);
+                }
+            }
+
+            default:
+                return null;
         }
     }
 
@@ -421,7 +433,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
                 var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name[..data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)]);
-                var arguments = data.ConstructorArguments.Select(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var arguments = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
                 attributeList.Add(attr);
@@ -430,7 +442,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (attributes.Any(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
             foreach (var data in attributes.Where(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
             {
-                var parameters = data.ConstructorArguments.Select(w => ToDisplayString(w)).ToList();
+                var parameters = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).ToList();
                 var name = SyntaxFactory.IdentifierName(parameters[0][..parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)]);
                 var arguments = parameters.Skip(1).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
@@ -455,28 +467,36 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         return decl;
     }
 
-    private static string ToDisplayString(object obj)
+    private static List<string> ToDisplayString(object obj)
     {
         var t = obj.GetType();
         switch (true)
         {
             case { } when t == typeof(string):
-                return (string)obj;
+                return new List<string> { (string)obj };
 
             case { } when t == typeof(bool):
-                return (bool)obj ? "True" : "False";
+                return new List<string> { (bool)obj ? "True" : "False" };
 
             case { } when t == typeof(float):
-                return ((float)obj).ToString();
+                return new List<string> { ((float)obj).ToString() };
 
             case { } when t == typeof(double):
-                return ((double)obj).ToString();
+                return new List<string> { ((double)obj).ToString() };
 
             case { } when t == typeof(TypedConstant):
-                return ((TypedConstant)obj).Value!.ToString();
+            {
+                var tc = (TypedConstant)obj;
+                if (tc.Kind == TypedConstantKind.Array)
+                    return tc.Values.SelectMany(w => ToDisplayString(w)).ToList();
+                return new List<string> { ((TypedConstant)obj).Value!.ToString() };
+            }
+
+            case { } when obj is INamedTypeSymbol symbol:
+                return new List<string> { symbol.ToDisplayString() };
         }
 
-        return "";
+        return new List<string>();
     }
 
     private string? GetUnityDeclaredTypeName(PropertyDeclarationSyntax node)

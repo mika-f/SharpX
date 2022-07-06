@@ -396,6 +396,8 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
             case SyntaxKind.StringLiteralToken:
                 if (currentToken.Parent is TagDeclarationSyntax tag && tag.Value == currentToken)
                     return 1;
+                if (currentToken.Parent is CustomEditorDeclarationSyntax or FallbackDeclarationSyntax)
+                    return 1;
                 break;
         }
 
