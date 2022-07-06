@@ -13,6 +13,7 @@ using SharpX.Composition.Interfaces;
 using SharpX.Core.Extensions;
 using SharpX.Hlsl.Primitives.Attributes.Compiler;
 using SharpX.Hlsl.Primitives.Types;
+using SharpX.ShaderLab.Primitives.Attributes;
 using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 using SharpX.ShaderLab.Primitives.Enum;
 using SharpX.ShaderLab.Syntax;
@@ -420,7 +421,19 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
                 var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name[..data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)]);
-                var argumentList = SyntaxFactory.ArgumentList();
+                var arguments = data.ConstructorArguments.Select(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
+                var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
+                attributeList.Add(attr);
+            }
+
+        if (attributes.Any(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
+            foreach (var data in attributes.Where(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
+            {
+                var parameters = data.ConstructorArguments.Select(w => ToDisplayString(w)).ToList();
+                var name = SyntaxFactory.IdentifierName(parameters[0][..parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)]);
+                var arguments = parameters.Skip(1).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
                 attributeList.Add(attr);
             }
@@ -440,6 +453,30 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             return null;
 
         return decl;
+    }
+
+    private static string ToDisplayString(object obj)
+    {
+        var t = obj.GetType();
+        switch (true)
+        {
+            case { } when t == typeof(string):
+                return (string)obj;
+
+            case { } when t == typeof(bool):
+                return (bool)obj ? "True" : "False";
+
+            case { } when t == typeof(float):
+                return ((float)obj).ToString();
+
+            case { } when t == typeof(double):
+                return ((double)obj).ToString();
+
+            case { } when t == typeof(TypedConstant):
+                return ((TypedConstant)obj).Value!.ToString();
+        }
+
+        return "";
     }
 
     private string? GetUnityDeclaredTypeName(PropertyDeclarationSyntax node)
