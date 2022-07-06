@@ -70,7 +70,8 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
                 var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name.Substring(0, data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)));
-                var argumentList = SyntaxFactory.ArgumentList();
+                var arguments = data.ConstructorArguments.Select(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
                 attributeList.Add(attr);
             }
@@ -93,6 +94,24 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
     {
         var @default = HasAttribute(node, typeof(DefaultValueAttribute)) ? GetAttributeData(node, typeof(DefaultValueAttribute))[0][0]!.ToString()! : "";
         return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(@default == "True" ? "1" : "0"));
+    }
+
+    private static string ToDisplayString(object obj)
+    {
+        var t = obj.GetType();
+        switch (true)
+        {
+            case { } when t == typeof(string):
+                return (string)obj;
+
+            case { } when t == typeof(bool):
+                return (bool)obj ? "True" : "False";
+
+            case { } when t == typeof(TypedConstant):
+                return ((TypedConstant)obj).Value!.ToString();
+        }
+
+        return "";
     }
 
 
