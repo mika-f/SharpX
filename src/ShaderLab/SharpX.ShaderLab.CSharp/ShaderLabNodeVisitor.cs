@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------------------
 
 using System.Diagnostics;
+using System.Globalization;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -479,10 +480,10 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 return new List<string> { (bool)obj ? "True" : "False" };
 
             case { } when t == typeof(float):
-                return new List<string> { ((float)obj).ToString() };
+                return new List<string> { ((float)obj).ToString(CultureInfo.InvariantCulture) };
 
             case { } when t == typeof(double):
-                return new List<string> { ((double)obj).ToString() };
+                return new List<string> { ((double)obj).ToString(CultureInfo.InvariantCulture) };
 
             case { } when t == typeof(TypedConstant):
             {
