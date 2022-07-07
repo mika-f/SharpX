@@ -190,7 +190,7 @@ internal class SyntaxNavigator
                             return token;
                     }
                 }
-                else if (child.IsToken && child.AsNode() == node)
+                else if (child.IsNode && child.AsNode() == node)
                 {
                     returnNext = true;
                 }

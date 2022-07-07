@@ -284,58 +284,7 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
     private static bool NeedsSeparator(SyntaxToken currentToken, SyntaxToken nextToken)
     {
         if (currentToken.Parent == null || nextToken.Parent == null)
-        {
-            if (currentToken.Parent is IdentifierNameSyntax)
-            {
-                if (currentToken.Parent.Parent is FieldDeclarationSyntax or MethodDeclarationSyntax)
-                    return true;
-                if (currentToken.Parent.Parent is ParameterSyntax)
-                    return true;
-                if (currentToken.Parent.Parent is AssignmentExpressionSyntax a)
-                    return AssignmentExpressionNeedsSeparator(currentToken, a);
-                if (currentToken.Parent.Parent is BinaryExpressionSyntax b)
-                    return BinaryExpressionNeedsSeparator(currentToken, b);
-                if (currentToken.Parent.Parent is VariableDeclarationSyntax c)
-                    return VariableDeclarationNeedsSeparator(currentToken, c);
-                if (currentToken.Parent.Parent is MemberAccessExpressionSyntax memberAccess)
-                {
-                    var parent = memberAccess.Parent;
-                    if (parent is not MemberAccessExpressionSyntax and not InvocationExpressionSyntax)
-                    {
-                        if (parent is AssignmentExpressionSyntax assignment)
-                        {
-                            if (currentToken.Parent.Parent is MemberAccessExpressionSyntax m)
-                            {
-                                if (assignment.Right == currentToken.Parent.Parent)
-                                    return false;
-                                return currentToken.Parent == m.Name;
-                            }
-                        }
-                        else if (parent is BinaryExpressionSyntax binary)
-                        {
-                            if (currentToken.Parent.Parent is MemberAccessExpressionSyntax m)
-                            {
-                                if (binary.Right == currentToken.Parent.Parent)
-                                    return false;
-                                return currentToken.Parent == m.Name;
-                            }
-                        }
-
-                        return false;
-                    }
-
-                    return false;
-                }
-
-                return false;
-            }
-
-            if (currentToken.Parent is LiteralExpressionSyntax)
-                if (currentToken.Parent.Parent is BinaryExpressionSyntax)
-                    return true;
-
             return false;
-        }
 
         if (nextToken.RawKind == (int)SyntaxKind.EndOfDirectiveToken)
             return IsKeyword((SyntaxKind)currentToken.RawKind) && nextToken.LeadingWidth > 0;
@@ -411,8 +360,8 @@ internal class SyntaxNormalizer : HlslSyntaxRewriter
             return true;
 
         // Am I checking next tokens?
-            if (IsKeyword(currentKind) && currentKind != SyntaxKind.RegisterKeyword)
-                return true;
+        if (IsKeyword(currentKind) && currentKind != SyntaxKind.RegisterKeyword)
+            return true;
 
         // (some-word)[ ](some-word)
         if (IsWord(currentKind) && IsWord(nextKind))
