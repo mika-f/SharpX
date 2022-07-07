@@ -58,7 +58,6 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
             _afterLineBreak = false;
             _afterIndentation = false;
 
-
             t = t.WithTrailingTrivia(RewriteTrivia(token.TrailingTrivia, depth, true, false, NeedsSeparator(token, nextToken), LineBreaksAfter(token, nextToken)));
 
             return t;
@@ -310,7 +309,17 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
         if (IsWord(currentKind) && IsWord(nextKind))
             return true;
 
-        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is null or PropertyDeclarationSyntax)
+        if (currentKind == SyntaxKind.IdentifierToken && nextToken.Parent is null)
+            return true;
+        if (currentKind == SyntaxKind.IdentifierToken && currentToken.Parent is PropertyDeclarationSyntax propertyDecl)
+        {
+            if (currentToken == propertyDecl.Identifier)
+                return true;
+            return false;
+        }
+
+        // texture literal "white"[ ]{...}
+        if (currentKind == SyntaxKind.StringLiteralToken && nextKind == SyntaxKind.OpenBraceToken && nextToken.Parent is TextureLiteralExpressionSyntax)
             return true;
 
         if (currentToken.Width > 1 && nextToken.Width > 1)
@@ -322,20 +331,6 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
         }
 
         return false;
-    }
-
-    private static bool AssignmentTokenNeedsSeparator(SyntaxKind kind)
-    {
-        return false;
-    }
-
-    private static bool BinaryTokenNeedsSeparator(SyntaxKind kind)
-    {
-        return kind switch
-        {
-            SyntaxKind.DotToken => false,
-            _ => false
-        };
     }
 
     #endregion
@@ -422,6 +417,8 @@ internal class SyntaxNormalizer : ShaderLabSyntaxRewriter
     // ReSharper disable once UnusedParameter.Local
     private static int LineBreaksBeforeOpenBrace(SyntaxToken nextToken)
     {
+        if (nextToken.Parent is TextureLiteralExpressionSyntax)
+            return 0;
         return 1;
     }
 

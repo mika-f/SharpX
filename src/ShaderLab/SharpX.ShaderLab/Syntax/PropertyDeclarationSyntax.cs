@@ -39,9 +39,10 @@ public class PropertyDeclarationSyntax : ShaderLabSyntaxNode
     {
         return index switch
         {
-            4 => GetRed(ref _type, 5),
-            5 => GetRed(ref _argumentList, 6),
-            7 => GetRed(ref _default, 8),
+            0 => GetRedAtZero(ref _attributeList),
+            5 => GetRed(ref _type, 5),
+            6 => GetRed(ref _argumentList, 6),
+            8 => GetRed(ref _default, 8),
             _ => null
         };
     }
@@ -50,9 +51,10 @@ public class PropertyDeclarationSyntax : ShaderLabSyntaxNode
     {
         return index switch
         {
+            0 => _attributeList,
             5 => _type,
             6 => _argumentList,
-            0 => _default,
+            8 => _default,
             _ => null
         };
     }
