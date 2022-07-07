@@ -443,7 +443,7 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
             {
                 var parameters = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).ToList();
-                var name = SyntaxFactory.IdentifierName(parameters[0][..parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)]);
+                var name = SyntaxFactory.IdentifierName(parameters[0][(parameters[0].LastIndexOf(".", StringComparison.Ordinal) + 1)..parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)]);
                 var arguments = parameters.Skip(1).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
