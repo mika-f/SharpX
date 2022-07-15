@@ -3,6 +3,8 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -71,7 +73,15 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
                 var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name.Substring(0, data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)));
-                var arguments = data.ConstructorArguments.Select(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var arguments = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                var firstArgument = data.ConstructorArguments.First();
+                if (firstArgument.Value is INamedTypeSymbol { TypeKind: TypeKind.Enum } s)
+                {
+                    var alternative = s.GetAttributes().FirstOrDefault(w => w.AttributeClass!.Equals(GetSymbol(typeof(UnityNameAttribute)), SymbolEqualityComparer.Default));
+                    if (alternative != null)
+                        arguments = alternative.ConstructorArguments.SelectMany(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
+                }
+
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
                 attributeList.Add(attr);
@@ -98,23 +108,38 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
 
     #region Helpers
 
-    private static string ToDisplayString(object obj)
+    private static List<string> ToDisplayString(object obj)
     {
         var t = obj.GetType();
         switch (true)
         {
             case { } when t == typeof(string):
-                return (string)obj;
+                return new List<string> { (string)obj };
 
             case { } when t == typeof(bool):
-                return (bool)obj ? "True" : "False";
+                return new List<string> { (bool)obj ? "True" : "False" };
+
+            case { } when t == typeof(float):
+                return new List<string> { ((float)obj).ToString(CultureInfo.InvariantCulture) };
+
+            case { } when t == typeof(double):
+                return new List<string> { ((double)obj).ToString(CultureInfo.InvariantCulture) };
 
             case { } when t == typeof(TypedConstant):
-                return ((TypedConstant)obj).Value!.ToString();
+            {
+                var tc = (TypedConstant)obj;
+                if (tc.Kind == TypedConstantKind.Array)
+                    return tc.Values.SelectMany(w => ToDisplayString(w)).ToList();
+                return new List<string> { ((TypedConstant)obj).Value!.ToString() };
+            }
+
+            case { } when obj is INamedTypeSymbol symbol:
+                return new List<string> { symbol.ToDisplayString() };
         }
 
-        return "";
+        return new List<string>();
     }
+
 
     #region Attributes
 

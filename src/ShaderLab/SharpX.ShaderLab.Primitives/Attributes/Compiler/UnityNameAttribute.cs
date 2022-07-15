@@ -3,28 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.ShaderLab.Primitives.Attributes.Compiler;
+namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 
-namespace SharpX.ShaderLab.Primitives.Enum;
-
-[UnityName("UnityEngine.Rendering.CompareFunction")]
-public enum CompareFunction
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface | AttributeTargets.Enum)]
+public class UnityNameAttribute : Attribute
 {
-    Disabled,
-
-    Never,
-
-    Less,
-
-    Equal,
-
-    LessEqual,
-
-    Greater,
-
-    NotEqual,
-
-    GreaterEqual,
-
-    Always
+    public UnityNameAttribute(params string[] name) { }
 }
