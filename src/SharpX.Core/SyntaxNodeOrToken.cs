@@ -134,6 +134,17 @@ public readonly struct SyntaxNodeOrToken : IEquatable<SyntaxNodeOrToken>
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(_nodeOrParent, _token, _tokenIndex, Position);
+#else
+        unchecked
+        {
+            var hashCode = _nodeOrParent != null ? _nodeOrParent.GetHashCode() : 0;
+            hashCode = (hashCode * 397) ^ (_token != null ? _token.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ _tokenIndex;
+            hashCode = (hashCode * 397) ^ Position;
+            return hashCode;
+        }
+#endif
     }
 }

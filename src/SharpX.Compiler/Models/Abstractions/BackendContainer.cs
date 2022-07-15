@@ -122,11 +122,11 @@ internal class BackendContainer
         if (register == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Register(CSharpSyntaxVisitor<{ReturnType.FullName}>)");
 
-        var visit1 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode) });
+        var visit1 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, null, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode) }, null);
         if (visit1 == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Visit(Microsoft.CodeAnalysis.SyntaxNode)");
 
-        var visit2 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode), ReturnType });
+        var visit2 = activator.GetMethod(nameof(RootCSharpSyntaxVisitor<SyntaxNode>.Visit), BindingFlags.Instance | BindingFlags.Public, null, new[] { typeof(Microsoft.CodeAnalysis.SyntaxNode), ReturnType }, null);
         if (visit2 == null)
             throw new InvalidOperationException($"failed to create the invoker of RootCSharpSyntaxVisitor<{ReturnType.FullName}>.Visit(Microsoft.CodeAnalysis.SyntaxNode)");
         return (instance, register, visit1, visit2);

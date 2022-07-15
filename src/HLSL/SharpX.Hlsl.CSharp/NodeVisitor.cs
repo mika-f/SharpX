@@ -180,8 +180,11 @@ public class NodeVisitor : CompositeCSharpSyntaxVisitor<HlslSyntaxNode>
     {
         var str = node.Token.ToTrimmedString();
         if (node.Kind() is CSharpSyntaxKind.NumericLiteralExpression && str.EndsWith("f"))
+#if NET5_0_OR_GREATER
             str = str[..^1];
-
+#else
+            str = str.Substring(0, str.Length - 1);
+#endif
         return node.Kind() switch
         {
             CSharpSyntaxKind.StringLiteralExpression => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(str)),

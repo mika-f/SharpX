@@ -23,7 +23,11 @@ internal class BackendRegistry : IBackendRegistry
         if (!IsAssignableToGenericType(visitor, typeof(CompositeCSharpSyntaxVisitor<>), typeof(SyntaxNode)))
             throw new ArgumentException("visitor must be inherit from CompositeCSharpSyntaxVisitor<T> and T is must be inherit from SharpX.Core.SyntaxNode", nameof(visitor));
 
+#if NET5_0_OR_GREATER
         if (!@return.IsAssignableTo(typeof(SyntaxNode)))
+#else
+        if (!typeof(SyntaxNode).IsAssignableFrom(@return))
+#endif
             throw new ArgumentException("return must be inherit from SharpX.Core.SyntaxNode", nameof(@return));
 
         if (_containers.Any(w => w.Language == language))
@@ -82,7 +86,11 @@ internal class BackendRegistry : IBackendRegistry
 
                 for (var i = 0; i < arguments.Length; i++)
                 {
+#if NET5_0_OR_GREATER
                     if (arguments[i].IsAssignableTo(constraints[i]))
+#else
+                    if (constraints[i].IsAssignableFrom(arguments[i]))
+#endif
                         continue;
                     return false;
                 }

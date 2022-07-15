@@ -71,7 +71,11 @@ public abstract class CompositeCSharpSyntaxVisitor<TResult> : CSharpSyntaxVisito
         if (visit == null)
             return newNode;
 
+#if NET5_0_OR_GREATER
         var visitor = self.GetMethod(visit.Name, BindingFlags.Instance | BindingFlags.Public, new[] { visit.GetParameters()[0].ParameterType, typeof(TResult) });
+#else
+        var visitor = self.GetMethod(visit.Name, BindingFlags.Instance | BindingFlags.Public, null, new[] { visit.GetParameters()[0].ParameterType, typeof(TResult) }, null);
+#endif
         if (visitor != null)
         {
             _visitors.AddOrUpdate(t, visitor, (_, w) => w);

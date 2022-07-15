@@ -405,7 +405,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             var args = GetNamedAttributeData(node, typeof(StencilAttribute));
             foreach (var arg in args)
                 if (arg.Key.EndsWith("S"))
+#if NET5_0_OR_GREATER
                     commands.Add(SyntaxFactory.CommandDeclaration(arg.Key[..^1], $"[{arg.Value}]"));
+#else
+                    commands.Add(SyntaxFactory.CommandDeclaration(arg.Key.Substring(0, arg.Key.Length - 1), $"[{arg.Value}]"));
+#endif
                 else
                     commands.Add(SyntaxFactory.CommandDeclaration(arg.Key, arg.Value.ToString()!));
         }
@@ -433,7 +437,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (attributes.Any(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             foreach (var data in attributes.Where(w => w.AttributeClass!.BaseType?.Equals(GetSymbol(typeof(PropertyAttribute)), SymbolEqualityComparer.Default) == true))
             {
+#if NET5_0_OR_GREATER
                 var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name[..data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)]);
+#else
+                var name = SyntaxFactory.IdentifierName(data.AttributeClass!.Name.Substring(0, data.AttributeClass!.Name.LastIndexOf("Attribute", StringComparison.Ordinal)));
+#endif
                 var arguments = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);
@@ -444,7 +452,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
             foreach (var data in attributes.Where(w => w.AttributeClass!.Equals(GetSymbol(typeof(CustomInspectorAttribute)), SymbolEqualityComparer.Default)))
             {
                 var parameters = data.ConstructorArguments.SelectMany(w => ToDisplayString(w)).ToList();
+#if NET5_0_OR_GREATER
                 var name = SyntaxFactory.IdentifierName(parameters[0][(parameters[0].LastIndexOf(".", StringComparison.Ordinal) + 1)..parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)]);
+#else
+                var name = SyntaxFactory.IdentifierName(parameters[0].Substring(parameters[0].LastIndexOf(".", StringComparison.Ordinal) + 1, parameters[0].LastIndexOf("Drawer", StringComparison.Ordinal)));
+#endif
                 var arguments = parameters.Skip(1).Select(w => SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(w)));
                 var argumentList = SyntaxFactory.ArgumentList(arguments.Select(SyntaxFactory.Argument).ToArray());
                 var attr = SyntaxFactory.Attribute(name, argumentList.Arguments.Count > 0 ? argumentList : null);

@@ -160,6 +160,17 @@ public readonly struct SyntaxToken : IEquatable<SyntaxToken>
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(Parent, Node, Index, Position);
+#else
+        unchecked
+        {
+            var hashCode = Parent != null ? Parent.GetHashCode() : 0;
+            hashCode = (hashCode * 397) ^ (Node != null ? Node.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ Index;
+            hashCode = (hashCode * 397) ^ Position;
+            return hashCode;
+        }
+#endif
     }
 }

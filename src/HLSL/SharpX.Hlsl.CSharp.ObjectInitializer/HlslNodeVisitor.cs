@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpX.Composition.CSharp;
 using SharpX.Composition.Interfaces;
 using SharpX.Core;
+using SharpX.Hlsl.CSharp.ObjectInitializer.Extensions;
 
 using AttributeListSyntax = SharpX.Hlsl.Syntax.AttributeListSyntax;
 using ExpressionStatementSyntax = SharpX.Hlsl.Syntax.ExpressionStatementSyntax;

@@ -52,7 +52,15 @@ public readonly partial struct ChildSyntaxList : IEquatable<ChildSyntaxList>, IR
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(_node, Count);
+
+#else
+        unchecked
+        {
+            return ((_node != null ? _node.GetHashCode() : 0) * 397) ^ Count;
+        }
+#endif
     }
 
     public bool Equals(ChildSyntaxList other)

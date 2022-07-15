@@ -193,6 +193,16 @@ public readonly partial struct SeparatedSyntaxList<TNode> : IEquatable<Separated
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(_list, Count, SeparatedCount);
+#else
+        unchecked
+        {
+            var hashCode = _list.GetHashCode();
+            hashCode = (hashCode * 397) ^ Count;
+            hashCode = (hashCode * 397) ^ SeparatedCount;
+            return hashCode;
+        }
+#endif
     }
 }

@@ -177,6 +177,13 @@ public readonly partial struct SyntaxNodeOrTokenList : IEquatable<SyntaxNodeOrTo
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(Index, Node);
+#else
+        unchecked
+        {
+            return (Index * 397) ^ (Node != null ? Node.GetHashCode() : 0);
+        }
+#endif
     }
 }

@@ -258,6 +258,7 @@ public class CSharpCompiler : IDisposable
         var contentFileMappings = new Dictionary<string, string>();
         var actualFileMappings = new Dictionary<string, (string Absolute, string Relative)>();
 
+#if NET5_0_OR_GREATER
         await Parallel.ForEachAsync(workspace.GetAllDocuments(), ct, async (w, c) =>
         {
             var syntax = await w.GetSyntaxRootAsync(c);
@@ -296,11 +297,61 @@ public class CSharpCompiler : IDisposable
                 }
             }
         });
+#else
+        var tasks = workspace.GetAllDocuments().Select(async w =>
+        {
+            var syntax = await w.GetSyntaxRootAsync(ct);
+            var model = await w.GetSemanticModelAsync(ct);
+
+            if (syntax == null || model == null)
+                lock (lockObj)
+                {
+                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Error, $"failed to get SemanticModel and/or SyntaxRoot for compiling - {w.FilePath}"));
+                    return;
+                }
+
+            var source = container.RunAsync(syntax, model, fileMappings, (language, node) => invoker.Invoke(language, node, model, fileMappings));
+
+            lock (lockObj)
+            {
+                if (source == null)
+                {
+                    _errors.Add(new SharpXCompilerDiagnostic(DiagnosticSeverity.Warning, $"root visitor returns null: {w.FilePath}"));
+                }
+                else
+                {
+                    var str = source.NormalizeWhitespace().ToFullString();
+                    var fileUri = new Uri(Path.GetFullPath(w.FilePath!), UriKind.Absolute);
+                    var baseUri = new Uri(Path.GetFullPath(_options.BaseUrl), UriKind.Absolute);
+
+                    var relative = baseUri.MakeRelativeUri(fileUri);
+                    var baseDir = Path.GetDirectoryName(relative.ToString());
+                    var baseName = Path.GetFileNameWithoutExtension(relative.ToString());
+                    var extension = container.ExtensionCallback?.Invoke(source) ?? Path.GetExtension(relative.ToString());
+                    var @out = Path.GetFullPath(Path.Combine(_options.Output, baseDir ?? "", baseName + "." + extension));
+                    var id = w.Id.Id.ToString();
+
+                    actualFileMappings.Add(id, (@out, Path.Combine(baseDir ?? "", baseName + "." + extension)));
+                    contentFileMappings.Add(id, str);
+                }
+            }
+        });
+
+        await Task.WhenAll(tasks);
+#endif
 
         var regex = new Regex("<#ref (?<guid>.*?)>", RegexOptions.Compiled);
 
+#if NET5_0_OR_GREATER
         foreach (var (guid, c) in contentFileMappings)
+#else
+        foreach (var item in contentFileMappings)
+#endif
         {
+#if !NET5_0_OR_GREATER
+            var guid = item.Key;
+            var c = item.Value;
+#endif
             var content = c;
             foreach (Match match in regex.Matches(content))
             {
@@ -313,7 +364,11 @@ public class CSharpCompiler : IDisposable
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
+#if NET5_0_OR_GREATER
             await File.WriteAllTextAsync(@out, content, ct);
+#else
+            File.WriteAllText(@out, content);
+#endif
         }
 
         return true;

@@ -16,5 +16,5 @@ public struct AppDataImg
     public Vector4<float> Vertex { get; }
 
     [Name("texcoord")]
-    public Vector2<Half> TexCoord { get; }
+    public Vector2<float> TexCoord { get; }
 }

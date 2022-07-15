@@ -102,6 +102,17 @@ public readonly struct SyntaxTrivia : IEquatable<SyntaxTrivia>
 
     public override int GetHashCode()
     {
+#if NET5_0_OR_GREATER
         return HashCode.Combine(Token, UnderlyingNode, Position, Index);
+#else
+        unchecked
+        {
+            var hashCode = Token.GetHashCode();
+            hashCode = (hashCode * 397) ^ (UnderlyingNode != null ? UnderlyingNode.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ Position;
+            hashCode = (hashCode * 397) ^ Index;
+            return hashCode;
+        }
+#endif
     }
 }

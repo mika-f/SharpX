@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.CSharp.Enum", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.Hlsl.Primitives", "HLSL\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj", "{50136F87-E2C2-4533-8AEE-C24F11BBBEA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpX.ShaderLab.CSharp.Enum", "ShaderLab\SharpX.ShaderLab.CSharp.Enum\SharpX.ShaderLab.CSharp.Enum.csproj", "{98382329-4D6F-4214-9121-C5E3BFBE7F74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpX.ShaderLab.CSharp.Enum", "ShaderLab\SharpX.ShaderLab.CSharp.Enum\SharpX.ShaderLab.CSharp.Enum.csproj", "{98382329-4D6F-4214-9121-C5E3BFBE7F74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
