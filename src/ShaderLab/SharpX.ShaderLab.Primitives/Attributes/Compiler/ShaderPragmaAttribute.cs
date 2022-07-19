@@ -8,5 +8,5 @@ namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public class ShaderPragmaAttribute : Attribute
 {
-    public ShaderPragmaAttribute(string key, string value) { }
+    public ShaderPragmaAttribute(string key, params string[] args) { }
 }
