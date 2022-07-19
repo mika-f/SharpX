@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Hlsl\SharpX.Hlsl.Primitives\SharpX.Hlsl.Primitives.csproj" />
+    <ProjectReference Include="..\SharpX.ShaderLab.Primitives.ShaderTarget\SharpX.ShaderLab.Primitives.ShaderTarget.csproj" />
     <ProjectReference Include="..\SharpX.ShaderLab.Primitives\SharpX.ShaderLab.Primitives.csproj" />
   </ItemGroup>
 

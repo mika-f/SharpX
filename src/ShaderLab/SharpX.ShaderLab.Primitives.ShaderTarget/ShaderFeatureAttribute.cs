@@ -3,14 +3,10 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using SharpX.ShaderLab.Primitives.Enum;
-
-namespace SharpX.ShaderLab.Primitives.Attributes.Compiler;
+namespace SharpX.ShaderLab.Primitives.ShaderTarget;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class ShaderFeatureAttribute : ShaderPragmaAttribute
+public sealed class ShaderFeatureAttribute : Attribute
 {
-    public ShaderFeatureAttribute(string value) : base("target", value) { }
-
-    public ShaderFeatureAttribute(ShaderFeatures value) : base("target", null) { }
+    public ShaderFeatureAttribute(ShaderFeatures value) { }
 }

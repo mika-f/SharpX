@@ -64,6 +64,36 @@ public class PassDeclarationSyntax : BasePassDeclarationSyntax
         return this;
     }
 
+    public PassDeclarationSyntax WithKeyword(SyntaxToken keyword)
+    {
+        return Update(keyword, OpenBraceToken, Tags, Commands, CgProgram, CloseBraceToken);
+    }
+
+    public PassDeclarationSyntax WithOpenBraceToken(SyntaxToken openBraceToken)
+    {
+        return Update(Keyword, openBraceToken, Tags, Commands, CgProgram, CloseBraceToken);
+    }
+
+    public PassDeclarationSyntax WithTags(TagsDeclarationSyntax? tags)
+    {
+        return Update(Keyword, OpenBraceToken, tags, Commands, CgProgram, CloseBraceToken);
+    }
+
+    public PassDeclarationSyntax WithCommands(SyntaxList<BaseCommandDeclarationSyntax> commands)
+    {
+        return Update(Keyword, OpenBraceToken, Tags, commands, CgProgram, CloseBraceToken);
+    }
+
+    public PassDeclarationSyntax WithCgProgram(CgProgramDeclarationSyntax cgProgram)
+    {
+        return Update(Keyword, OpenBraceToken, Tags, Commands, cgProgram, CloseBraceToken);
+    }
+
+    public PassDeclarationSyntax WithCloseBraceToken(SyntaxToken closeBraceToken)
+    {
+        return Update(Keyword, OpenBraceToken, Tags, Commands, CgProgram, closeBraceToken);
+    }
+
     public override TResult? Accept<TResult>(ShaderLabSyntaxVisitor<TResult> visitor) where TResult : default
     {
         return visitor.VisitPassDeclaration(this);

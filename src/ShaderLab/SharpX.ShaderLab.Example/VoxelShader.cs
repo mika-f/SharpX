@@ -9,6 +9,7 @@ using SharpX.Hlsl.Primitives.Types;
 using SharpX.ShaderLab.Primitives.Attributes;
 using SharpX.ShaderLab.Primitives.Attributes.Compiler;
 using SharpX.ShaderLab.Primitives.Enum;
+using SharpX.ShaderLab.Primitives.ShaderTarget;
 
 namespace SharpX.ShaderLab.Example;
 

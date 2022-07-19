@@ -3,7 +3,6 @@
 //  Licensed under the MIT License. See LICENSE in the project root for license information.
 // ------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
 using System.Globalization;
 
 using Microsoft.CodeAnalysis;
@@ -24,6 +23,7 @@ using CompilationUnitSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.CompilationUn
 using ExpressionSyntax = SharpX.ShaderLab.Syntax.ExpressionSyntax;
 using FieldDeclarationSyntax = SharpX.Hlsl.Syntax.FieldDeclarationSyntax;
 using PropertyDeclarationSyntax = Microsoft.CodeAnalysis.CSharp.Syntax.PropertyDeclarationSyntax;
+using SyntaxToken = SharpX.Core.SyntaxToken;
 
 namespace SharpX.ShaderLab.CSharp;
 
@@ -232,7 +232,26 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                 else
                 {
                     var program = Hlsl.SyntaxFactory.CompilationUnit();
-                    var attributes = GetAttributeData(node, typeof(ShaderProgramAttribute));
+
+
+                    if (HasAttribute(node, typeof(ShaderPragmaAttribute)))
+                    {
+                        var attrs = GetAttributes(node).Where(w => w.AttributeClass!.Equals(GetSymbol(typeof(ShaderPragmaAttribute)), SymbolEqualityComparer.Default)).ToList();
+                        foreach (var attr in attrs)
+                        {
+                            var data = GetAttributeData(attr);
+                            var key = Hlsl.SyntaxFactory.Identifier(data[0][0]!.ToString());
+                            var args = data[1].Select(w => Hlsl.SyntaxFactory.Identifier(w.ToString()));
+                            var values = new List<SyntaxToken> { key };
+                            values.AddRange(args);
+
+                            var trivia = Hlsl.SyntaxFactory.PragmaDirectiveTrivia(values.ToArray())
+                                             .NormalizeWhitespace()
+                                             .WithLeadingTrivia(Hlsl.SyntaxFactory.Whitespace("            "))
+                                             .WithTrailingTrivia(Hlsl.SyntaxFactory.EndOfLine("\n"));
+                            program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
+                        }
+                    }
 
                     if (HasAttribute(node, typeof(ShaderVertexAttribute)))
                     {
@@ -285,9 +304,6 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
                             program = program.AddLeadingTrivia(Hlsl.SyntaxFactory.Trivia(trivia));
                         }
                     }
-
-                    foreach (var attribute in attributes)
-                        Debug.WriteLine("");
 
                     var cgProgram = SyntaxFactory.CgProgramDeclaration(SyntaxFactory.HlslSource(program));
                     var tagDecl = tags.Count > 0 ? SyntaxFactory.TagsDeclaration(tags.ToArray()) : null;
@@ -651,6 +667,11 @@ public class ShaderLabNodeVisitor : CompositeCSharpSyntaxVisitor<ShaderLabSyntax
         if (attr == null)
             return new List<object?[]>();
 
+        return GetAttributeData(attr);
+    }
+
+    private List<object?[]> GetAttributeData(AttributeData attr)
+    {
         return attr.ConstructorArguments.Select(w =>
         {
             if (w.Type!.TypeKind == TypeKind.Array)
