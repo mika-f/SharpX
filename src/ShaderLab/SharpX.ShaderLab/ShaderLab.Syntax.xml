@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RootNode xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../GlobalSyntax.xsd">
+    <AbstractNode Name="TypeSyntax">
+        <AbstractNode Name="NameSyntax">
+            <AbstractNode Name="SimpleNameSyntax">
+                <Members>
+                    <Member Type="SyntaxTokenInternal" Name="Identifier" />
+                </Members>
+                <Node Name="IdentifierNameSyntax" Kind="IdentifierName" />
+            </AbstractNode>
+            <Node Name="QualifiedNameSyntax" Kind="QualifiedName">
+                <Members>
+                    <Member Type="NameSyntax" Name="Left" />
+                    <Member Type="SyntaxTokenInternal" Name="DotToken">
+                        <Kinds>
+                            <Kind>DotToken</Kind>
+                        </Kinds>
+                    </Member>
+                    <Member Type="SimpleNameSyntax" Name="Right" />
+                </Members>
+            </Node>
+        </AbstractNode>
+    </AbstractNode>
+    <AbstractNode Name="ExpressionSyntax">
+        <Node Name="LiteralExpressionSyntax" Kind="NumericLiteralExpression StringLiteralExpression">
+            <Members>
+                <Member Type="SyntaxToken" Name="Token">
+                    <Kinds>
+                        <Kind>NumericLiteralToken</Kind>
+                        <Kind>StringLiteralToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+        <Node Name="TextureLiteralExpressionSyntax" Kind="TextureLiteralExpression">
+            <Members>
+                <Member Type="LiteralExpressionSyntax" Name="Value" />
+                <Member Type="SyntaxToken" Name="OpenBraceToken">
+                    <Kinds>
+                        <Kind>OpenBraceToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="CloseBraceToken">
+                    <Kinds>
+                        <Kind>CloseBraceToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+    </AbstractNode>
+    <AbstractNode Name="BasePassDeclarationSyntax">
+        <Members>
+            <Member Type="SyntaxToken" Name="Keyword" />
+        </Members>
+        <Node Name="PassDeclarationSyntax" Kind="PassDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>PassKeyword</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="OpenBraceToken">
+                    <Kinds>
+                        <Kind>OpenBraceToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="TagsDeclarationSyntax" Name="Tags" Nullable="true" />
+                <Member Type="BaseCommandDeclarationSyntax" Name="Commands" List="Sequenced" />
+                <Member Type="CgProgramDeclarationSyntax" Name="CgProgram" />
+                <Member Type="SyntaxToken" Name="CloseBraceToken">
+                    <Kinds>
+                        <Kind>CloseBraceToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+        <Node Name="GrabPassDeclarationSyntax" Kind="GrabPassDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>GrabPassKeyword</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="OpenBraceToken">
+                    <Kinds>
+                        <Kind>OpenBraceToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="Identifier" Nullable="true">
+                    <Kinds>
+                        <Kind>IdentifierToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="TagsDeclarationSyntax" Name="Tags" Nullable="true" />
+                <Member Type="NameDeclarationSyntax" Name="Name" Nullable="true" />
+                <Member Type="SyntaxToken" Name="CloseBraceToken">
+                    <Kinds>
+                        <Kind>CloseBraceToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+        <Node Name="UsePassDeclarationSyntax" Kind="UsePassDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>UsePassKeyword</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="PassReference">
+                    <Kinds>
+                        <Kind>StringLiteralToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+    </AbstractNode>
+    <AbstractNode Name="BaseCommandDeclarationSyntax">
+        <Members>
+            <Member Type="SyntaxToken" Name="Keyword" />
+        </Members>
+        <Node Name="CommandDeclarationSyntax" Kind="CommandDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>IdentifierToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="IdentifierNameSyntax" Name="Arguments" List="Separated" />
+            </Members>
+        </Node>
+        <Node Name="StencilDeclarationSyntax" Kind="StencilDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>StencilKeyword</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="OpenBraceToken">
+                    <Kinds>
+                        <Kind>OpenBraceToken</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="CommandDeclarationSyntax" Name="Commands" List="Sequenced" />
+                <Member Type="SyntaxToken" Name="CloseBraceToken">
+                    <Kinds>
+                        <Kind>CloseBraceToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+        <Node Name="NameDeclarationSyntax" Kind="NameDeclaration">
+            <Members>
+                <Member Type="SyntaxToken" Name="Keyword">
+                    <Kinds>
+                        <Kind>NameKeyword</Kind>
+                    </Kinds>
+                </Member>
+                <Member Type="SyntaxToken" Name="Name">
+                    <Kinds>
+                        <Kind>StringLiteralToken</Kind>
+                    </Kinds>
+                </Member>
+            </Members>
+        </Node>
+    </AbstractNode>
+    <Node Name="EqualsValueClauseSyntax" Kind="EqualsValueClause">
+        <Members>
+            <Member Type="SyntaxToken" Name="EqualsToken">
+                <Kinds>
+                    <Kind>EqualsToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="ExpressionSyntax" Name="Value" />
+        </Members>
+    </Node>
+    <Node Name="ArgumentListSyntax" Kind="ArgumentList">
+        <Members>
+            <Member Type="SyntaxToken" Name="OpenParenToken">
+                <Kinds>
+                    <Kind>OpenParenToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="ArgumentSyntax" Name="Arguments" List="Separated" />
+            <Member Type="SyntaxToken" Name="CloseParenToken">
+                <Kinds>
+                    <Kind>CloseParenToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="ArgumentSyntax" Kind="Argument">
+        <Members>
+            <Member Type="ExpressionSyntax" Name="Expression" />
+        </Members>
+    </Node>
+    <Node Name="AttributeListSyntax" Kind="AttributeList">
+        <Members>
+            <Member Type="SyntaxToken" Name="OpenBracketToken">
+                <Kinds>
+                    <Kind>OpenBracketToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="AttributeSyntax" Name="Attributes" List="Separated" />
+            <Member Type="SyntaxToken" Name="CloseBracketToken">
+                <Kinds>
+                    <Kind>CloseBracketToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="AttributeSyntax" Kind="Attribute">
+        <Members>
+            <Member Type="NameSyntax" Name="Name" />
+            <Member Type="ArgumentListSyntax" Name="ArgumentList" Nullable="true" />
+        </Members>
+    </Node>
+    <Node Name="CompilationUnitSyntax" Kind="CompilationUnit">
+        <Members>
+            <Member Type="ShaderDeclarationSyntax" Name="ShaderDeclaration" />
+            <Member Type="SyntaxToken" Name="EndOfFileToken">
+                <Kinds>
+                    <Kind>EndOfFileToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="ShaderDeclarationSyntax" Kind="ShaderDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="ShaderKeyword">
+                <Kinds>
+                    <Kind>ShaderKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="Identifier">
+                <Kinds>
+                    <Kind>StringLiteralToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="OpenBraceToken">
+                <Kinds>
+                    <Kind>OpenBraceToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="PropertiesDeclarationSyntax" Name="Properties" Nullable="true" />
+            <Member Type="CgIncludeDeclarationSyntax" Name="CgInclude" Nullable="true" />
+            <Member Type="SubShaderDeclarationSyntax" Name="SubShaders" List="Sequenced" />
+            <Member Type="FallbackDeclarationSyntax" Name="Fallback" Nullable="true" />
+            <Member Type="CustomEditorDeclarationSyntax" Name="CustomEditor" Nullable="true" />
+            <Member Type="SyntaxToken" Name="CloseBraceToken">
+                <Kinds>
+                    <Kind>CloseBraceToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="PropertiesDeclarationSyntax" Kind="PropertiesDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="PropertiesKeyword">
+                <Kinds>
+                    <Kind>PropertiesKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="OpenBraceToken">
+                <Kinds>
+                    <Kind>OpenBraceToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="PropertyDeclarationSyntax" Name="Properties" List="Sequenced" />
+            <Member Type="SyntaxToken" Name="CloseBraceToken">
+                <Kinds>
+                    <Kind>CloseBraceToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="PropertyDeclarationSyntax" Kind="PropertyDeclaration">
+        <Members>
+            <Member Type="AttributeListSyntax" Name="AttributeList" Nullable="true" />
+            <Member Type="SyntaxToken" Name="Identifier">
+                <Kinds>
+                    <Kind>IdentifierToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="OpenParenToken">
+                <Kinds>
+                    <Kind>OpenParenToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="StringLiteralToken">
+                <Kinds>
+                    <Kind>DisplayName</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="CommaToken">
+                <Kinds>
+                    <Kind>CommaToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SimpleNameSyntax" Name="Type" />
+            <Member Type="ArgumentListSyntax" Name="ArgumentList" Nullable="true" />
+            <Member Type="SyntaxToken" Name="CloseParenToken">
+                <Kinds>
+                    <Kind>CloseParenToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="EqualsValueClauseSyntax" Name="Default" />
+        </Members>
+    </Node>
+    <Node Name="SubShaderDeclarationSyntax" Kind="SubShaderDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="SubShaderKeyword">
+                <Kinds>
+                    <Kind>SubShaderKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="OpenBraceToken">
+                <Kinds>
+                    <Kind>OpenBraceToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="TagsDeclarationSyntax" Name="Tags" Nullable="true" />
+            <Member Type="CommandDeclarationSyntax" Name="Commands" List="Sequenced" />
+            <Member Type="CgIncludeDeclarationSyntax" Name="CgInclude" Nullable="true" />
+            <Member Type="BasePassDeclarationSyntax" Name="Passes" List="Sequenced" />
+            <Member Type="SyntaxToken" Name="CloseBraceToken">
+                <Kinds>
+                    <Kind>CloseBraceToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="CgIncludeDeclarationSyntax" Kind="CgIncludeDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="CgIncludeKeyword">
+                <Kinds>
+                    <Kind>CgIncludeKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="GreenNode" Name="Source" />
+            <Member Type="SyntaxToken" Name="EndCgKeyword">
+                <Kinds>
+                    <Kind>EndCgKeyword</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="CgProgramDeclarationSyntax" Kind="CgProgramDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="CgProgramKeyword">
+                <Kinds>
+                    <Kind>CgProgramKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="GreenNode" Name="Source" />
+            <Member Type="SyntaxToken" Name="EndCgKeyword">
+                <Kinds>
+                    <Kind>EndCgKeyword</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="TagsDeclarationSyntax" Kind="TagsDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="TagsKeyword">
+                <Kinds>
+                    <Kind>TagsKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="OpenBraceToken">
+                <Kinds>
+                    <Kind>OpenBraceToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="TagDeclarationSyntax" Name="Tags" List="Sequenced" />
+            <Member Type="SyntaxToken" Name="CloseBraceToken">
+                <Kinds>
+                    <Kind>CloseBraceToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="TagDeclarationSyntax" Kind="TagDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="Key">
+                <Kinds>
+                    <Kind>StringLiteralToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="EqualsToken">
+                <Kinds>
+                    <Kind>EqualsToken</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="Value">
+                <Kinds>
+                    <Kind>StringLiteralToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="FallbackDeclarationSyntax" Kind="FallbackDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="FallbackKeyword">
+                <Kinds>
+                    <Kind>FallbackKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="ShaderNameOrOffKeyword">
+                <Kinds>
+                    <Kind>StringLiteralToken</Kind>
+                    <Kind>OffKeyword</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="CustomEditorDeclarationSyntax" Kind="CustomEditorDeclaration">
+        <Members>
+            <Member Type="SyntaxToken" Name="CustomEditorKeyword">
+                <Kinds>
+                    <Kind>CustomEditorKeyword</Kind>
+                </Kinds>
+            </Member>
+            <Member Type="SyntaxToken" Name="FullyQualifiedInspectorName">
+                <Kinds>
+                    <Kind>StringLiteralToken</Kind>
+                </Kinds>
+            </Member>
+        </Members>
+    </Node>
+    <Node Name="HlslSourceSyntax" Kind="HlslSourceUnit">
+        <Members>
+            <Member Type="GreenNode" Name="Sources" />
+        </Members>
+    </Node>
+</RootNode>
