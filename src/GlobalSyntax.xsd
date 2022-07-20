@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="RootNode" type="RootNode" />
+    <xsd:complexType name="RootNode">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="AbstractNode" type="AbstractNode" />
+            <xsd:element name="Node" type="Node" />
+        </xsd:choice>
+    </xsd:complexType>
+    <xsd:complexType name="AbstractNode">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="AbstractNode" type="AbstractNode" />
+            <xsd:element name="Node" type="Node" />
+            <xsd:element name="Members" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="Member" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="Kinds" minOccurs="0" maxOccurs="unbounded">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:element name="Kind" type="xsd:string" />
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                                <xsd:attribute name="Type" use="required" type="xsd:string" />
+                                <xsd:attribute name="Name" use="required" type="xsd:string" />
+                                <xsd:attribute name="List" use="optional" type="ListEnum" />
+                                <xsd:attribute name="Nullable" use="optional" type="xsd:boolean" />
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:choice>
+        <xsd:attribute name="Name" use="required" />
+    </xsd:complexType>
+    <xsd:complexType name="Node">
+        <xsd:sequence>
+            <xsd:element name="Members" minOccurs="0" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="Member" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="Kinds" minOccurs="0" maxOccurs="1">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:element name="Kind" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                                <xsd:attribute name="Type" use="required" type="xsd:string" />
+                                <xsd:attribute name="Name" use="required" type="xsd:string" />
+                                <xsd:attribute name="List" use="optional" type="ListEnum"></xsd:attribute>
+                                <xsd:attribute name="Nullable" use="optional" type="xsd:boolean" />
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="Name" use="required" type="xsd:string" />
+        <xsd:attribute name="Kind" use="required" type="KindUnion" />
+    </xsd:complexType>
+    <xsd:simpleType name="ListEnum">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Separated" />
+            <xsd:enumeration value="Sequenced" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="ListOfStrings">
+        <xsd:list itemType="xsd:string" />
+    </xsd:simpleType>
+    <xsd:simpleType name="KindUnion">
+        <xsd:union memberTypes="xsd:string ListOfStrings" />
+    </xsd:simpleType>
+</xsd:schema>
